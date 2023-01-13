@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "anostr",
+    "slug": "anostr",
+    "version": "1.0.0",
+    "jsEngine": "hermes"
+  }
+}
