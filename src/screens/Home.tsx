@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
-import { useNostrEvents } from "nostr-react";
+import { dateToUnix, useNostrEvents } from "nostr-react";
 import { ScrollView, StyleSheet } from "react-native";
 import { FAB, Text } from "react-native-paper";
 import Post from "../components/Post";
@@ -14,7 +14,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const { events } = useNostrEvents({
     filter: {
       kinds: [1],
-      since: 0,
+      since: dateToUnix(new Date(Date.now() - 5 * 60000)),
     },
   });
 
@@ -27,10 +27,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
             <Text>{userStore.key}</Text>
             {events.map((event) => (
               <Post key={event.id} event={event} />
-                key={event.id}
-                content={event.content}
-                user={event.pubkey}
-              />
             ))}
           </ScrollView>
           <FAB
