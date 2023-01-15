@@ -1,7 +1,7 @@
 import { useProfile } from "nostr-react";
 import { Event } from "nostr-tools";
 import { StyleSheet, View } from "react-native";
-import { Avatar, Card, Divider, Text } from "react-native-paper";
+import { Avatar, Card, Divider, IconButton, Text } from "react-native-paper";
 import TimeAgo from "./TimeAgo";
 
 type PostProps = {
@@ -18,21 +18,24 @@ const Post = ({ event }: PostProps) => {
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
-        {userData && userData.picture ? (
-          <Avatar.Image
-            size={48}
-            source={{ uri: userData.picture }}
-            style={styles.picture}
-          />
-        ) : (
-          <Avatar.Icon
-            size={48}
-            icon="account-question"
-            style={styles.picture}
-          />
-        )}
-        <Text>{userProfile}</Text>
-        <TimeAgo date={new Date(event.created_at * 1000)} />
+        <View style={styles.profile}>
+          {userData && userData.picture ? (
+            <Avatar.Image
+              size={48}
+              source={{ uri: userData.picture }}
+              style={styles.picture}
+            />
+          ) : (
+            <Avatar.Icon
+              size={48}
+              icon="account-question"
+              style={styles.picture}
+            />
+          )}
+          <Text>{userProfile}</Text>
+          <TimeAgo date={new Date(event.created_at * 1000)} />
+        </View>
+        <IconButton icon="dots-vertical" onPress={() => {}} />
       </View>
       <Divider />
       <Card.Content>
@@ -57,6 +60,12 @@ const styles = StyleSheet.create({
   },
   picture: { overflow: "hidden", margin: 5, marginRight: 10 },
   content: { marginTop: 10 },
+  profile: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
 });
 
 export default Post;
