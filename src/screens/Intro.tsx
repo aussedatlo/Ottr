@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
-// import { generatePrivateKey } from "nostr-tools";
+import { generatePrivateKey } from "nostr-tools";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { RootStackParamList } from "..";
@@ -12,7 +12,7 @@ const IntroScreen = ({ route, navigation }: IntroScreenProps) => {
   const { userStore } = useStores();
 
   const handleNewKey = async () => {
-    // userStore.setKey(generatePrivateKey());
+    userStore.setKey(generatePrivateKey());
     navigation.navigate("Home");
   };
 
