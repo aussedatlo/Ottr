@@ -26,7 +26,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
             <Text>Home</Text>
             <Text>{userStore.key}</Text>
             {events.map((event) => (
-              <Post
+              <Post key={event.id} event={event} />
                 key={event.id}
                 content={event.content}
                 user={event.pubkey}

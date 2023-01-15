@@ -1,24 +1,62 @@
 import { useProfile } from "nostr-react";
-import { Card, Text } from "react-native-paper";
+import { Event } from "nostr-tools";
+import { StyleSheet, View } from "react-native";
+import { Avatar, Card, Divider, Text } from "react-native-paper";
+import TimeAgo from "./TimeAgo";
 
 type PostProps = {
-  user: string;
-  content: string;
+  event: Event;
 };
-const Post = ({ user, content }: PostProps) => {
+
+const Post = ({ event }: PostProps) => {
   const { data: userData } = useProfile({
-    pubkey: user,
+    pubkey: event.pubkey,
   });
-  const userProfile = userData && userData.name ? userData.name : user;
+  const userProfile =
+    userData && userData.name ? userData.name : event.pubkey.slice(0, 10);
 
   return (
-    <Card style={{ margin: 3, borderRadius: 0 }}>
-      <Card.Title title={userProfile} />
+    <Card style={styles.card}>
+      <View style={styles.header}>
+        {userData && userData.picture ? (
+          <Avatar.Image
+            size={48}
+            source={{ uri: userData.picture }}
+            style={styles.picture}
+          />
+        ) : (
+          <Avatar.Icon
+            size={48}
+            icon="account-question"
+            style={styles.picture}
+          />
+        )}
+        <Text>{userProfile}</Text>
+        <TimeAgo date={new Date(event.created_at * 1000)} />
+      </View>
+      <Divider />
       <Card.Content>
-        <Text variant="bodyMedium">{content}</Text>
+        <Text variant="bodyMedium" style={styles.content}>
+          {event.content}
+        </Text>
       </Card.Content>
     </Card>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    margin: 3,
+    padding: 5,
+    borderRadius: 0,
+  },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  picture: { overflow: "hidden", margin: 5, marginRight: 10 },
+  content: { marginTop: 10 },
+});
 
 export default Post;

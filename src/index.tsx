@@ -7,6 +7,12 @@ import { DEFAULT_RELAYS_URL } from "./constant/relay";
 import Navigation from "./navigation";
 import observableStore from "./store/user.store";
 
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(en);
+
 export default function App() {
   return (
     <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={false}>
