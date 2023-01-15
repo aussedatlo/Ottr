@@ -3,7 +3,7 @@ import { Observer, useObserver } from "mobx-react";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { RootStackParamList } from "..";
+import { RootStackParamList } from "../navigation";
 import { useStores } from "../store";
 
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;

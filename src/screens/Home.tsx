@@ -4,8 +4,8 @@ import { dateToUnix, useNostr, useNostrEvents } from "nostr-react";
 import { getEventHash, getPublicKey, signEvent } from "nostr-tools";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { RootStackParamList } from "..";
 import Post from "../components/Post";
+import { RootStackParamList } from "../navigation";
 import { useStores } from "../store";
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
@@ -23,7 +23,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   });
 
   const handlePost = () => {
-    console.log(userStore.key);
     const event: any = {
       content: "message",
       kind: 1,
@@ -37,8 +36,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
     publish(event);
   };
-
-  console.log(events);
 
   return (
     <Observer>

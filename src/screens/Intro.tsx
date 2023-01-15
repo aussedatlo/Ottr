@@ -3,7 +3,7 @@ import { Observer } from "mobx-react";
 import { generatePrivateKey } from "nostr-tools";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { RootStackParamList } from "..";
+import { RootStackParamList } from "../navigation";
 import { useStores } from "../store";
 
 type IntroScreenProps = NativeStackScreenProps<RootStackParamList, "Intro">;
