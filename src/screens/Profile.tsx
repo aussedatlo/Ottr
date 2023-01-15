@@ -29,6 +29,7 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
   });
 
   useEffect(() => {
+    if (!userData) return;
     if (!state.name)
       setState((state) => ({
         name: userData.name,
