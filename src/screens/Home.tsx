@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
-import { dateToUnix, useNostrEvents } from "nostr-react";
+import { dateToUnix, useNostr, useNostrEvents } from "nostr-react";
 import { getEventHash, getPublicKey, signEvent } from "nostr-tools";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
@@ -13,6 +13,8 @@ type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const { userStore } = useStores();
 
+  const { publish } = useNostr();
+
   const { events, isLoading } = useNostrEvents({
     filter: {
       kinds: [1],
@@ -21,16 +23,17 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   });
 
   const handlePost = () => {
+    console.log(userStore.key);
     const event: any = {
       content: "message",
       kind: 1,
       tags: [],
       created_at: dateToUnix(),
-      pubkey: getPublicKey(userStore.privKey),
+      pubkey: getPublicKey(userStore.key),
     };
 
     event.id = getEventHash(event);
-    event.sig = signEvent(event, userStore.privKey);
+    event.sig = signEvent(event, userStore.key);
 
     publish(event);
   };
@@ -54,6 +57,3 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 };
 
 export default HomeScreen;
-function publish(event: any) {
-  throw new Error("Function not implemented.");
-}
