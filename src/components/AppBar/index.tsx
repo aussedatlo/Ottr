@@ -4,23 +4,30 @@ import { View } from "react-native";
 import { Appbar as AppBarPaper, Avatar, useTheme } from "react-native-paper";
 import { DEFAULT_RELAYS_URL } from "../../constant/relay";
 
-const AppBar = ({ navigation, back }: NativeStackHeaderProps) => {
+const AppBar = ({ navigation, back, route }: NativeStackHeaderProps) => {
   const { connectedRelays } = useNostr();
   const theme = useTheme();
 
   return (
     <AppBarPaper.Header>
       {back ? <AppBarPaper.BackAction onPress={navigation.goBack} /> : null}
-      <AppBarPaper.Content title="Anostr" />
-      <AppBarPaper.Action icon="magnify" onPress={() => {}} />
-      <AppBarPaper.Action
-        icon="account-circle-outline"
-        onPress={() => navigation.navigate("Profile")}
-      />
-      <AppBarPaper.Action
-        icon="cog"
-        onPress={() => navigation.navigate("Settings")}
-      />
+      <AppBarPaper.Content title={route.name} />
+      {route.name === "Home" ? (
+        <>
+          <AppBarPaper.Action icon="magnify" onPress={() => {}} />
+          <AppBarPaper.Action
+            icon="account-circle-outline"
+            onPress={() => navigation.navigate("Profile")}
+          />
+          <AppBarPaper.Action
+            icon="cog"
+            onPress={() => navigation.navigate("Settings")}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+
       <View>
         <Avatar.Text
           size={24}
@@ -32,6 +39,7 @@ const AppBar = ({ navigation, back }: NativeStackHeaderProps) => {
                 : connectedRelays.length === DEFAULT_RELAYS_URL.length
                 ? theme.colors.secondary
                 : theme.colors.error,
+            margin: 10,
           }}
         />
       </View>
