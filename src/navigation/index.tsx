@@ -21,6 +21,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
   const { userStore } = useStores();
+  const { colors } = useTheme();
 
   return (
     <Observer>
@@ -31,6 +32,7 @@ const Navigation = () => {
               initialRouteName={!userStore.key ? "Intro" : "Home"}
               screenOptions={{
                 header: (props) => <AppBar {...props} />,
+                contentStyle: { backgroundColor: colors.background },
               }}
             >
               <Stack.Screen name="Intro" component={IntroScreen} />
