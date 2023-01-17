@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
+import { useTheme } from "react-native-paper";
 import AppBar from "../components/AppBar";
 import HomeScreen from "../screens/Home";
 import IntroScreen from "../screens/Intro";
@@ -21,7 +22,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
   const { userStore } = useStores();
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <Observer>
