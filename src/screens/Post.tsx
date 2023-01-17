@@ -3,7 +3,8 @@ import { dateToUnix, useNostr } from "nostr-react";
 import { Event, getEventHash, getPublicKey, signEvent } from "nostr-tools";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button } from "react-native-paper";
+import Input from "../components/Input";
 import { RootStackParamList } from "../navigation";
 import { useStores } from "../store";
 
@@ -31,11 +32,13 @@ const PostScreen = ({ route, navigation }: PostScreenProps) => {
   };
 
   return (
-    <View>
-      <TextInput
-        label="Post"
+    <View style={styles.root}>
+      <Input
+        label="write your post here"
         value={text}
         onChangeText={(text) => setText(text)}
+        multiline
+        numberOfLines={5}
       />
       <Button mode="contained" style={styles.button} onPress={handlePost}>
         Post
@@ -45,6 +48,9 @@ const PostScreen = ({ route, navigation }: PostScreenProps) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    margin: 15,
+  },
   button: {
     margin: 15,
   },
