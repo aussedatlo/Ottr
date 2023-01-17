@@ -37,8 +37,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       {() => (
         <>
           <ScrollView>
-            <Text>Home</Text>
-            <Text>{userStore.key}</Text>
             {e.map((event) => (
               <Post key={event.id} event={event} />
             ))}
