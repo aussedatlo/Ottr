@@ -49,7 +49,7 @@ const Post = ({ event }: PostProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 3,
+    marginBottom: 3,
     padding: 5,
     borderRadius: 0,
   },
