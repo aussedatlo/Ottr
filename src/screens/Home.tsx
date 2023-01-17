@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
 import { dateToUnix, useNostrEvents } from "nostr-react";
+import { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { FAB, Text } from "react-native-paper";
 import Post from "../components/Post";
@@ -11,12 +12,17 @@ type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const { userStore } = useStores();
-  const { events } = useNostrEvents({
+  const { events, unsubscribe } = useNostrEvents({
     filter: {
       kinds: [1],
       since: dateToUnix(new Date(Date.now() - 5 * 60000)),
     },
   });
+  useEffect(() => {
+    return () => {
+      if (!!unsubscribe) unsubscribe();
+    };
+  }, []);
 
   return (
     <Observer>
