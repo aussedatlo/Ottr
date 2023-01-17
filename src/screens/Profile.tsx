@@ -1,7 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Observer } from "mobx-react";
 import { useNostr, useNostrEvents, useProfile } from "nostr-react";
-import { getEventHash, getPublicKey, Kind, signEvent } from "nostr-tools";
+import {
+  generatePrivateKey,
+  getEventHash,
+  getPublicKey,
+  Kind,
+  signEvent,
+} from "nostr-tools";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, ToastAndroid, View } from "react-native";
 import { Avatar, Button, Text } from "react-native-paper";
@@ -23,19 +29,41 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
     about: undefined,
     picture: undefined,
   });
+  const [key, setKey] = useState<string>("");
   const { userStore } = useStores();
   const { publish } = useNostr();
   const { data: userData } = useProfile({
     pubkey: getPublicKey(userStore.key),
   });
 
-  const { onEvent } = useNostrEvents({
+  const { onEvent, unsubscribe } = useNostrEvents({
     filter: { authors: [getPublicKey(userStore.key)] },
   });
 
   onEvent((event) => {
-    ToastAndroid.show("Profile actualized", ToastAndroid.SHORT);
+    if (!event.content || event.kind !== Kind.Metadata) return;
+
+    const { name, about, picture } = JSON.parse(event.content);
+
+    if (
+      name === state.name &&
+      about === state.about &&
+      picture === state.picture
+    )
+      return;
+
+    ToastAndroid.show("Profile updated", ToastAndroid.SHORT);
   });
+
+  useEffect(() => {
+    return () => {
+      if (!!unsubscribe) unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    setKey(userStore.key);
+  }, [userStore.key]);
 
   useEffect(() => {
     if (!userData) return;
@@ -45,9 +73,9 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
         about: userData.about,
         picture: userData.picture,
       }));
-  }, [userData]);
+  }, [userData, key]);
 
-  const handleUpdate = () => {
+  const handleUpdateProfile = () => {
     let event: any = {
       kind: Kind.Metadata,
       created_at: Math.floor(Date.now() / 1000),
@@ -60,6 +88,22 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
     event.sig = signEvent(event, userStore.key);
 
     publish(event);
+  };
+
+  const handleUpdateKey = () => {
+    try {
+      getPublicKey(key);
+      userStore.setKey(key);
+      ToastAndroid.show("Key updated", ToastAndroid.SHORT);
+    } catch (e) {
+      ToastAndroid.show("Invalid key format", ToastAndroid.SHORT);
+    }
+  };
+
+  const handleNewKey = () => {
+    const newKey = generatePrivateKey();
+    userStore.setKey(newKey);
+    setKey(newKey);
   };
 
   return (
@@ -103,22 +147,42 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
               setState({ ...state, picture: e.nativeEvent.text })
             }
           />
+
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={handleUpdateProfile}
+              style={styles.button}
+              mode="contained"
+              compact={false}
+            >
+              Update Profile
+            </Button>
+          </View>
+
           <Text style={styles.title}>Private Key:</Text>
           <Input
-            value={userStore.key}
+            value={key}
             placeholder="private key"
-            onChange={(e) => userStore.setKey(e.nativeEvent.text)}
+            onChange={(e) => setKey(e.nativeEvent.text)}
             multiline
           />
 
           <View style={styles.buttonContainer}>
             <Button
-              onPress={handleUpdate}
+              onPress={handleUpdateKey}
               style={styles.button}
               mode="contained"
               compact={false}
             >
-              Update
+              Update Private Key
+            </Button>
+            <Button
+              onPress={handleNewKey}
+              style={styles.button}
+              mode="contained"
+              compact={false}
+            >
+              New Private Key
             </Button>
           </View>
         </ScrollView>
@@ -146,7 +210,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 10,
-    flexDirection: "row",
+    width: 200,
     alignSelf: "center",
   },
   avatar: { overflow: "hidden", borderWidth: 2 },
