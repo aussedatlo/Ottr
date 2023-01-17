@@ -6,6 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DEFAULT_RELAYS_URL } from "./constant/relay";
 import Navigation from "./navigation";
 import observableStore from "./store/user.store";
+import GenericModal from "./components/Modal/GenericModal";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
@@ -21,6 +22,7 @@ export default function App() {
           <PaperProvider>
             <SafeAreaProvider>
               <Navigation />
+              <GenericModal />
             </SafeAreaProvider>
           </PaperProvider>
         </NavigationContainer>
