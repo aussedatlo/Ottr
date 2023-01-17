@@ -1,7 +1,9 @@
 import { useProfile } from "nostr-react";
 import { Event } from "nostr-tools";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Avatar, Card, Divider, IconButton, Text } from "react-native-paper";
+import ModalController from "../Modal/ModalController";
+import ProfileModal from "../Modal/ProfileModal";
 import TimeAgo from "./TimeAgo";
 
 type PostProps = {
@@ -18,23 +20,32 @@ const Post = ({ event }: PostProps) => {
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
-        <View style={styles.profile}>
-          {userData && userData.picture ? (
-            <Avatar.Image
-              size={48}
-              source={{ uri: userData.picture }}
-              style={styles.picture}
-            />
-          ) : (
-            <Avatar.Icon
-              size={48}
-              icon="account-question"
-              style={styles.picture}
-            />
-          )}
-          <Text>{userProfile}</Text>
-          <TimeAgo date={new Date(event.created_at * 1000)} />
-        </View>
+        <TouchableOpacity
+          onPress={() =>
+            ModalController.showModal(
+              "",
+              <ProfileModal data={userData} pub={event.pubkey} />
+            )
+          }
+        >
+          <View style={styles.profile}>
+            {userData && userData.picture ? (
+              <Avatar.Image
+                size={48}
+                source={{ uri: userData.picture }}
+                style={styles.picture}
+              />
+            ) : (
+              <Avatar.Icon
+                size={48}
+                icon="account-question"
+                style={styles.picture}
+              />
+            )}
+            <Text>{userProfile}</Text>
+            <TimeAgo date={new Date(event.created_at * 1000)} />
+          </View>
+        </TouchableOpacity>
         <IconButton icon="dots-vertical" onPress={() => {}} />
       </View>
       <Divider />
