@@ -125,13 +125,17 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
               />
             )}
           </View>
-          <Text style={styles.title}>Display name:</Text>
+          <Text variant="labelLarge" style={styles.title}>
+            Display name:
+          </Text>
           <Input
             value={state.name}
             placeholder="name to display"
             onChange={(e) => setState({ ...state, name: e.nativeEvent.text })}
           />
-          <Text style={styles.title}>About you:</Text>
+          <Text variant="labelLarge" style={styles.title}>
+            About you:
+          </Text>
           <Input
             value={state.about}
             placeholder="A little description of yourself"
@@ -139,7 +143,9 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
             numberOfLines={3}
             multiline
           />
-          <Text style={styles.title}>Picture url:</Text>
+          <Text variant="labelLarge" style={styles.title}>
+            Picture url:
+          </Text>
           <Input
             value={state.picture}
             placeholder="https://"
@@ -159,7 +165,9 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
             </Button>
           </View>
 
-          <Text style={styles.title}>Private Key:</Text>
+          <Text variant="labelLarge" style={styles.title}>
+            Private Key:
+          </Text>
           <Input
             value={key}
             placeholder="private key"
@@ -198,8 +206,6 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 15,
     marginBottom: 5,
-    fontSize: 14,
-    fontWeight: "bold",
   },
   picture: {
     alignItems: "center",
