@@ -1,5 +1,6 @@
 import { useProfile } from "nostr-react";
 import { Event } from "nostr-tools";
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Card, Divider, IconButton, Text } from "react-native-paper";
 import TimeAgo from "./TimeAgo";
