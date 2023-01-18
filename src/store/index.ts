@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import UserStore from "./user.store";
 
-class RootStore {
+export default class RootStore {
   userStore: any;
 
   constructor() {

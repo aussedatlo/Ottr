@@ -5,7 +5,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DEFAULT_RELAYS_URL } from "./constant/relay";
 import Navigation from "./navigation";
-import observableStore from "./store/user.store";
+import RootStore from "./store";
 import GenericModal from "./components/Modal/GenericModal";
 
 import TimeAgo from "javascript-time-ago";
@@ -17,7 +17,7 @@ TimeAgo.addLocale(en);
 export default function App() {
   return (
     <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={false}>
-      <Provider observableStore={observableStore}>
+      <Provider observableStore={RootStore}>
         <NavigationContainer>
           <PaperProvider>
             <SafeAreaProvider>
