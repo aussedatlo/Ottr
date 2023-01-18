@@ -1,7 +1,12 @@
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
+import * as Updates from "expo-updates";
 import { useNostr } from "nostr-react";
 import { View } from "react-native";
-import { Appbar as AppBarPaper, Avatar, useTheme } from "react-native-paper";
+import {
+  Appbar as AppBarPaper,
+  IconButton,
+  useTheme,
+} from "react-native-paper";
 import { DEFAULT_RELAYS_URL } from "../../constant/relay";
 
 const AppBar = ({ navigation, back, route }: NativeStackHeaderProps) => {
@@ -29,18 +34,14 @@ const AppBar = ({ navigation, back, route }: NativeStackHeaderProps) => {
       )}
 
       <View>
-        <Avatar.Text
-          size={24}
-          label={connectedRelays.length.toString()}
-          style={{
-            backgroundColor:
-              connectedRelays.length === 0
-                ? theme.colors.error
-                : connectedRelays.length === DEFAULT_RELAYS_URL.length
-                ? theme.colors.secondary
-                : theme.colors.error,
-            margin: 10,
-          }}
+        <IconButton
+          onPress={() => Updates.reloadAsync()}
+          icon="checkbox-multiple-marked-circle"
+          iconColor={
+            connectedRelays.length === DEFAULT_RELAYS_URL.length
+              ? "#26A65B"
+              : "red"
+          }
         />
       </View>
     </AppBarPaper.Header>
