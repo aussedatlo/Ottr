@@ -3,6 +3,14 @@
     "name": "anostr",
     "slug": "anostr",
     "version": "1.0.0",
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "extra": {
+      "eas": {
+        "projectId": "2d7f71c4-e9a3-4c25-9f04-c273054b518a"
+      }
+    },
+    "android": {
+      "package": "com.laiin.anostr"
+    }
   }
 }
