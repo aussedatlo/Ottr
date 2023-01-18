@@ -8,6 +8,7 @@
     "expo-linking": "~3.3.0",
     "expo-random": "^13.0.0",
     "expo-standard-web-crypto": "^1.4.1",
+    "expo-updates": "~0.15.6",
     "javascript-time-ago": "^2.5.9",
     "mobx": "^6.7.0",
     "mobx-persist-store": "^1.1.3",

@@ -21,6 +21,7 @@ const Post = ({ event }: PostProps) => {
     <Card style={styles.card}>
       <View style={styles.header}>
         <TouchableOpacity
+          style={styles.profile}
           onPress={() =>
             ModalController.showModal(
               "",
@@ -28,23 +29,21 @@ const Post = ({ event }: PostProps) => {
             )
           }
         >
-          <View style={styles.profile}>
-            {userData && userData.picture ? (
-              <Avatar.Image
-                size={48}
-                source={{ uri: userData.picture }}
-                style={styles.picture}
-              />
-            ) : (
-              <Avatar.Icon
-                size={48}
-                icon="account-question"
-                style={styles.picture}
-              />
-            )}
-            <Text>{userProfile}</Text>
-            <TimeAgo date={new Date(event.created_at * 1000)} />
-          </View>
+          {userData && userData.picture ? (
+            <Avatar.Image
+              size={48}
+              source={{ uri: userData.picture }}
+              style={styles.picture}
+            />
+          ) : (
+            <Avatar.Icon
+              size={48}
+              icon="account-question"
+              style={styles.picture}
+            />
+          )}
+          <Text>{userProfile}</Text>
+          <TimeAgo date={new Date(event.created_at * 1000)} />
         </TouchableOpacity>
         <IconButton icon="dots-vertical" onPress={() => {}} />
       </View>
@@ -65,7 +64,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   header: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -73,7 +71,6 @@ const styles = StyleSheet.create({
   content: { marginTop: 10 },
   profile: {
     flex: 1,
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
