@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Observer } from "mobx-react";
 import { dateToUnix, useNostrEvents } from "nostr-react";
 import { Event } from "nostr-tools";
 import { useEffect, useState } from "react";
@@ -31,22 +30,18 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   }, []);
 
   return (
-    <Observer>
-      {() => (
-        <>
-          <ScrollView>
-            {e.map((event) => (
-              <Post key={event.id} event={event} />
-            ))}
-          </ScrollView>
-          <FAB
-            icon="plus"
-            style={styles.fab}
-            onPress={() => navigation.navigate("Post")}
-          />
-        </>
-      )}
-    </Observer>
+    <>
+      <ScrollView>
+        {e.map((event) => (
+          <Post key={event.id} event={event} />
+        ))}
+      </ScrollView>
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate("Post")}
+      />
+    </>
   );
 };
 

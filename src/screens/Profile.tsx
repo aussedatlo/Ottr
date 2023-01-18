@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Observer } from "mobx-react";
+import { observer } from "mobx-react";
 import { useNostr, useNostrEvents, useProfile } from "nostr-react";
 import {
   generatePrivateKey,
@@ -23,7 +23,7 @@ type ProfileScreenState = {
   picture: string | undefined;
 };
 
-const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
+const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
   const [state, setState] = useState<ProfileScreenState>({
     name: undefined,
     about: undefined,
@@ -103,101 +103,94 @@ const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
   const handleNewKey = () => {
     const newKey = generatePrivateKey();
     userStore.setKey(newKey);
-    setKey(newKey);
   };
 
   return (
-    <Observer>
-      {() => (
-        <ScrollView style={styles.root}>
-          <View style={styles.picture}>
-            {state.picture && state.picture.length > 1 ? (
-              <Avatar.Image
-                size={100}
-                source={{ uri: state.picture }}
-                style={styles.avatar}
-              />
-            ) : (
-              <Avatar.Icon
-                size={100}
-                icon="account-question"
-                style={styles.avatar}
-              />
-            )}
-          </View>
-          <Text variant="labelLarge" style={styles.title}>
-            Display name:
-          </Text>
-          <Input
-            value={state.name}
-            placeholder="name to display"
-            onChange={(e) => setState({ ...state, name: e.nativeEvent.text })}
+    <ScrollView style={styles.root}>
+      <View style={styles.picture}>
+        {state.picture && state.picture.length > 1 ? (
+          <Avatar.Image
+            size={100}
+            source={{ uri: state.picture }}
+            style={styles.avatar}
           />
-          <Text variant="labelLarge" style={styles.title}>
-            About you:
-          </Text>
-          <Input
-            value={state.about}
-            placeholder="A little description of yourself"
-            onChange={(e) => setState({ ...state, about: e.nativeEvent.text })}
-            numberOfLines={3}
-            multiline
+        ) : (
+          <Avatar.Icon
+            size={100}
+            icon="account-question"
+            style={styles.avatar}
           />
-          <Text variant="labelLarge" style={styles.title}>
-            Picture url:
-          </Text>
-          <Input
-            value={state.picture}
-            placeholder="https://"
-            onChange={(e) =>
-              setState({ ...state, picture: e.nativeEvent.text })
-            }
-          />
+        )}
+      </View>
+      <Text variant="labelLarge" style={styles.title}>
+        Display name:
+      </Text>
+      <Input
+        value={state.name}
+        placeholder="name to display"
+        onChange={(e) => setState({ ...state, name: e.nativeEvent.text })}
+      />
+      <Text variant="labelLarge" style={styles.title}>
+        About you:
+      </Text>
+      <Input
+        value={state.about}
+        placeholder="A little description of yourself"
+        onChange={(e) => setState({ ...state, about: e.nativeEvent.text })}
+        numberOfLines={3}
+        multiline
+      />
+      <Text variant="labelLarge" style={styles.title}>
+        Picture url:
+      </Text>
+      <Input
+        value={state.picture}
+        placeholder="https://"
+        onChange={(e) => setState({ ...state, picture: e.nativeEvent.text })}
+      />
 
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={handleUpdateProfile}
-              style={styles.button}
-              mode="contained"
-              compact={false}
-            >
-              Update Profile
-            </Button>
-          </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={handleUpdateProfile}
+          style={styles.button}
+          mode="contained"
+          compact={false}
+        >
+          Update Profile
+        </Button>
+      </View>
 
-          <Text variant="labelLarge" style={styles.title}>
-            Private Key:
-          </Text>
-          <Input
-            value={key}
-            placeholder="private key"
-            onChange={(e) => setKey(e.nativeEvent.text)}
-            multiline
-          />
+      <Text variant="labelLarge" style={styles.title}>
+        Private Key:
+      </Text>
+      <Input
+        value={key}
+        placeholder="private key"
+        onChange={(e) => setKey(e.nativeEvent.text)}
+        multiline
+      />
 
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={handleUpdateKey}
-              style={styles.button}
-              mode="contained"
-              compact={false}
-            >
-              Update Private Key
-            </Button>
-            <Button
-              onPress={handleNewKey}
-              style={styles.button}
-              mode="contained"
-              compact={false}
-            >
-              New Private Key
-            </Button>
-          </View>
-        </ScrollView>
-      )}
-    </Observer>
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={handleUpdateKey}
+          style={styles.button}
+          mode="contained"
+          compact={false}
+        >
+          Update Private Key
+        </Button>
+        <Button
+          onPress={handleNewKey}
+          style={styles.button}
+          mode="contained"
+          compact={false}
+        >
+          New Private Key
+        </Button>
+      </View>
+    </ScrollView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   root: {

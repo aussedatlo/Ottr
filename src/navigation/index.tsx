@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Observer } from "mobx-react";
+import { observer } from "mobx-react";
 import { useTheme } from "react-native-paper";
 import AppBar from "../components/AppBar";
 import HomeScreen from "../screens/Home";
@@ -20,33 +20,28 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const Navigation = () => {
+const Navigation = observer(() => {
   const { userStore } = useStores();
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
-  return (
-    <Observer>
-      {() => {
-        if (userStore.isLoaded)
-          return (
-            <Stack.Navigator
-              initialRouteName={!userStore.key ? "Intro" : "Home"}
-              screenOptions={{
-                header: (props) => <AppBar {...props} />,
-                contentStyle: { backgroundColor: colors.background },
-              }}
-            >
-              <Stack.Screen name="Intro" component={IntroScreen} />
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Post" component={PostScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="Settings" component={SettingsScreen} />
-            </Stack.Navigator>
-          );
-        return <SplashScreen />;
-      }}
-    </Observer>
-  );
-};
+  if (userStore.isLoaded)
+    return (
+      <Stack.Navigator
+        initialRouteName={!userStore.key ? "Intro" : "Home"}
+        screenOptions={{
+          header: (props) => <AppBar {...props} />,
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
+        <Stack.Screen name="Intro" component={IntroScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Post" component={PostScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+      </Stack.Navigator>
+    );
+
+  return <SplashScreen />;
+});
 
 export default Navigation;
