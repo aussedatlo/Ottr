@@ -2,16 +2,18 @@ import { StyleSheet } from "react-native";
 import { TextInput, TextInputProps } from "react-native-paper";
 
 const Input = (
-  props
-: Omit<
-  TextInputProps,
-  "underlineColor" | "activeUnderlineColor" | "style" | "theme"
->) => (
+  props: Omit<
+    TextInputProps,
+    "underlineColor" | "activeUnderlineColor" | "style" | "theme"
+  >
+) => (
   <TextInput
     style={styles.input}
     underlineColor="transparent"
     activeUnderlineColor="transparent"
     placeholderTextColor="#888"
+    // selectionColor="#fff"
+    cursorColor="#333"
     {...props}
   />
 );
