@@ -2,7 +2,7 @@ import { useNostr, useNostrEvents } from "nostr-react";
 import { getEventHash, getPublicKey, Kind, signEvent } from "nostr-tools";
 import { useCallback, useRef, useState } from "react";
 import { StyleSheet, ToastAndroid, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Avatar, Button, Text } from "react-native-paper";
 import Input from "../../components/Input";
 import { useStores } from "../../store";
 
@@ -62,6 +62,21 @@ const ProfileSection = () => {
 
   return (
     <>
+      <View style={styles.picture}>
+        {state.picture && state.picture.length > 1 ? (
+          <Avatar.Image
+            size={100}
+            source={{ uri: state.picture }}
+            style={styles.avatar}
+          />
+        ) : (
+          <Avatar.Icon
+            size={100}
+            icon="account-question"
+            style={styles.avatar}
+          />
+        )}
+      </View>
       <Text variant="labelLarge" style={styles.title}>
         Display name:
       </Text>
@@ -104,9 +119,6 @@ const ProfileSection = () => {
 };
 
 const styles = StyleSheet.create({
-  root: {
-    padding: 15,
-  },
   title: {
     marginTop: 15,
     marginBottom: 5,

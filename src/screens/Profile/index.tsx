@@ -78,10 +78,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 5,
   },
-  picture: {
-    alignItems: "center",
-    marginTop: 5,
-  },
   button: {
     marginTop: 5,
   },
@@ -90,7 +86,6 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: "center",
   },
-  avatar: { overflow: "hidden", borderWidth: 2 },
 });
 
 export default ProfileScreen;
