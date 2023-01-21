@@ -11,9 +11,8 @@ const Input = (
     style={styles.input}
     underlineColor="transparent"
     activeUnderlineColor="transparent"
-    placeholderTextColor="#888"
-    // selectionColor="#fff"
-    cursorColor="#333"
+    placeholderTextColor="#9B979C"
+    selectionColor="#CFBCFF"
     {...props}
   />
 );
