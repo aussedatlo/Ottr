@@ -10,23 +10,31 @@ import GenericModal from "./components/Modal/GenericModal";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import PolyfillCrypto from "react-native-webview-crypto";
+import UserUpdater from "./store/user.updater";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(en);
 
+if (!global.randomBytes)
+  global.randomBytes = require("expo-random").getRandomBytes;
+
 export default function App() {
   return (
-    <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={false}>
-      <Provider observableStore={RootStore}>
-        <NavigationContainer>
-          <PaperProvider>
-            <SafeAreaProvider>
-              <Navigation />
-              <GenericModal />
-            </SafeAreaProvider>
-          </PaperProvider>
-        </NavigationContainer>
-      </Provider>
-    </NostrProvider>
+    <>
+      <PolyfillCrypto />
+      <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={false}>
+        <Provider observableStore={RootStore}>
+          <NavigationContainer>
+            <PaperProvider>
+              <SafeAreaProvider>
+                <Navigation />
+                <GenericModal />
+              </SafeAreaProvider>
+            </PaperProvider>
+          </NavigationContainer>
+        </Provider>
+      </NostrProvider>
+    </>
   );
 }
