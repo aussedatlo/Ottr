@@ -1,0 +1,49 @@
+diff --git a/node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js b/node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js
+index 06bf036..65ebc76 100644
+--- a/node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js
++++ b/node_modules/nostr-tools/node_modules/@noble/hashes/esm/utils.js
+@@ -155,13 +155,11 @@ export function wrapConstructorWithOpts(hashCons) {
+     return hashC;
+ }
+ export function randomBytes(bytesLength = 32) {
+-    if (crypto.web) {
+-        return crypto.web.getRandomValues(new Uint8Array(bytesLength));
+-    }
+-    else if (crypto.node) {
+-        return new Uint8Array(crypto.node.randomBytes(bytesLength).buffer);
+-    }
+-    else {
+-        throw new Error("The environment doesn't have randomBytes function");
++
++    try {
++        const randomBytes = require('expo-random').getRandomBytes;
++        return randomBytes(bytesLength);
++    } catch (e) {
++        throw new Error("The environment doesn't have randomBytes function and we couldn't use expo-random");
+     }
+ }
+diff --git a/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js b/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
+index 27c71f6..7003e4d 100644
+--- a/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
++++ b/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
+@@ -176,14 +176,11 @@ function wrapConstructorWithOpts(hashCons) {
+ }
+ exports.wrapConstructorWithOpts = wrapConstructorWithOpts;
+ function randomBytes(bytesLength = 32) {
+-    if (crypto_1.crypto.web) {
+-        return crypto_1.crypto.web.getRandomValues(new Uint8Array(bytesLength));
+-    }
+-    else if (crypto_1.crypto.node) {
+-        return new Uint8Array(crypto_1.crypto.node.randomBytes(bytesLength).buffer);
+-    }
+-    else {
+-        throw new Error("The environment doesn't have randomBytes function");
+-    }
++        try {
++            const randomBytes = require('expo-random').getRandomBytes;
++            return randomBytes(bytesLength);
++        } catch (e) {
++            throw new Error("The environment doesn't have randomBytes function and we couldn't use expo-random");
++        }
+ }
+ exports.randomBytes = randomBytes;
