@@ -1,15 +1,14 @@
-import { observer } from "mobx-react";
-import { dateToUnix, useNostrEvents } from "nostr-react";
+import { useNostrEvents } from "nostr-react";
 import { Event, getPublicKey, Kind, nip04 } from "nostr-tools";
 import { useCallback } from "react";
 import { useStores } from ".";
 
-const ReceiveMessageUpdater = observer((): null => {
+const ReceiveMessageUpdater = (): null => {
   const { userStore } = useStores();
   const { onEvent } = useNostrEvents({
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
-      since: userStore.lastReceive,
+      since: userStore.lastReceiveFromStart,
       limit: 1,
       "#p": [getPublicKey(userStore.key)],
     },
@@ -33,14 +32,14 @@ const ReceiveMessageUpdater = observer((): null => {
 
   onEvent(onEventCallback);
   return null;
-});
+};
 
-const SendMessageUpdater = observer((): null => {
+const SendMessageUpdater = (): null => {
   const { userStore } = useStores();
   const { onEvent } = useNostrEvents({
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
-      since: userStore.lastSend,
+      since: userStore.lastSendFromStart,
       authors: [getPublicKey(userStore.key)],
     },
   });
@@ -53,7 +52,7 @@ const SendMessageUpdater = observer((): null => {
   onEvent(onEventCallback);
 
   return null;
-});
+};
 
 const UserUpdater = () => (
   <>

@@ -59,7 +59,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
 
   return (
     <View style={styles.root}>
-      <View style={{ marginBottom: 30 }}>
+      <View style={{ paddingBottom: 30, height: "100%" }}>
         <FlatList
           data={userStore.messageList[pub]}
           renderItem={(item) => (

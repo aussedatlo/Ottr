@@ -20,14 +20,26 @@ class userStore {
   } = {};
   lastSend: number = dateToUnix();
   lastReceive: number = 0;
+  lastSendFromStart: number;
+  lastReceiveFromStart: number;
 
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
       name: "userStore",
-      properties: ["key", "contactList"],
+      properties: [
+        "key",
+        "contactList",
+        "lastSend",
+        "lastReceive",
+        "messageList",
+      ],
       storage: AsyncStorage,
-    }).then(() => this.setIsLoaded(true));
+    }).then(() => {
+      this.lastSendFromStart = this.lastSend;
+      this.lastReceiveFromStart = this.lastReceive;
+      this.setIsLoaded(true);
+    });
     // }).then(() => this.resetContactList());
   }
 
@@ -52,7 +64,27 @@ class userStore {
   };
 
   addMessage = (pubkey: string, message: Message) => {
-    // TODO: errors ?
+    const messageAlreadyExist =
+      !!this.messageList[pubkey] &&
+      this.messageList[pubkey].indexOf(message) !== -1;
+
+    console.log("====");
+    console.log(messageAlreadyExist);
+    console.log(this.messageList[pubkey]?.indexOf(message));
+
+    if (messageAlreadyExist) {
+      console.warn(`message ${message.id} already exist, skipping`);
+      return;
+    }
+
+    console.log(`adding message ${JSON.stringify(message)}`);
+
+    if (message.id === undefined)
+      // message send by user
+      this.lastSend = message.created_at + 1;
+    // message receive by user
+    else this.lastReceive = message.created_at + 1;
+
     if (this.messageList[pubkey] === undefined) this.messageList[pubkey] = [];
     this.messageList[pubkey].push(message);
   };
