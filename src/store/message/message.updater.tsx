@@ -1,14 +1,14 @@
 import { useNostrEvents } from "nostr-react";
 import { Event, getPublicKey, Kind, nip04 } from "nostr-tools";
 import { useCallback } from "react";
-import { useStores } from ".";
+import { useStores } from "..";
 
 const ReceiveMessageUpdater = (): null => {
-  const { userStore } = useStores();
+  const { userStore, messageStore } = useStores();
   const { onEvent } = useNostrEvents({
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
-      since: userStore.lastReceiveFromStart,
+      since: messageStore.lastReceiveFromStart,
       "#p": [getPublicKey(userStore.key)],
     },
   });
@@ -20,7 +20,7 @@ const ReceiveMessageUpdater = (): null => {
       event.pubkey,
       event.content
     );
-    userStore.addMessage(event.pubkey, {
+    messageStore.addMessage(event.pubkey, {
       id: event.id,
       content: content,
       created_at: event.created_at,
@@ -35,18 +35,18 @@ const ReceiveMessageUpdater = (): null => {
 };
 
 const SendMessageUpdater = (): null => {
-  const { userStore } = useStores();
+  const { userStore, messageStore } = useStores();
   const { onEvent } = useNostrEvents({
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
-      since: userStore.lastSendFromStart,
+      since: messageStore.lastSendFromStart,
       authors: [getPublicKey(userStore.key)],
     },
   });
 
   const onEventCallback = useCallback(async (event: Event) => {
     console.log(`event sent detected ${event.id}`);
-    userStore.updateMessage(event.tags[0][1], event.id, event.created_at);
+    messageStore.updateMessage(event.tags[0][1], event.id, event.created_at);
   }, []);
 
   onEvent(onEventCallback);
@@ -54,11 +54,11 @@ const SendMessageUpdater = (): null => {
   return null;
 };
 
-const UserUpdater = () => (
+const MessageUpdater = () => (
   <>
     <ReceiveMessageUpdater />
     <SendMessageUpdater />
   </>
 );
 
-export default UserUpdater;
+export default MessageUpdater;

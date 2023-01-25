@@ -19,7 +19,7 @@ const SelectContactScreen = ({
 
   const onStartConversation = async () => {
     // TODO: verify format
-    userStore.follow({ pub: text });
+    // userStore.follow({ pub: text });
     navigation.navigate("Talk", { pub: text });
   };
 
@@ -33,7 +33,7 @@ const SelectContactScreen = ({
 
       <Button onPress={onStartConversation}>Start a conversation</Button>
 
-      {Object.keys(userStore.messageList)?.map((pubkey) => (
+      {Object.keys(messageStore.messageList)?.map((pubkey) => (
         <View key={pubkey}>
           <Text onPress={() => navigation.navigate("Talk", { pub: pubkey })}>
             {pubkey}

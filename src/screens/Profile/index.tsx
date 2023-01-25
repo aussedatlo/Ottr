@@ -13,7 +13,7 @@ type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;
 
 const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
   const [key, setKey] = useState<string>("");
-  const { userStore } = useStores();
+  const { userStore, messageStore } = useStores();
 
   useEffect(() => {
     setKey(userStore.key);
@@ -22,6 +22,7 @@ const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
   const handleUpdateKey = () => {
     try {
       getPublicKey(key);
+      messageStore.reset();
       userStore.setKey(key);
       ToastAndroid.show("Key updated", ToastAndroid.SHORT);
     } catch (e) {

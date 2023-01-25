@@ -1,7 +1,7 @@
 import { memo, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-paper";
-import { Message } from "../../store/user.store";
+import { Message } from "../../types/message";
 
 type MessageProps = Message;
 

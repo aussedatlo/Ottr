@@ -9,7 +9,7 @@ import {
   nip04,
   signEvent,
 } from "nostr-tools";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import Input from "../../components/Input";
@@ -22,9 +22,9 @@ type TalkScreenProps = NativeStackScreenProps<RootStackParamList, "Talk">;
 const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
   const pub = route.params.pub;
   const [text, setText] = useState("");
-  const { userStore } = useStores();
+  const { userStore, messageStore } = useStores();
   const { publish } = useNostr();
-  const { messageList } = userStore;
+  const { messageList } = messageStore;
 
   const messageListReverse = useMemo(
     () => messageList[pub]?.slice().reverse(),
@@ -34,17 +34,17 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
   const onSend = useCallback(async () => {
     // TODO: verify pub
     console.log(`send to: ${pub}`);
-    userStore.follow(pub);
+    // userStore.follow(pub);
     setText("");
 
     const message = await nip04.encrypt(userStore.key, pub, text);
     const created_at = dateToUnix();
 
-    userStore.addMessage(pub, {
+    messageStore.addMessage(pub, {
       id: undefined,
       content: text,
       created_at: created_at,
-      pubkey: getPublicKey(userStore.key),
+      pubkey: userStore.pubkey,
       isSend: false,
       isSender: true,
     });
@@ -54,7 +54,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
       kind: Kind.EncryptedDirectMessage,
       tags: [["p", pub]],
       created_at: created_at,
-      pubkey: getPublicKey(userStore.key),
+      pubkey: userStore.pubkey,
     };
 
     event.id = getEventHash(event);

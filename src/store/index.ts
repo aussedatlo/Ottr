@@ -1,11 +1,17 @@
 import { createContext, useContext } from "react";
-import UserStore from "./user.store";
+import contactStore, { ContactStore } from "./contact/contact.store";
+import messageStore, { MessageStore } from "./message/message.store";
+import userStore, { UserStore } from "./user/user.store";
 
 export default class RootStore {
-  userStore: any;
+  contactStore: ContactStore;
+  messageStore: MessageStore;
+  userStore: UserStore;
 
   constructor() {
-    this.userStore = new UserStore();
+    this.contactStore = new contactStore();
+    this.messageStore = new messageStore();
+    this.userStore = new userStore();
   }
 }
 

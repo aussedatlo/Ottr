@@ -9,24 +9,24 @@ import { useStores } from "../store";
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 const HomeScreen = observer(({ route, navigation }: HomeScreenProps) => {
-  const { userStore } = useStores();
+  const { messageStore } = useStores();
 
   const renderItemCallback = useCallback(
     ({ item }) => {
       return (
         <Text style={{ margin: 20 }}>
-          {JSON.stringify(userStore.messageList[item])}
+          {JSON.stringify(messageStore.messageList[item])}
         </Text>
       );
     },
-    [userStore]
+    [messageStore]
   );
 
   return (
     <>
       <SafeAreaView>
         <FlatList
-          data={Object.keys(userStore.messageList)}
+          data={Object.keys(messageStore.messageList)}
           renderItem={renderItemCallback}
           keyExtractor={(item) => item}
           style={{ height: " 100%" }}

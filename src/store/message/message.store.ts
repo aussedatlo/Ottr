@@ -2,66 +2,45 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { makeAutoObservable } from "mobx";
 import { makePersistable } from "mobx-persist-store";
 import { dateToUnix } from "nostr-react";
+import { Message } from "../../types/message";
 
-export type Message = {
-  id: string;
-  content: string;
-  created_at: number;
-  pubkey: string;
-  isSend: boolean;
-  isSender: boolean;
-};
-
-class userStore {
-  key: string | undefined = undefined;
-  isLoaded: boolean = false;
-  contactList: Array<{ pub: string }> = [];
-  messageList: {
-    [pub: string]: Array<Message>;
-  } = {};
-  lastSend: number = dateToUnix();
-  lastReceive: number = 0;
+export interface MessageStore {
+  isLoaded: boolean;
+  messageList: { [pub: string]: Array<Message> };
+  lastSend: number;
+  lastReceive: number;
   lastSendFromStart: number;
   lastReceiveFromStart: number;
+
+  setIsLoaded: (isLoaded: boolean) => void;
+  addMessage: (pubkey: string, message: Message) => void;
+  updateMessage: (pubkey: string, id: string, created_at: number) => void;
+  reset: () => void;
+}
+
+class messageStore implements MessageStore {
+  isLoaded = false;
+  messageList = {};
+  lastSend = dateToUnix();
+  lastReceive = 0;
+  lastSendFromStart = 0;
+  lastReceiveFromStart = 0;
 
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
-      name: "userStore",
-      properties: [
-        "key",
-        "contactList",
-        "lastSend",
-        "lastReceive",
-        "messageList",
-      ],
+      name: "messageStore",
+      properties: ["lastSend", "lastReceive", "messageList"],
       storage: AsyncStorage,
     }).then(() => {
       this.lastSendFromStart = this.lastSend;
       this.lastReceiveFromStart = this.lastReceive;
       this.setIsLoaded(true);
     });
-    // }).then(() => this.resetContactList());
   }
-
-  setKey = (key: string) => {
-    this.key = key;
-  };
 
   setIsLoaded = (isLoaded: boolean) => {
     this.isLoaded = isLoaded;
-  };
-
-  follow = (follow: { pub: string }) => {
-    this.contactList.push(follow);
-  };
-
-  unfollow = (follow: { pub: string }) => {
-    this.contactList = this.contactList.filter((f) => !(f.pub === follow.pub));
-  };
-
-  resetContactList = () => {
-    this.contactList = [];
   };
 
   addMessage = (pubkey: string, message: Message) => {
@@ -108,6 +87,12 @@ class userStore {
     this.messageList[pubkey][index].isSend = true;
     this.messageList[pubkey][index].id = id;
   };
+
+  reset = () => {
+    this.lastReceive = 0;
+    this.lastSend = 0;
+    this.messageList = {};
+  };
 }
 
-export default userStore;
+export default messageStore;

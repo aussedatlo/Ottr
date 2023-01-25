@@ -12,7 +12,8 @@ import SettingsScreen from "../screens/Settings";
 import SplashScreen from "../screens/Splash";
 import TalkScreen from "../screens/Talk";
 import { useStores } from "../store";
-import UserUpdater from "../store/user.updater";
+import ContactUpdater from "../store/contact/contact.updater";
+import MessageUpdater from "../store/message/message.updater";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -61,7 +62,8 @@ const Navigation = observer(() => {
           <Stack.Screen name="SelectContact" component={SelectContactScreen} />
           <Stack.Screen name="Talk" component={TalkScreen} />
         </Stack.Navigator>
-        <UserUpdater />
+        <MessageUpdater />
+        <ContactUpdater />
       </>
     );
 

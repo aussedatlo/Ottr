@@ -11,7 +11,6 @@ import GenericModal from "./components/Modal/GenericModal";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import PolyfillCrypto from "react-native-webview-crypto";
-import UserUpdater from "./store/user.updater";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(en);
