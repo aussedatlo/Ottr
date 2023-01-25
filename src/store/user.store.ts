@@ -3,12 +3,13 @@ import { makeAutoObservable } from "mobx";
 import { makePersistable } from "mobx-persist-store";
 import { dateToUnix } from "nostr-react";
 
-type Message = {
+export type Message = {
   id: string;
   content: string;
   created_at: number;
   pubkey: string;
   isSend: boolean;
+  isSender: boolean;
 };
 
 class userStore {
@@ -66,11 +67,11 @@ class userStore {
   addMessage = (pubkey: string, message: Message) => {
     const messageAlreadyExist =
       !!this.messageList[pubkey] &&
-      this.messageList[pubkey].indexOf(message) !== -1;
-
-    console.log("====");
-    console.log(messageAlreadyExist);
-    console.log(this.messageList[pubkey]?.indexOf(message));
+      this.messageList[pubkey].filter(
+        (value) =>
+          value.created_at === message.created_at &&
+          value.content === message.content
+      ).length > 0;
 
     if (messageAlreadyExist) {
       console.warn(`message ${message.id} already exist, skipping`);
@@ -91,10 +92,18 @@ class userStore {
 
   updateMessage = (pubkey: string, id: string, created_at: number) => {
     this.lastSend = created_at;
-    // TODO: errors ?
+
     const message = this.messageList[pubkey].filter(
       (item) => item.created_at === created_at
     )[0];
+
+    if (message.id !== undefined) {
+      console.warn(`message already updated: ${message.id}`);
+      return;
+    }
+
+    console.log(`updating message: ${message.id}`);
+
     const index = this.messageList[pubkey].indexOf(message);
     this.messageList[pubkey][index].isSend = true;
     this.messageList[pubkey][index].id = id;

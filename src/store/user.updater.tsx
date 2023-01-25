@@ -9,7 +9,6 @@ const ReceiveMessageUpdater = (): null => {
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
       since: userStore.lastReceiveFromStart,
-      limit: 1,
       "#p": [getPublicKey(userStore.key)],
     },
   });
@@ -27,6 +26,7 @@ const ReceiveMessageUpdater = (): null => {
       created_at: event.created_at,
       pubkey: event.pubkey,
       isSend: true,
+      isSender: false,
     });
   }, []);
 
