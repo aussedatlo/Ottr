@@ -22,7 +22,7 @@ export type RootStackParamList = {
   Profile: undefined;
   SelectContact: undefined;
   Settings: undefined;
-  Talk: { pub: string };
+  Talk: { pubkey: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

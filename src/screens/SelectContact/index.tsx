@@ -20,7 +20,7 @@ const SelectContactScreen = ({
   const onStartConversation = async () => {
     // TODO: verify format
     // userStore.follow({ pub: text });
-    navigation.navigate("Talk", { pub: text });
+    navigation.navigate("Talk", { pubkey: text });
   };
 
   return (

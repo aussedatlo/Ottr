@@ -20,27 +20,26 @@ import Message from "./MessageBox";
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, "Talk">;
 
 const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
-  const pub = route.params.pub;
+  const pubkey = route.params.pubkey;
   const [text, setText] = useState("");
   const { userStore, messageStore } = useStores();
   const { publish } = useNostr();
   const { messageList } = messageStore;
 
   const messageListReverse = useMemo(
-    () => messageList[pub]?.slice().reverse(),
-    [messageList[pub].length]
+    () => messageList[pubkey]?.slice().reverse(),
+    [messageList[pubkey].length]
   );
 
   const onSend = useCallback(async () => {
-    // TODO: verify pub
-    console.log(`send to: ${pub}`);
-    // userStore.follow(pub);
+    // TODO: verify pubkey
+    console.log(`send to: ${pubkey}`);
     setText("");
 
-    const message = await nip04.encrypt(userStore.key, pub, text);
+    const message = await nip04.encrypt(userStore.key, pubkey, text);
     const created_at = dateToUnix();
 
-    messageStore.addMessage(pub, {
+    messageStore.addMessage(pubkey, {
       id: undefined,
       content: text,
       created_at: created_at,
@@ -52,7 +51,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
     const event: Event = {
       content: message,
       kind: Kind.EncryptedDirectMessage,
-      tags: [["p", pub]],
+      tags: [["p", pubkey]],
       created_at: created_at,
       pubkey: userStore.pubkey,
     };
@@ -65,7 +64,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
 
   const renderItemCallback = useCallback(
     (props) => <Message {...props.item} />,
-    [JSON.stringify(messageList[pub])]
+    [JSON.stringify(messageList[pubkey])]
   );
 
   return (
