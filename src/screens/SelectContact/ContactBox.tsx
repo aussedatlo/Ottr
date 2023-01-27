@@ -11,7 +11,7 @@ type ContactBoxProps = {
 };
 
 const ContactBox = ({ pubkey }: ContactBoxProps) => {
-  const { name, picture } = useProfile(pubkey);
+  const { name, picture } = useProfile(pubkey) || { name: "", picture: "" };
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
