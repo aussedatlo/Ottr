@@ -47,7 +47,7 @@ const AppBar = ({ navigation, back, route }: NativeStackHeaderProps) => {
       ) : (
         <TouchableWithoutFeedback
           onPress={() =>
-            ModalController.showModal("Share public key", <ShareKeyModal />)
+            ModalController.showModal("Public Key", <ShareKeyModal />)
           }
         >
           <View style={styles.avatar}>
