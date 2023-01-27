@@ -5,7 +5,6 @@ import { useTheme } from "react-native-paper";
 import AppBar from "../components/AppBar";
 import HomeScreen from "../screens/Home";
 import IntroScreen from "../screens/Intro";
-import PostScreen from "../screens/Post";
 import ProfileScreen from "../screens/Profile";
 import SelectContactScreen from "../screens/SelectContact";
 import SettingsScreen from "../screens/Settings";
@@ -18,7 +17,6 @@ import MessageUpdater from "../store/message/message.updater";
 export type RootStackParamList = {
   Home: undefined;
   Intro: undefined;
-  Post: undefined;
   Profile: undefined;
   SelectContact: undefined;
   Settings: undefined;
@@ -56,7 +54,6 @@ const Navigation = observer(() => {
         >
           <Stack.Screen name="Intro" component={IntroScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Post" component={PostScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
           <Stack.Screen name="SelectContact" component={SelectContactScreen} />
