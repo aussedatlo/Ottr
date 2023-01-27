@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Avatar, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
+import Avatar from "../../components/Avatar";
 import useLastMessage from "../../hooks/useLastMessage";
 import { RootStackParamList } from "../../navigation";
 import { Contact } from "../../types/contact";
@@ -10,7 +11,7 @@ type ContactMessageBoxProps = {
   contact: Contact;
 };
 const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
-  const { pubkey, name, picture } = contact;
+  const { pubkey, name } = contact;
   const { content } = useLastMessage(pubkey);
 
   const { navigate } =
@@ -21,13 +22,13 @@ const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
       onPress={() => navigate("Talk", { pubkey: pubkey })}
     >
       <View style={styles.root}>
-        <Avatar.Image source={{ uri: picture }} size={50} />
+        <Avatar pubkey={pubkey} size={50} />
         <View style={styles.container}>
           <Text>{name ? name : pubkey.slice(0, 8)}</Text>
           <Text
             variant="labelSmall"
             style={styles.secondary}
-            numberOfLines={1}
+            numberOfLines={2}
             ellipsizeMode="tail"
           >
             {content}
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 15,
     justifyContent: "center",
   },
   secondary: {
