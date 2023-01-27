@@ -28,7 +28,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
 
   const messageListReverse = useMemo(
     () => messageList[pubkey]?.slice().reverse(),
-    [messageList[pubkey].length]
+    [messageList[pubkey]?.length]
   );
 
   const onSend = useCallback(async () => {
