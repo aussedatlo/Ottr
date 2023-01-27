@@ -9,7 +9,7 @@ const ReceiveMessageUpdater = (): null => {
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
       since: messageStore.lastReceiveFromStart,
-      "#p": [getPublicKey(userStore.key)],
+      "#p": [userStore.pubkey],
     },
   });
 
@@ -40,7 +40,7 @@ const SendMessageUpdater = (): null => {
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
       since: messageStore.lastSendFromStart,
-      authors: [getPublicKey(userStore.key)],
+      authors: [userStore.pubkey],
     },
   });
 
