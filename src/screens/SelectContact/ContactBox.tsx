@@ -2,7 +2,8 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { memo } from "react";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Avatar, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
+import Avatar from "../../components/Avatar";
 import useProfile from "../../hooks/useProfile";
 import { RootStackParamList } from "../../navigation";
 
@@ -20,7 +21,7 @@ const ContactBox = ({ pubkey }: ContactBoxProps) => {
       onPress={() => navigate("Talk", { pubkey: pubkey })}
     >
       <View style={styles.root}>
-        <Avatar.Image source={{ uri: picture }} size={50} />
+        <Avatar pubkey={pubkey} size={50} />
         <View style={styles.container}>
           <Text>{name ? name : pubkey.slice(0, 8)}</Text>
           <Text variant="labelSmall" style={styles.secondary}>
