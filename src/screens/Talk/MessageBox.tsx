@@ -17,8 +17,6 @@ const MessageBox = ({
     minute: "2-digit",
   });
 
-  useEffect(() => console.log("updated"));
-
   return (
     <View style={[styles.root, isSender ? styles.send : styles.receive]}>
       <Text>{content}</Text>
