@@ -1,9 +1,7 @@
-import { thumbs } from "@dicebear/collection";
-import { createAvatar } from "@dicebear/core";
 import { useEffect, useState } from "react";
 import { StyleSheet, ToastAndroid, View } from "react-native";
-import { Avatar, Button, Text } from "react-native-paper";
-import { SvgCss } from "react-native-svg";
+import { Button, Text } from "react-native-paper";
+import Avatar from "../../components/Avatar";
 import Input from "../../components/Input";
 import { useStores } from "../../store";
 import { Contact } from "../../types/contact";
@@ -17,18 +15,12 @@ const ProfileSection = () => {
     about: "",
     picture: "",
   });
-  const [isPictureError, setIsPictureError] = useState<boolean>(false);
-
-  const avatar = createAvatar(thumbs, {
-    seed: userStore.pubkey,
-  }).toString();
 
   useEffect(() => {
     setState((state) => ({ ...state, ...profile }));
   }, [profile]);
 
   const onUpdateProfile = () => {
-    setIsPictureError(false);
     ToastAndroid.show("updated", ToastAndroid.SHORT);
     userStore.setProfile(state);
   };
@@ -36,15 +28,7 @@ const ProfileSection = () => {
   return (
     <View style={styles.root}>
       <View style={styles.picture}>
-        {isPictureError || state.picture.length === 0 ? (
-          <SvgCss xml={avatar} width={60} height={60} />
-        ) : (
-          <Avatar.Image
-            size={60}
-            source={{ uri: state.picture }}
-            onError={() => setIsPictureError(true)}
-          />
-        )}
+        <Avatar pubkey={userStore.pubkey} picture={state.picture} size={60} />
       </View>
       <Text variant="labelLarge" style={styles.title}>
         Display name:
