@@ -19,8 +19,8 @@ const SettingsScreen = ({ route, navigation }: SelectContactScreenProps) => {
       <ButtonSettings icon="lan" title="Relays" onPress={() => {}} />
       <ButtonSettings
         icon="shield-key-outline"
-        title="Private Key"
-        onPress={() => {}}
+        title="Key"
+        onPress={() => navigation.navigate("Key")}
       />
       <ButtonSettings
         icon="information-outline"

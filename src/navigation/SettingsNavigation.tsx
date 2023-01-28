@@ -1,12 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "react-native-paper";
 import AppBar from "../components/AppBar";
+import KeyScreen from "../screens/Key";
 import ProfileScreen from "../screens/Profile";
 import SettingsScreen from "../screens/Settings";
 
 export type SettingsStackParamList = {
   Settings: undefined;
   Profile: undefined;
+  Key: undefined;
 };
 
 const Stack = createNativeStackNavigator<SettingsStackParamList>();
@@ -24,6 +26,7 @@ const SettingsNavigator = () => {
     >
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Key" component={KeyScreen} />
     </Stack.Navigator>
   );
 };
