@@ -6,13 +6,13 @@ import AppBar from "../components/AppBar";
 import HomeScreen from "../screens/Home";
 import IntroScreen from "../screens/Intro";
 import SelectContactScreen from "../screens/SelectContact";
-import SettingsNavigation from "./SettingsNavigation";
 import SplashScreen from "../screens/Splash";
 import TalkScreen from "../screens/Talk";
 import { useStores } from "../store";
 import ContactUpdater from "../store/contact/contact.updater";
 import MessageUpdater from "../store/message/message.updater";
-import ProfileScreen from "../screens/Profile";
+import UserUpdater from "../store/user/user.updater";
+import SettingsNavigation from "./SettingsNavigation";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -64,6 +64,7 @@ const Navigation = observer(() => {
         </Stack.Navigator>
         <MessageUpdater />
         <ContactUpdater />
+        <UserUpdater />
       </>
     );
 

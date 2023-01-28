@@ -1,96 +1,115 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { observer } from "mobx-react";
-import { generatePrivateKey, getPublicKey } from "nostr-tools";
+import { thumbs } from "@dicebear/collection";
+import { createAvatar } from "@dicebear/core";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, ToastAndroid, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { StyleSheet, ToastAndroid, View } from "react-native";
+import { Avatar, Button, Text } from "react-native-paper";
+import { SvgCss } from "react-native-svg";
 import Input from "../../components/Input";
-import { SettingsStackParamList } from "../../navigation/SettingsNavigation";
 import { useStores } from "../../store";
-import ProfileSection from "./ProfileSection";
+import { Contact } from "../../types/contact";
 
-type ProfileScreenProps = NativeStackScreenProps<
-  SettingsStackParamList,
-  "Profile"
->;
+const ProfileSection = () => {
+  const { userStore } = useStores();
+  const { profile } = userStore;
+  const [state, setState] = useState<Contact>({
+    pubkey: userStore.pubkey,
+    name: "",
+    about: "",
+    picture: "",
+  });
+  const [isPictureError, setIsPictureError] = useState<boolean>(false);
 
-const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
-  const [key, setKey] = useState<string>("");
-  const { userStore, messageStore } = useStores();
+  const avatar = createAvatar(thumbs, {
+    seed: userStore.pubkey,
+  }).toString();
 
   useEffect(() => {
-    setKey(userStore.key);
-    console.log(userStore.pubkey);
-  }, [userStore.key]);
+    setState((state) => ({ ...state, ...profile }));
+  }, [profile]);
 
-  const handleUpdateKey = () => {
-    try {
-      getPublicKey(key);
-      messageStore.reset();
-      userStore.setKey(key);
-      ToastAndroid.show("Key updated", ToastAndroid.SHORT);
-    } catch (e) {
-      ToastAndroid.show("Invalid key format", ToastAndroid.SHORT);
-    }
-  };
-
-  const handleNewKey = () => {
-    const newKey = generatePrivateKey();
-    userStore.setKey(newKey);
+  const onUpdateProfile = () => {
+    setIsPictureError(false);
+    ToastAndroid.show("updated", ToastAndroid.SHORT);
+    userStore.setProfile(state);
   };
 
   return (
-    <ScrollView style={styles.root}>
-      <ProfileSection />
-
+    <View style={styles.root}>
+      <View style={styles.picture}>
+        {isPictureError || state.picture.length === 0 ? (
+          <SvgCss xml={avatar} width={60} height={60} />
+        ) : (
+          <Avatar.Image
+            size={60}
+            source={{ uri: state.picture }}
+            onError={() => setIsPictureError(true)}
+          />
+        )}
+      </View>
       <Text variant="labelLarge" style={styles.title}>
-        Private Key:
+        Display name:
       </Text>
       <Input
-        value={key}
-        placeholder="private key"
-        onChange={(e) => setKey(e.nativeEvent.text)}
+        value={state.name}
+        placeholder="name to display"
+        onChange={(e) => setState({ ...state, name: e.nativeEvent.text })}
+      />
+      <Text variant="labelLarge" style={styles.title}>
+        About you:
+      </Text>
+      <Input
+        value={state.about}
+        placeholder="A little description of yourself"
+        onChange={(e) => setState({ ...state, about: e.nativeEvent.text })}
+        numberOfLines={3}
         multiline
+      />
+      <Text variant="labelLarge" style={styles.title}>
+        Picture url:
+      </Text>
+      <Input
+        value={state.picture}
+        placeholder="https://"
+        onChange={(e) => setState({ ...state, picture: e.nativeEvent.text })}
       />
 
       <View style={styles.buttonContainer}>
         <Button
-          onPress={handleUpdateKey}
+          onPress={onUpdateProfile}
           style={styles.button}
           mode="contained"
           compact={false}
         >
-          Update Private Key
-        </Button>
-        <Button
-          onPress={handleNewKey}
-          style={styles.button}
-          mode="contained"
-          compact={false}
-        >
-          New Private Key
+          Update Profile
         </Button>
       </View>
-    </ScrollView>
+    </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: {
-    padding: 15,
+    margin: 15,
   },
   title: {
     marginTop: 15,
     marginBottom: 5,
   },
+  picture: {
+    width: 60,
+    alignSelf: "center",
+    overflow: "hidden",
+    borderRadius: 100,
+  },
   button: {
     marginTop: 5,
   },
   buttonContainer: {
-    marginTop: 10,
+    marginTop: 30,
     width: 200,
     alignSelf: "center",
   },
+  avatar: { overflow: "hidden", borderWidth: 2 },
 });
 
-export default ProfileScreen;
+export default ProfileSection;
