@@ -1,0 +1,31 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useTheme } from "react-native-paper";
+import AppBar from "../components/AppBar";
+import ProfileScreen from "../screens/Profile";
+import SettingsScreen from "../screens/Settings";
+
+export type SettingsStackParamList = {
+  Settings: undefined;
+  Profile: undefined;
+};
+
+const Stack = createNativeStackNavigator<SettingsStackParamList>();
+
+const SettingsNavigator = () => {
+  const { colors } = useTheme();
+
+  return (
+    <Stack.Navigator
+      initialRouteName={"Settings"}
+      screenOptions={{
+        header: (props) => <AppBar {...props} />,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export default SettingsNavigator;

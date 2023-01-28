@@ -61,7 +61,7 @@ const AppBar = ({ navigation, back, route }: NativeStackHeaderProps) => {
         <>
           <AppBarPaper.Action
             icon="cog"
-            onPress={() => navigation.navigate("Settings")}
+            onPress={() => navigation.navigate("SettingsNav")}
           />
         </>
       ) : (

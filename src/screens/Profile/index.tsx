@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, ToastAndroid, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 import Input from "../../components/Input";
-import { RootStackParamList } from "../../navigation";
+import { SettingsStackParamList } from "../../navigation/SettingsNavigation";
 import { useStores } from "../../store";
 import ProfileSection from "./ProfileSection";
 
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, "Profile">;
+type ProfileScreenProps = NativeStackScreenProps<
+  SettingsStackParamList,
+  "Profile"
+>;
 
 const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
   const [key, setKey] = useState<string>("");
@@ -17,6 +20,7 @@ const ProfileScreen = observer(({ route, navigation }: ProfileScreenProps) => {
 
   useEffect(() => {
     setKey(userStore.key);
+    console.log(userStore.pubkey);
   }, [userStore.key]);
 
   const handleUpdateKey = () => {
