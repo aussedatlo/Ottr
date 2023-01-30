@@ -7,7 +7,7 @@ export type CustomModalRef = {
 
 export default class ModalController {
   static modalRef: MutableRefObject<CustomModalRef>;
-  static setModalRef = (ref: any) => {
+  static setModalRef = (ref: MutableRefObject<CustomModalRef>) => {
     this.modalRef = ref;
   };
 

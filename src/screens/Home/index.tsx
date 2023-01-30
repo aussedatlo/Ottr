@@ -1,29 +1,26 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import { FAB } from 'react-native-paper';
 import { RootStackParamList } from '../../navigation';
 import { useStores } from '../../store';
+import { Contact } from '../../types/contact';
 import ContactMessageBox from './ContactMessageBox';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen = observer(({ route, navigation }: HomeScreenProps) => {
-  const { contactStore, messageStore } = useStores();
+const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
+  const { contactStore } = useStores();
   const { contactList } = contactStore;
-  const { messageList } = messageStore;
 
   useEffect(() => {
     console.log('updateHome'), console.log(contactList);
-  }, [JSON.stringify(contactList), JSON.stringify(messageList)]);
+  }, [contactList]);
 
-  const renderItemCallback = useCallback(
-    ({ item }) => {
-      return <ContactMessageBox contact={item} key={item.pubkey} />;
-    },
-    [JSON.stringify(contactList), JSON.stringify(messageList)],
-  );
+  const renderItemCallback = useCallback(({ item }: { item: Contact }) => {
+    return <ContactMessageBox contact={item} key={item.pubkey} />;
+  }, []);
 
   return (
     <View style={styles.root}>

@@ -7,7 +7,7 @@ import { Contact } from '../../types/contact';
 
 export interface UserStore {
   key: string | undefined;
-  pubkey: string | undefined;
+  pubkey: string;
   isLoaded: boolean;
   profile: Contact | undefined;
   relays: Array<string>;
@@ -17,9 +17,10 @@ export interface UserStore {
   setProfile: (profile: Contact) => void;
   setRelays: (relays: Array<string>) => void;
 }
+
 class userStore implements UserStore {
-  key = undefined;
-  pubkey = undefined;
+  key = '';
+  pubkey = '';
   isLoaded = false;
   profile = undefined;
   relays = DEFAULT_RELAYS_URL;
@@ -30,10 +31,12 @@ class userStore implements UserStore {
       name: 'userStore',
       properties: ['key', 'profile', 'relays'],
       storage: AsyncStorage,
-    }).then(() => {
-      if (!!this.key) this.pubkey = getPublicKey(this.key);
-      this.setIsLoaded(true);
-    });
+    })
+      .then(() => {
+        if (this.key) this.pubkey = getPublicKey(this.key);
+        this.setIsLoaded(true);
+      })
+      .catch((e) => console.error(e));
   }
 
   setKey = (key: string) => {

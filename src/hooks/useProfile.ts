@@ -7,7 +7,7 @@ const useProfile = (pubkey: string) => {
 
   return useMemo(
     () => contactList.find((item) => item.pubkey === pubkey),
-    [contactList.length],
+    [contactList, pubkey],
   );
 };
 

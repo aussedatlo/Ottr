@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from 'react';
 import { View } from 'react-native';
 import { SettingsStackParamList } from '../../navigation/SettingsNavigation';
 import ButtonSettings from './ButtonSettings';
@@ -8,7 +9,7 @@ type SelectContactScreenProps = NativeStackScreenProps<
   'Settings'
 >;
 
-const SettingsScreen = ({ route, navigation }: SelectContactScreenProps) => {
+const SettingsScreen = ({ navigation }: SelectContactScreenProps) => {
   return (
     <View>
       <ButtonSettings
@@ -29,7 +30,9 @@ const SettingsScreen = ({ route, navigation }: SelectContactScreenProps) => {
       <ButtonSettings
         icon="information-outline"
         title="About"
-        onPress={() => {}}
+        onPress={() => {
+          console.log('pressed');
+        }}
       />
     </View>
   );

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
@@ -12,7 +12,7 @@ type ContactBoxProps = {
 };
 
 const ContactBox = ({ pubkey }: ContactBoxProps) => {
-  const { name, picture } = useProfile(pubkey) || { name: '', picture: '' };
+  const { name } = useProfile(pubkey) || { name: '' };
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 

@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
@@ -10,6 +11,7 @@ import { Contact } from '../../types/contact';
 type ContactMessageBoxProps = {
   contact: Contact;
 };
+
 const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
   const { pubkey, name } = contact;
   const { content } = useLastMessage(pubkey);

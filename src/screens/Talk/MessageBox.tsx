@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { Message } from '../../types/message';
@@ -10,7 +10,6 @@ const MessageBox = ({
   created_at,
   isSend,
   isSender,
-  pubkey,
 }: MessageProps) => {
   const time = new Date(created_at * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',

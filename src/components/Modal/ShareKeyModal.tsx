@@ -1,14 +1,15 @@
+import * as Clipboard from 'expo-clipboard';
 import { observer } from 'mobx-react';
+import React from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import SvgQRCode from 'react-native-qrcode-svg';
 import { useStores } from '../../store';
-import * as Clipboard from 'expo-clipboard';
 
 const ShareKeyModal = observer(() => {
   const { userStore } = useStores();
 
-  const onCopy = async () => {
+  const onCopy = () => async () => {
     await Clipboard.setStringAsync(userStore.pubkey);
     ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
   };

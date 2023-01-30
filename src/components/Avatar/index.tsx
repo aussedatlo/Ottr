@@ -1,6 +1,6 @@
 import { thumbs } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
-import { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Avatar as AvatarPaper } from 'react-native-paper';
 import { SvgCss } from 'react-native-svg';

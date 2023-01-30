@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Input from '../../components/Input';
@@ -12,7 +12,7 @@ const RelaysScreen = () => {
 
   useEffect(() => {
     setRelays(userStore.relays);
-  }, [userStore.relays.length]);
+  }, [userStore.relays]);
 
   const onAdd = () => {
     if (relays.includes(newRelay)) {
@@ -34,8 +34,10 @@ const RelaysScreen = () => {
   };
 
   const renderItemCallback = useCallback(
-    ({ item }) => <RelayItem relay={item} onClose={onDelete} />,
-    [relays],
+    ({ item }: { item: string }) => (
+      <RelayItem relay={item} onClose={onDelete} />
+    ),
+    [],
   );
 
   return (

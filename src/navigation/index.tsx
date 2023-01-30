@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
 import { useNostr } from 'nostr-react';
+import React from 'react';
 import { useTheme } from 'react-native-paper';
 import AppBar from '../components/AppBar';
 import HomeScreen from '../screens/Home';
@@ -32,11 +33,11 @@ const Navigation = observer(() => {
 
   onDisconnect((relay) => {
     setTimeout(
-      () =>
+      () => () =>
         relay
           .connect()
-          .then((data) => console.log(`reconnected: ${relay.url}`))
-          .catch((error) => console.log(`unable to reconnect: ${relay.url}`)),
+          .then(() => console.log(`reconnected: ${relay.url}`))
+          .catch(() => console.log(`unable to reconnect: ${relay.url}`)),
       10000,
     );
   });

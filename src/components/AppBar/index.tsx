@@ -1,6 +1,7 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
 import { useNostr } from 'nostr-react';
+import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Appbar as AppBarPaper, IconButton, Text } from 'react-native-paper';
 import { DEFAULT_RELAYS_URL } from '../../constant/relay';

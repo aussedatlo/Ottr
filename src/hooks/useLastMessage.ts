@@ -7,7 +7,7 @@ const useLastMessage = (pubkey: string) => {
 
   return useMemo(
     () => messageList[pubkey]?.[messageList[pubkey]?.length - 1],
-    [JSON.stringify(messageList[pubkey])],
+    [messageList, pubkey],
   );
 };
 

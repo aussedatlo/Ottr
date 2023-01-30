@@ -4,9 +4,12 @@ import { makePersistable } from 'mobx-persist-store';
 import { dateToUnix } from 'nostr-react';
 import { Message } from '../../types/message';
 
+interface MessageList {
+  [pub: string]: Array<Message>;
+}
 export interface MessageStore {
   isLoaded: boolean;
-  messageList: { [pub: string]: Array<Message> };
+  messageList: MessageList;
   lastSend: number;
   lastReceive: number;
   lastSendFromStart: number;
@@ -20,7 +23,7 @@ export interface MessageStore {
 
 class messageStore implements MessageStore {
   isLoaded = false;
-  messageList = {};
+  messageList: MessageList = {};
   lastSend = dateToUnix();
   lastReceive = 0;
   lastSendFromStart = 0;
@@ -32,11 +35,13 @@ class messageStore implements MessageStore {
       name: 'messageStore',
       properties: ['lastSend', 'lastReceive', 'messageList'],
       storage: AsyncStorage,
-    }).then(() => {
-      this.lastSendFromStart = this.lastSend;
-      this.lastReceiveFromStart = this.lastReceive;
-      this.setIsLoaded(true);
-    });
+    })
+      .then(() => {
+        this.lastSendFromStart = this.lastSend;
+        this.lastReceiveFromStart = this.lastReceive;
+        this.setIsLoaded(true);
+      })
+      .catch((e) => console.error(e));
   }
 
   setIsLoaded = (isLoaded: boolean) => {

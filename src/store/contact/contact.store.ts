@@ -21,9 +21,11 @@ class contactStore implements ContactStore {
       name: 'contactStore',
       properties: [],
       storage: AsyncStorage,
-    }).then(() => {
-      this.setIsLoaded(true);
-    });
+    })
+      .then(() => {
+        this.setIsLoaded(true);
+      })
+      .catch((e) => console.error(e));
   }
 
   setIsLoaded = (isLoaded: boolean) => {
@@ -32,7 +34,7 @@ class contactStore implements ContactStore {
 
   addContact = (contact: Contact) => {
     const contactIndex = this.contactList.findIndex(
-      (element) => element.pubkey === contact.pubkey,
+      (element: Contact) => element.pubkey === contact.pubkey,
     );
     if (contactIndex >= 0) {
       console.log(`update contact ${contact.name}`);

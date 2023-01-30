@@ -1,3 +1,4 @@
+import React from 'react';
 import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import { Avatar, Text, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
