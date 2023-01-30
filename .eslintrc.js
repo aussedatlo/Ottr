@@ -10,7 +10,10 @@ module.exports = {
   parserOptions: {
     project: "./tsconfig.json",
   },
-  plugins: ["react", "react-hooks", "@typescript-eslint"],
+  plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
+  rules: {
+    'prettier/prettier': 'error',
+  },
   settings: {
     react: {
       version: "detect",
