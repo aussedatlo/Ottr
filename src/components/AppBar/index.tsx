@@ -15,7 +15,9 @@ const AppBar = observer(
     const { connectedRelays } = useNostr();
     const { userStore } = useStores();
     const { picture } = userStore.profile || { name: "", picture: "" };
-    const profile = useProfile(route.params?.pubkey);
+
+    const params = route.params as {pubkey: string}
+    const profile = useProfile(params.pubkey);
 
     const getTitle = () => {
       switch (route.name) {
@@ -30,7 +32,7 @@ const AppBar = observer(
                 alignItems: "center",
               }}
             >
-              <Avatar pubkey={route.params?.pubkey} size={30} />
+              <Avatar pubkey={params.pubkey} size={30} />
               <Text variant="titleLarge" style={{ marginLeft: 10 }}>
                 {profile?.name}
               </Text>
