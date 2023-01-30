@@ -1,7 +1,7 @@
-import { useNostrEvents } from "nostr-react";
-import { Event, getPublicKey, Kind, nip04 } from "nostr-tools";
-import { useCallback } from "react";
-import { useStores } from "..";
+import { useNostrEvents } from 'nostr-react';
+import { Event, getPublicKey, Kind, nip04 } from 'nostr-tools';
+import { useCallback } from 'react';
+import { useStores } from '..';
 
 const ReceiveMessageUpdater = (): null => {
   const { userStore, messageStore } = useStores();
@@ -9,7 +9,7 @@ const ReceiveMessageUpdater = (): null => {
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
       since: messageStore.lastReceiveFromStart,
-      "#p": [userStore.pubkey],
+      '#p': [userStore.pubkey],
     },
   });
 
@@ -18,7 +18,7 @@ const ReceiveMessageUpdater = (): null => {
     const content = await nip04.decrypt(
       userStore.key,
       event.pubkey,
-      event.content
+      event.content,
     );
     messageStore.addMessage(event.pubkey, {
       id: event.id,

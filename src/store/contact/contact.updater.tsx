@@ -1,7 +1,7 @@
-import { useNostrEvents } from "nostr-react";
-import { Event, Kind } from "nostr-tools";
-import { useCallback, useMemo } from "react";
-import { useStores } from "..";
+import { useNostrEvents } from 'nostr-react';
+import { Event, Kind } from 'nostr-tools';
+import { useCallback, useMemo } from 'react';
+import { useStores } from '..';
 
 const ContactUpdater = (): null => {
   const { contactStore, messageStore } = useStores();
@@ -12,13 +12,13 @@ const ContactUpdater = (): null => {
     () =>
       Object.keys(messageList).reduce((previous, pubkey) => {
         const contact = contactList.filter(
-          (value) => value.pubkey === pubkey
+          (value) => value.pubkey === pubkey,
         )[0];
         if (!contact || (!!contact && !contact.about && !contact.picture))
           return [...previous, pubkey];
         return previous;
       }, []),
-    [contactList, messageList]
+    [contactList, messageList],
   );
 
   const { onEvent } = useNostrEvents({

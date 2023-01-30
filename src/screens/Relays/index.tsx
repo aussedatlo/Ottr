@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
-import { FlatList, StyleSheet, ToastAndroid, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
-import Input from "../../components/Input";
-import { useStores } from "../../store";
-import RelayItem from "./RelayItem";
+import { useCallback, useEffect, useState } from 'react';
+import { FlatList, StyleSheet, ToastAndroid, View } from 'react-native';
+import { Button, Text, TextInput } from 'react-native-paper';
+import Input from '../../components/Input';
+import { useStores } from '../../store';
+import RelayItem from './RelayItem';
 
 const RelaysScreen = () => {
   const [relays, setRelays] = useState<Array<string>>([]);
-  const [newRelay, setNewRelay] = useState<string>("");
+  const [newRelay, setNewRelay] = useState<string>('');
   const { userStore } = useStores();
 
   useEffect(() => {
@@ -16,12 +16,12 @@ const RelaysScreen = () => {
 
   const onAdd = () => {
     if (relays.includes(newRelay)) {
-      ToastAndroid.show("already configured", ToastAndroid.SHORT);
+      ToastAndroid.show('already configured', ToastAndroid.SHORT);
       return;
     }
 
     setRelays((relays) => [newRelay, ...relays]);
-    setNewRelay("");
+    setNewRelay('');
   };
 
   const onDelete = (relay: string) => {
@@ -30,12 +30,12 @@ const RelaysScreen = () => {
 
   const onApply = () => {
     userStore.setRelays(relays);
-    ToastAndroid.show("updated", ToastAndroid.SHORT);
+    ToastAndroid.show('updated', ToastAndroid.SHORT);
   };
 
   const renderItemCallback = useCallback(
     ({ item }) => <RelayItem relay={item} onClose={onDelete} />,
-    [relays]
+    [relays],
   );
 
   return (
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 30,
     width: 200,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
 });
 

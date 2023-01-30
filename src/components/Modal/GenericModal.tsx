@@ -5,7 +5,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
+} from 'react-native';
 import React, {
   forwardRef,
   ReactElement,
@@ -13,9 +13,9 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-} from "react";
-import ModalController, { CustomModalRef } from "./ModalController";
-import { IconButton } from "react-native-paper";
+} from 'react';
+import ModalController, { CustomModalRef } from './ModalController';
+import { IconButton } from 'react-native-paper';
 
 const GenericModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,7 +44,7 @@ const GenericModal = () => {
         setChildren(undefined);
       },
     }),
-    []
+    [],
   );
 
   return (
@@ -58,7 +58,7 @@ const GenericModal = () => {
     >
       <View
         style={styles.root}
-        onLayout={() => setSize(Dimensions.get("window"))}
+        onLayout={() => setSize(Dimensions.get('window'))}
       >
         <TouchableWithoutFeedback onPress={() => ModalController.hideModal()}>
           <View style={[styles.outside, { width, height }]}></View>
@@ -83,26 +83,26 @@ export default forwardRef(GenericModal);
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     borderRadius: 5,
     padding: 15,
     elevation: 5,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
     fontSize: 20,
     flex: 1,
   },
   outside: {
-    backgroundColor: "#30303070",
-    position: "absolute",
+    backgroundColor: '#30303070',
+    position: 'absolute',
     left: 0,
     top: 0,
   },

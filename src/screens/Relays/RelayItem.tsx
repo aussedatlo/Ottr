@@ -1,5 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import { Chip } from "react-native-paper";
+import { StyleSheet, View } from 'react-native';
+import { Chip } from 'react-native-paper';
 
 type RelayItemProps = {
   relay: string;

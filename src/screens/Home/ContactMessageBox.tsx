@@ -1,11 +1,11 @@
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Text } from "react-native-paper";
-import Avatar from "../../components/Avatar";
-import useLastMessage from "../../hooks/useLastMessage";
-import { RootStackParamList } from "../../navigation";
-import { Contact } from "../../types/contact";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Text } from 'react-native-paper';
+import Avatar from '../../components/Avatar';
+import useLastMessage from '../../hooks/useLastMessage';
+import { RootStackParamList } from '../../navigation';
+import { Contact } from '../../types/contact';
 
 type ContactMessageBoxProps = {
   contact: Contact;
@@ -19,7 +19,7 @@ const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
 
   return (
     <TouchableWithoutFeedback
-      onPress={() => navigate("Talk", { pubkey: pubkey })}
+      onPress={() => navigate('Talk', { pubkey: pubkey })}
     >
       <View style={styles.root}>
         <Avatar pubkey={pubkey} size={50} />
@@ -41,17 +41,17 @@ const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 5,
     marginBottom: 5,
   },
   container: {
     flex: 1,
     marginLeft: 15,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   secondary: {
-    color: "grey",
+    color: 'grey',
   },
 });
 

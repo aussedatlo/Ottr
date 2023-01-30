@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, ToastAndroid, View } from "react-native";
-import { Button, Text } from "react-native-paper";
-import Avatar from "../../components/Avatar";
-import Input from "../../components/Input";
-import { useStores } from "../../store";
-import { Contact } from "../../types/contact";
+import { useEffect, useState } from 'react';
+import { StyleSheet, ToastAndroid, View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
+import Avatar from '../../components/Avatar';
+import Input from '../../components/Input';
+import { useStores } from '../../store';
+import { Contact } from '../../types/contact';
 
 const ProfileSection = () => {
   const { userStore } = useStores();
   const { profile } = userStore;
   const [state, setState] = useState<Contact>({
     pubkey: userStore.pubkey,
-    name: "",
-    about: "",
-    picture: "",
+    name: '',
+    about: '',
+    picture: '',
   });
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const ProfileSection = () => {
   }, [profile]);
 
   const onUpdateProfile = () => {
-    ToastAndroid.show("updated", ToastAndroid.SHORT);
+    ToastAndroid.show('updated', ToastAndroid.SHORT);
     userStore.setProfile(state);
   };
 
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   },
   picture: {
     width: 60,
-    alignSelf: "center",
-    overflow: "hidden",
+    alignSelf: 'center',
+    overflow: 'hidden',
     borderRadius: 100,
   },
   button: {
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 30,
     width: 200,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
-  avatar: { overflow: "hidden", borderWidth: 2 },
+  avatar: { overflow: 'hidden', borderWidth: 2 },
 });
 
 export default ProfileSection;

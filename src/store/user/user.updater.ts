@@ -1,13 +1,13 @@
-import { useNostr } from "nostr-react";
+import { useNostr } from 'nostr-react';
 import {
   Event,
   getEventHash,
   getPublicKey,
   Kind,
   signEvent,
-} from "nostr-tools";
-import { useCallback, useEffect } from "react";
-import { useStores } from "..";
+} from 'nostr-tools';
+import { useCallback, useEffect } from 'react';
+import { useStores } from '..';
 
 const UserUpdater = (): null => {
   const { userStore } = useStores();

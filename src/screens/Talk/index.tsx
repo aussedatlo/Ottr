@@ -1,6 +1,6 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { observer } from "mobx-react";
-import { dateToUnix, useNostr } from "nostr-react";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
+import { dateToUnix, useNostr } from 'nostr-react';
 import {
   Event,
   getEventHash,
@@ -8,33 +8,33 @@ import {
   Kind,
   nip04,
   signEvent,
-} from "nostr-tools";
-import { useCallback, useMemo, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { TextInput } from "react-native-paper";
-import Input from "../../components/Input";
-import { RootStackParamList } from "../../navigation";
-import { useStores } from "../../store";
-import Message from "./MessageBox";
+} from 'nostr-tools';
+import { useCallback, useMemo, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import Input from '../../components/Input';
+import { RootStackParamList } from '../../navigation';
+import { useStores } from '../../store';
+import Message from './MessageBox';
 
-type TalkScreenProps = NativeStackScreenProps<RootStackParamList, "Talk">;
+type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
 const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const { userStore, messageStore } = useStores();
   const { publish } = useNostr();
   const { messageList } = messageStore;
 
   const messageListReverse = useMemo(
     () => messageList[pubkey]?.slice().reverse(),
-    [messageList[pubkey]?.length]
+    [messageList[pubkey]?.length],
   );
 
   const onSend = useCallback(async () => {
     // TODO: verify pubkey
     console.log(`send to: ${pubkey}`);
-    setText("");
+    setText('');
 
     const message = await nip04.encrypt(userStore.key, pubkey, text);
     const created_at = dateToUnix();
@@ -51,7 +51,7 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
     const event: Event = {
       content: message,
       kind: Kind.EncryptedDirectMessage,
-      tags: [["p", pubkey]],
+      tags: [['p', pubkey]],
       created_at: created_at,
       pubkey: userStore.pubkey,
     };
@@ -64,12 +64,12 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
 
   const renderItemCallback = useCallback(
     (props) => <Message {...props.item} />,
-    [JSON.stringify(messageList[pubkey])]
+    [JSON.stringify(messageList[pubkey])],
   );
 
   return (
     <View>
-      <View style={{ paddingBottom: 50, height: "100%" }}>
+      <View style={{ paddingBottom: 50, height: '100%' }}>
         <FlatList
           data={messageListReverse}
           renderItem={renderItemCallback}
@@ -77,11 +77,11 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
         />
       </View>
 
-      <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
+      <View style={{ position: 'absolute', bottom: 0, width: '100%' }}>
         <Input
           value={text}
           onChange={(e) => setText(e.nativeEvent.text)}
-          right={<TextInput.Icon onPress={onSend} size={20} icon={"send"} />}
+          right={<TextInput.Icon onPress={onSend} size={20} icon={'send'} />}
           multiline
         />
       </View>

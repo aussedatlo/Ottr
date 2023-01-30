@@ -1,18 +1,18 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import * as Clipboard from "expo-clipboard";
-import { observer } from "mobx-react-lite";
-import { generatePrivateKey, getPublicKey } from "nostr-tools";
-import { useEffect, useState } from "react";
-import { StyleSheet, ToastAndroid, View } from "react-native";
-import { Button, Text } from "react-native-paper";
-import SvgQRCode from "react-native-qrcode-svg";
-import Input from "../../components/Input";
-import { SettingsStackParamList } from "../../navigation/SettingsNavigation";
-import { useStores } from "../../store";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import * as Clipboard from 'expo-clipboard';
+import { observer } from 'mobx-react-lite';
+import { generatePrivateKey, getPublicKey } from 'nostr-tools';
+import { useEffect, useState } from 'react';
+import { StyleSheet, ToastAndroid, View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
+import SvgQRCode from 'react-native-qrcode-svg';
+import Input from '../../components/Input';
+import { SettingsStackParamList } from '../../navigation/SettingsNavigation';
+import { useStores } from '../../store';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   SettingsStackParamList,
-  "Settings"
+  'Settings'
 >;
 
 type KeyScreenState = {
@@ -25,8 +25,8 @@ const KeyScreen = observer(
     const { userStore } = useStores();
     const { key, pubkey } = userStore;
     const [state, setState] = useState<KeyScreenState>({
-      key: "",
-      pubkey: "",
+      key: '',
+      pubkey: '',
     });
     const [displayKey, setDisplayKey] = useState<boolean>(false);
 
@@ -36,17 +36,17 @@ const KeyScreen = observer(
 
     const onCopy = async () => {
       await Clipboard.setStringAsync(userStore.pubkey);
-      ToastAndroid.show("Copied to clipboard", ToastAndroid.SHORT);
+      ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
     };
 
     const onUpdateKey = () => {
       try {
         getPublicKey(state.key);
         userStore.setKey(state.key);
-        ToastAndroid.show("Key updated", ToastAndroid.SHORT);
+        ToastAndroid.show('Key updated', ToastAndroid.SHORT);
         setDisplayKey(false);
       } catch (e) {
-        ToastAndroid.show("Invalid key format", ToastAndroid.SHORT);
+        ToastAndroid.show('Invalid key format', ToastAndroid.SHORT);
       }
     };
 
@@ -109,14 +109,14 @@ const KeyScreen = observer(
         )}
       </View>
     );
-  }
+  },
 );
 
 const styles = StyleSheet.create({
   root: {
     margin: 15,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   pubkey: {
     marginTop: 10,
@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

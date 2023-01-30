@@ -1,11 +1,11 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { View } from "react-native";
-import { SettingsStackParamList } from "../../navigation/SettingsNavigation";
-import ButtonSettings from "./ButtonSettings";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { View } from 'react-native';
+import { SettingsStackParamList } from '../../navigation/SettingsNavigation';
+import ButtonSettings from './ButtonSettings';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   SettingsStackParamList,
-  "Settings"
+  'Settings'
 >;
 
 const SettingsScreen = ({ route, navigation }: SelectContactScreenProps) => {
@@ -14,17 +14,17 @@ const SettingsScreen = ({ route, navigation }: SelectContactScreenProps) => {
       <ButtonSettings
         icon="account-circle-outline"
         title="Profile"
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.navigate('Profile')}
       />
       <ButtonSettings
         icon="lan"
         title="Relays"
-        onPress={() => navigation.navigate("Relays")}
+        onPress={() => navigation.navigate('Relays')}
       />
       <ButtonSettings
         icon="shield-key-outline"
         title="Key"
-        onPress={() => navigation.navigate("Key")}
+        onPress={() => navigation.navigate('Key')}
       />
       <ButtonSettings
         icon="information-outline"

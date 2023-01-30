@@ -1,7 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
-import { Contact } from "../../types/contact";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
+import { Contact } from '../../types/contact';
 
 export interface ContactStore {
   isLoaded: boolean;
@@ -18,7 +18,7 @@ class contactStore implements ContactStore {
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
-      name: "contactStore",
+      name: 'contactStore',
       properties: [],
       storage: AsyncStorage,
     }).then(() => {
@@ -32,7 +32,7 @@ class contactStore implements ContactStore {
 
   addContact = (contact: Contact) => {
     const contactIndex = this.contactList.findIndex(
-      (element) => element.pubkey === contact.pubkey
+      (element) => element.pubkey === contact.pubkey,
     );
     if (contactIndex >= 0) {
       console.log(`update contact ${contact.name}`);

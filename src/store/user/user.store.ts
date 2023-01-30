@@ -1,16 +1,16 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
-import { getPublicKey } from "nostr-tools";
-import { DEFAULT_RELAYS_URL } from "../../constant/relay";
-import { Contact } from "../../types/contact";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
+import { getPublicKey } from 'nostr-tools';
+import { DEFAULT_RELAYS_URL } from '../../constant/relay';
+import { Contact } from '../../types/contact';
 
 export interface UserStore {
   key: string | undefined;
   pubkey: string | undefined;
   isLoaded: boolean;
   profile: Contact | undefined;
-  relays: Array<string>
+  relays: Array<string>;
 
   setKey: (key: string) => void;
   setIsLoaded: (isLoaded: boolean) => void;
@@ -27,8 +27,8 @@ class userStore implements UserStore {
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
-      name: "userStore",
-      properties: ["key", "profile", "relays"],
+      name: 'userStore',
+      properties: ['key', 'profile', 'relays'],
       storage: AsyncStorage,
     }).then(() => {
       if (!!this.key) this.pubkey = getPublicKey(this.key);
@@ -50,8 +50,8 @@ class userStore implements UserStore {
   };
 
   setRelays = (relays: Array<string>) => {
-    this.relays = relays
-  }
+    this.relays = relays;
+  };
 }
 
 export default userStore;

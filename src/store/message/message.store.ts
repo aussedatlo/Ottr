@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { makeAutoObservable } from "mobx";
-import { makePersistable } from "mobx-persist-store";
-import { dateToUnix } from "nostr-react";
-import { Message } from "../../types/message";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
+import { dateToUnix } from 'nostr-react';
+import { Message } from '../../types/message';
 
 export interface MessageStore {
   isLoaded: boolean;
@@ -29,8 +29,8 @@ class messageStore implements MessageStore {
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
-      name: "messageStore",
-      properties: ["lastSend", "lastReceive", "messageList"],
+      name: 'messageStore',
+      properties: ['lastSend', 'lastReceive', 'messageList'],
       storage: AsyncStorage,
     }).then(() => {
       this.lastSendFromStart = this.lastSend;
@@ -49,7 +49,7 @@ class messageStore implements MessageStore {
       this.messageList[pubkey].filter(
         (value) =>
           value.created_at === message.created_at &&
-          value.content === message.content
+          value.content === message.content,
       ).length > 0;
 
     if (messageAlreadyExist) {
@@ -73,7 +73,7 @@ class messageStore implements MessageStore {
     this.lastSend = created_at;
 
     const message = this.messageList[pubkey].filter(
-      (item) => item.created_at === created_at
+      (item) => item.created_at === created_at,
     )[0];
 
     if (message.id !== undefined) {

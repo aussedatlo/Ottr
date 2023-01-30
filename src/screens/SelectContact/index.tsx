@@ -1,32 +1,32 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useCallback, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Button, Searchbar, Text } from "react-native-paper";
-import { RootStackParamList } from "../../navigation";
-import { useStores } from "../../store";
-import ContactBox from "./ContactBox";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCallback, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Button, Searchbar, Text } from 'react-native-paper';
+import { RootStackParamList } from '../../navigation';
+import { useStores } from '../../store';
+import ContactBox from './ContactBox';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "SelectContact"
+  'SelectContact'
 >;
 
 const SelectContactScreen = ({
   route,
   navigation,
 }: SelectContactScreenProps) => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const { messageStore } = useStores();
 
   const onStartConversation = async () => {
     // TODO: verify format
     // userStore.follow({ pub: text });
-    navigation.navigate("Talk", { pubkey: text });
+    navigation.navigate('Talk', { pubkey: text });
   };
 
   const renderItemCallback = useCallback(
     ({ item }) => <ContactBox key={item} pubkey={item} />,
-    []
+    [],
   );
 
   return (

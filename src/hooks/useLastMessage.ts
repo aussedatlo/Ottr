@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { useStores } from "../store";
+import { useMemo } from 'react';
+import { useStores } from '../store';
 
 const useLastMessage = (pubkey: string) => {
   const { messageStore } = useStores();
@@ -7,7 +7,7 @@ const useLastMessage = (pubkey: string) => {
 
   return useMemo(
     () => messageList[pubkey]?.[messageList[pubkey]?.length - 1],
-    [JSON.stringify(messageList[pubkey])]
+    [JSON.stringify(messageList[pubkey])],
   );
 };
 

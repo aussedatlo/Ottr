@@ -1,7 +1,7 @@
-import { createContext, useContext } from "react";
-import contactStore, { ContactStore } from "./contact/contact.store";
-import messageStore, { MessageStore } from "./message/message.store";
-import userStore, { UserStore } from "./user/user.store";
+import { createContext, useContext } from 'react';
+import contactStore, { ContactStore } from './contact/contact.store';
+import messageStore, { MessageStore } from './message/message.store';
+import userStore, { UserStore } from './user/user.store';
 
 export default class RootStore {
   contactStore: ContactStore;

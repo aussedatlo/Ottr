@@ -1,11 +1,11 @@
-import { StyleSheet } from "react-native";
-import { TextInput, TextInputProps } from "react-native-paper";
+import { StyleSheet } from 'react-native';
+import { TextInput, TextInputProps } from 'react-native-paper';
 
 const Input = (
   props: Omit<
     TextInputProps,
-    "underlineColor" | "activeUnderlineColor" | "style" | "theme"
-  >
+    'underlineColor' | 'activeUnderlineColor' | 'style' | 'theme'
+  >,
 ) => (
   <TextInput
     style={styles.input}

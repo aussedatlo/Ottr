@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactElement } from "react";
+import { MutableRefObject, ReactElement } from 'react';
 
 export type CustomModalRef = {
   show: (title: string, children: ReactElement) => void;

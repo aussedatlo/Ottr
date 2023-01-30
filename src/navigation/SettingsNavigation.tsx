@@ -1,10 +1,10 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useTheme } from "react-native-paper";
-import AppBar from "../components/AppBar";
-import KeyScreen from "../screens/Key";
-import ProfileScreen from "../screens/Profile";
-import RelaysScreen from "../screens/Relays";
-import SettingsScreen from "../screens/Settings";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useTheme } from 'react-native-paper';
+import AppBar from '../components/AppBar';
+import KeyScreen from '../screens/Key';
+import ProfileScreen from '../screens/Profile';
+import RelaysScreen from '../screens/Relays';
+import SettingsScreen from '../screens/Settings';
 
 export type SettingsStackParamList = {
   Settings: undefined;
@@ -20,7 +20,7 @@ const SettingsNavigator = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName={"Settings"}
+      initialRouteName={'Settings'}
       screenOptions={{
         header: (props) => <AppBar {...props} />,
         contentStyle: { backgroundColor: colors.background },

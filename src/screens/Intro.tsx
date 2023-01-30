@@ -1,19 +1,19 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Observer } from "mobx-react";
-import { generatePrivateKey } from "nostr-tools";
-import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
-import { RootStackParamList } from "../navigation";
-import { useStores } from "../store";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Observer } from 'mobx-react';
+import { generatePrivateKey } from 'nostr-tools';
+import { View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
+import { RootStackParamList } from '../navigation';
+import { useStores } from '../store';
 
-type IntroScreenProps = NativeStackScreenProps<RootStackParamList, "Intro">;
+type IntroScreenProps = NativeStackScreenProps<RootStackParamList, 'Intro'>;
 
 const IntroScreen = ({ route, navigation }: IntroScreenProps) => {
   const { userStore } = useStores();
 
   const handleNewKey = async () => {
     userStore.setKey(generatePrivateKey());
-    navigation.navigate("Home");
+    navigation.navigate('Home');
   };
 
   return (
