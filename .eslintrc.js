@@ -10,9 +10,21 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
-  plugins: ['react', 'react-hooks', '@typescript-eslint', 'prettier'],
+  plugins: [
+    'react',
+    'react-native',
+    'react-hooks',
+    '@typescript-eslint',
+    'prettier',
+  ],
   rules: {
     'prettier/prettier': 'error',
+    // "react-native/no-unused-styles": 2,
+    // "react-native/split-platform-components": 2,
+    // "react-native/no-inline-styles": 2,
+    // "react-native/no-color-literals": 2,
+    // "react-native/no-raw-text": 2,
+    // "react-native/no-single-element-style-arrays": 2,
   },
   settings: {
     react: {

@@ -18,7 +18,7 @@ const AppBar = observer(
     const { picture } = userStore.profile || { name: '', picture: '' };
 
     const params = route.params as { pubkey: string };
-    const profile = useProfile(params.pubkey);
+    const profile = useProfile(params?.pubkey);
 
     const getTitle = () => {
       switch (route.name) {

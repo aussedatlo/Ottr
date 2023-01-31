@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
 import React, { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, Searchbar } from 'react-native-paper';
@@ -11,37 +12,39 @@ type SelectContactScreenProps = NativeStackScreenProps<
   'SelectContact'
 >;
 
-const SelectContactScreen = ({ navigation }: SelectContactScreenProps) => {
-  const [text, setText] = useState('');
-  const { messageStore } = useStores();
+const SelectContactScreen = observer(
+  ({ navigation }: SelectContactScreenProps) => {
+    const [text, setText] = useState('');
+    const { messageStore } = useStores();
+    const keys = messageStore.messageList?.keys();
 
-  const onStartConversation = () => {
-    // TODO: verify format
-    navigation.navigate('Talk', { pubkey: text });
-  };
+    const onStartConversation = () => {
+      // TODO: verify format
+      navigation.navigate('Talk', { pubkey: text });
+    };
 
-  const renderItemCallback = useCallback(
-    ({ item }: { item: string }) => <ContactBox key={item} pubkey={item} />,
-    [],
-  );
+    const renderItemCallback = useCallback(
+      ({ item }: { item: string }) => <ContactBox key={item} pubkey={item} />,
+      [],
+    );
 
-  return (
-    <View style={styles.root}>
-      <Searchbar
-        value={text}
-        onChangeText={(text) => setText(text)}
-        placeholder="public key or identifier"
-      />
+    return (
+      <View style={styles.root}>
+        <Searchbar
+          placeholderTextColor="#9B979C"
+          selectionColor="#CFBCFF"
+          value={text}
+          onChangeText={(text) => setText(text)}
+          placeholder="public key or identifier"
+        />
 
-      <Button onPress={onStartConversation}>Start a conversation</Button>
+        <Button onPress={onStartConversation}>Start a conversation</Button>
 
-      <FlatList
-        data={Object.keys(messageStore.messageList)}
-        renderItem={renderItemCallback}
-      />
-    </View>
-  );
-};
+        <FlatList data={[...keys]} renderItem={renderItemCallback} />
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   root: {

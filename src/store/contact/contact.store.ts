@@ -19,7 +19,7 @@ class contactStore implements ContactStore {
     makeAutoObservable(this);
     makePersistable(this, {
       name: 'contactStore',
-      properties: [],
+      properties: ['contactList'],
       storage: AsyncStorage,
     })
       .then(() => {

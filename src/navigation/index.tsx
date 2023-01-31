@@ -28,17 +28,17 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Navigation = observer(() => {
   const { userStore } = useStores();
   const { colors } = useTheme();
-
   const { onDisconnect } = useNostr();
 
   onDisconnect((relay) => {
     setTimeout(
-      () => () =>
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      () =>
         relay
           .connect()
           .then(() => console.log(`reconnected: ${relay.url}`))
           .catch(() => console.log(`unable to reconnect: ${relay.url}`)),
-      10000,
+      30000,
     );
   });
 
@@ -63,8 +63,8 @@ const Navigation = observer(() => {
           <Stack.Screen name="SelectContact" component={SelectContactScreen} />
           <Stack.Screen name="Talk" component={TalkScreen} />
         </Stack.Navigator>
-        <MessageUpdater />
         <ContactUpdater />
+        <MessageUpdater />
         <UserUpdater />
       </>
     );

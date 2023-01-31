@@ -1,12 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observable, ObservableMap } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { dateToUnix } from 'nostr-react';
 import { Message } from '../../types/message';
 
-interface MessageList {
-  [pub: string]: Array<Message>;
-}
+export type MessageList = ObservableMap<string, Array<Message>>;
 export interface MessageStore {
   isLoaded: boolean;
   messageList: MessageList;
@@ -23,7 +21,7 @@ export interface MessageStore {
 
 class messageStore implements MessageStore {
   isLoaded = false;
-  messageList: MessageList = {};
+  messageList: MessageList = observable.map();
   lastSend = dateToUnix();
   lastReceive = 0;
   lastSendFromStart = 0;
@@ -49,54 +47,53 @@ class messageStore implements MessageStore {
   };
 
   addMessage = (pubkey: string, message: Message) => {
-    const messageAlreadyExist =
-      !!this.messageList[pubkey] &&
-      this.messageList[pubkey].filter(
+    if (this.messageList.get(pubkey) === undefined)
+      this.messageList.set(pubkey, []);
+
+    const index = this.messageList
+      .get(pubkey)
+      .findIndex(
         (value) =>
           value.created_at === message.created_at &&
           value.content === message.content,
-      ).length > 0;
+      );
 
-    if (messageAlreadyExist) {
+    if (index >= 0) {
       console.warn(`message ${message.id} already exist, skipping`);
       return;
     }
 
     console.log(`adding message ${JSON.stringify(message)}`);
+    this.messageList.set(pubkey, [...this.messageList.get(pubkey), message]);
 
-    if (message.id === undefined)
-      // message send by user
-      this.lastSend = message.created_at + 1;
-    // message receive by user
+    // message send by user
+    if (message.id === undefined) return;
     else this.lastReceive = message.created_at + 1;
-
-    if (this.messageList[pubkey] === undefined) this.messageList[pubkey] = [];
-    this.messageList[pubkey].push(message);
   };
 
   updateMessage = (pubkey: string, id: string, created_at: number) => {
     this.lastSend = created_at;
 
-    const message = this.messageList[pubkey].filter(
-      (item) => item.created_at === created_at,
-    )[0];
+    const message = this.messageList
+      .get(pubkey)
+      .filter((item) => item.created_at === created_at)[0];
 
     if (message.id !== undefined) {
       console.warn(`message already updated: ${message.id}`);
       return;
     }
 
-    console.log(`updating message: ${message.id}`);
+    console.log(`updating message: ${id}`);
 
-    const index = this.messageList[pubkey].indexOf(message);
-    this.messageList[pubkey][index].isSend = true;
-    this.messageList[pubkey][index].id = id;
+    const index = this.messageList.get(pubkey).indexOf(message);
+    this.messageList.get(pubkey)[index].isSend = true;
+    this.messageList.get(pubkey)[index].id = id;
   };
 
   reset = () => {
     this.lastReceive = 0;
     this.lastSend = 0;
-    this.messageList = {};
+    this.messageList = observable.map();
   };
 }
 

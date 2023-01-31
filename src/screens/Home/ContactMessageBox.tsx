@@ -1,20 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
 import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
-import useLastMessage from '../../hooks/useLastMessage';
 import { RootStackParamList } from '../../navigation';
-import { Contact } from '../../types/contact';
+import { useStores } from '../../store';
 
 type ContactMessageBoxProps = {
-  contact: Contact;
+  pubkey: string;
 };
 
-const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
-  const { pubkey, name } = contact;
-  const { content } = useLastMessage(pubkey);
+const ContactMessageBox = observer(({ pubkey }: ContactMessageBoxProps) => {
+  const { contactStore, messageStore } = useStores();
+  const contact = contactStore.contactList.find(
+    (contact) => contact.pubkey === pubkey,
+  );
+  const name = contact?.name || pubkey.substring(0, 8);
+  const messageList = messageStore.messageList.get(pubkey);
+  const lastMessage = messageList[messageList?.length - 1];
 
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -33,13 +38,13 @@ const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {content}
+            {lastMessage.content}
           </Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
-};
+});
 
 const styles = StyleSheet.create({
   root: {

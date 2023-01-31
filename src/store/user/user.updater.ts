@@ -1,9 +1,10 @@
+import { observer } from 'mobx-react';
 import { useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, signEvent } from 'nostr-tools';
 import { useCallback, useEffect } from 'react';
 import { useStores } from '..';
 
-const UserUpdater = (): null => {
+const UserUpdater = observer((): null => {
   const { userStore } = useStores();
   const { profile, pubkey } = userStore;
   const { publish } = useNostr();
@@ -27,6 +28,6 @@ const UserUpdater = (): null => {
   useEffect(() => publishProfileCallback, [publishProfileCallback]);
 
   return null;
-};
+});
 
 export default UserUpdater;

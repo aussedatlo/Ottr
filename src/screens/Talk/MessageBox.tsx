@@ -17,43 +17,77 @@ const MessageBox = ({
   });
 
   return (
-    <View style={[styles.root, isSender ? styles.send : styles.receive]}>
-      <Text>{content}</Text>
-      <View style={styles.bottom}>
-        <Text style={styles.time}>{time}</Text>
-        <Avatar.Icon
-          style={{ backgroundColor: 'white' }}
-          size={12}
-          icon={isSend ? 'check-all' : 'check'}
-          color="#01F0FF"
-        />
+    <View style={styles.root}>
+      <View
+        style={[
+          styles.messageContainer,
+          isSender
+            ? [styles.rightBox, styles.right]
+            : [styles.leftBox, styles.left],
+        ]}
+      >
+        <Text style={isSender ? styles.rightText : {}}>{content}</Text>
+      </View>
+      <View
+        style={[styles.timeContainer, isSender ? styles.right : styles.left]}
+      >
+        {isSender ? (
+          <>
+            <Text>{time}</Text>
+            <Avatar.Icon
+              icon={isSend ? 'check-all' : 'check'}
+              size={20}
+              style={styles.avatar}
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    margin: 15,
-    marginTop: 0,
+  root: {},
+  messageContainer: {
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
+    margin: 5,
   },
-  send: {
-    backgroundColor: '#01F0FF',
+  timeContainer: {
+    flexDirection: 'row',
+    margin: 0,
+    marginRight: 15,
+    marginBottom: 10,
+  },
+  right: {
     alignSelf: 'flex-end',
     alignItems: 'flex-end',
   },
-  receive: {
-    backgroundColor: '#1EF09C',
+  left: {
     alignSelf: 'flex-start',
+  },
+  rightBox: {
+    backgroundColor: '#1280FA',
+  },
+  leftBox: {
+    backgroundColor: '#EDEBF0',
+  },
+  rightText: {
+    color: 'white',
   },
   bottom: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'red',
   },
   time: { fontSize: 10, marginRight: 5 },
   name: { fontSize: 14, fontWeight: '600', marginBottom: 5 },
+  avatar: {
+    marginLeft: 5,
+  },
 });
 
 export default memo(MessageBox);

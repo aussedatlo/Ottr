@@ -26,7 +26,7 @@ const KeyScreen = observer(() => {
     setState(() => ({ key: key, pubkey: pubkey }));
   }, [key, pubkey]);
 
-  const onCopy = () => async () => {
+  const onCopy = async () => {
     await Clipboard.setStringAsync(userStore.pubkey);
     ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
   };
@@ -58,6 +58,7 @@ const KeyScreen = observer(() => {
         icon="clipboard"
         mode="contained"
         style={styles.button}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onPress={onCopy}
       >
         Copy public key

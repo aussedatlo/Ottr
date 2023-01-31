@@ -1,34 +1,29 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import { FAB } from 'react-native-paper';
 import { RootStackParamList } from '../../navigation';
 import { useStores } from '../../store';
-import { Contact } from '../../types/contact';
 import ContactMessageBox from './ContactMessageBox';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
-  const { contactStore } = useStores();
-  const { contactList } = contactStore;
+  const { messageStore } = useStores();
+  const keys = messageStore.messageList?.keys();
 
-  useEffect(() => {
-    console.log('updateHome'), console.log(contactList);
-  }, [contactList]);
-
-  const renderItemCallback = useCallback(({ item }: { item: Contact }) => {
-    return <ContactMessageBox contact={item} key={item.pubkey} />;
-  }, []);
+  const renderItem = ({ item }: { item: string }) => (
+    <ContactMessageBox pubkey={item} key={item} />
+  );
 
   return (
     <View style={styles.root}>
       <SafeAreaView>
         <FlatList
-          data={contactList}
-          renderItem={renderItemCallback}
-          keyExtractor={(item) => item.pubkey}
+          data={[...keys]}
+          renderItem={renderItem}
+          keyExtractor={(item) => item}
           style={{ height: ' 100%' }}
         />
       </SafeAreaView>

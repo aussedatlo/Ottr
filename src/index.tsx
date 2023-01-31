@@ -10,14 +10,11 @@ import { DEFAULT_RELAYS_URL } from './constant/relay';
 import Navigation from './navigation';
 import RootStore from './store';
 
-// if (!global.randomBytes)
-//   global.randomBytes = require('expo-random').getRandomBytes;
-
 export default function App() {
   return (
     <>
       <PolyfillCrypto />
-      <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={false}>
+      <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={true}>
         <Provider observableStore={RootStore}>
           <NavigationContainer>
             <PaperProvider>
