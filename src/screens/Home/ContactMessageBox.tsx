@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import { RootStackParamList } from '../../navigation';
+import { Theme } from '../../providers/ThemeProvider';
 import { useStores } from '../../store';
 
 type ContactMessageBoxProps = {
@@ -13,6 +14,8 @@ type ContactMessageBoxProps = {
 };
 
 const ContactMessageBox = observer(({ pubkey }: ContactMessageBoxProps) => {
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { contactStore, messageStore } = useStores();
   const contact = contactStore.contactList.find(
     (contact) => contact.pubkey === pubkey,
@@ -46,20 +49,22 @@ const ContactMessageBox = observer(({ pubkey }: ContactMessageBoxProps) => {
   );
 });
 
-const styles = StyleSheet.create({
-  root: {
-    flexDirection: 'row',
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  container: {
-    flex: 1,
-    marginLeft: 15,
-    justifyContent: 'center',
-  },
-  secondary: {
-    color: 'grey',
-  },
-});
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    root: {
+      flexDirection: 'row',
+      marginTop: 5,
+      marginBottom: 5,
+    },
+    container: {
+      flex: 1,
+      marginLeft: 15,
+      justifyContent: 'center',
+    },
+    secondary: {
+      color: colors.onSurfaceDisabled,
+    },
+  });
+};
 
 export default ContactMessageBox;

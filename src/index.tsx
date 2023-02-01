@@ -2,12 +2,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'mobx-react';
 import { NostrProvider } from 'nostr-react';
 import React from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PolyfillCrypto from 'react-native-webview-crypto';
 import GenericModal from './components/Modal/GenericModal';
 import { DEFAULT_RELAYS_URL } from './constant/relay';
 import Navigation from './navigation';
+import ThemeProvider from './providers/ThemeProvider';
 import RootStore from './store';
 
 export default function App() {
@@ -17,12 +17,12 @@ export default function App() {
       <NostrProvider relayUrls={DEFAULT_RELAYS_URL} debug={true}>
         <Provider observableStore={RootStore}>
           <NavigationContainer>
-            <PaperProvider>
+            <ThemeProvider>
               <SafeAreaProvider>
                 <Navigation />
                 <GenericModal />
               </SafeAreaProvider>
-            </PaperProvider>
+            </ThemeProvider>
           </NavigationContainer>
         </Provider>
       </NostrProvider>

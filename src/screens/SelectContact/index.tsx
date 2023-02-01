@@ -2,8 +2,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
 import React, { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, Searchbar } from 'react-native-paper';
+import { Button, Searchbar, useTheme } from 'react-native-paper';
 import { RootStackParamList } from '../../navigation';
+import { Theme } from '../../providers/ThemeProvider';
 import { useStores } from '../../store';
 import ContactBox from './ContactBox';
 
@@ -14,6 +15,7 @@ type SelectContactScreenProps = NativeStackScreenProps<
 
 const SelectContactScreen = observer(
   ({ navigation }: SelectContactScreenProps) => {
+    const { colors } = useTheme<Theme>();
     const [text, setText] = useState('');
     const { messageStore } = useStores();
     const keys = messageStore.messageList?.keys();
@@ -31,11 +33,11 @@ const SelectContactScreen = observer(
     return (
       <View style={styles.root}>
         <Searchbar
-          placeholderTextColor="#9B979C"
-          selectionColor="#CFBCFF"
           value={text}
           onChangeText={(text) => setText(text)}
           placeholder="public key or identifier"
+          placeholderTextColor={colors.onSurfaceDisabled}
+          selectionColor={colors.outlineVariant}
         />
 
         <Button onPress={onStartConversation}>Start a conversation</Button>

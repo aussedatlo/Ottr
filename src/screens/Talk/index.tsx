@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
 import React, { useCallback, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import Input from '../../components/Input';
 import { RootStackParamList } from '../../navigation';
@@ -62,7 +62,7 @@ const TalkScreen = observer(({ route }: TalkScreenProps) => {
 
   return (
     <View>
-      <View style={{ paddingBottom: 50, height: '100%' }}>
+      <View style={styles.list}>
         <FlatList
           data={messageList?.slice().reverse()}
           renderItem={renderItem}
@@ -70,7 +70,7 @@ const TalkScreen = observer(({ route }: TalkScreenProps) => {
         />
       </View>
 
-      <View style={{ position: 'absolute', bottom: 0, width: '100%' }}>
+      <View style={styles.bottom}>
         <Input
           value={text}
           onChange={(e) => setText(e.nativeEvent.text)}
@@ -81,6 +81,18 @@ const TalkScreen = observer(({ route }: TalkScreenProps) => {
       </View>
     </View>
   );
+});
+
+const styles = StyleSheet.create({
+  list: {
+    paddingBottom: 50,
+    height: '100%',
+  },
+  bottom: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+  },
 });
 
 export default TalkScreen;

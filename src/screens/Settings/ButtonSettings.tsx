@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, TouchableNativeFeedback, View } from 'react-native';
 import { Avatar, Text, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { Theme } from '../../providers/ThemeProvider';
 
 type ButtonSettingsProps = {
   title: string;
@@ -10,7 +11,9 @@ type ButtonSettingsProps = {
 };
 
 const ButtonSettings = ({ title, icon, onPress }: ButtonSettingsProps) => {
-  const { colors } = useTheme();
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { colors } = theme;
 
   return (
     <>
@@ -37,18 +40,19 @@ const ButtonSettings = ({ title, icon, onPress }: ButtonSettingsProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  root: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    // backgroundColor: "blue",
-  },
-  title: { flex: 1 },
-  icon: {
-    margin: 10,
-    backgroundColor: 'transparent',
-  },
-});
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    root: {
+      flexDirection: 'row',
+      width: '100%',
+      alignItems: 'center',
+    },
+    title: { flex: 1 },
+    icon: {
+      margin: 10,
+      backgroundColor: colors.transparent,
+    },
+  });
+};
 
 export default ButtonSettings;

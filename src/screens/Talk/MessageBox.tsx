@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Avatar } from 'react-native-paper';
+import { Avatar as AvatarPaper } from 'react-native-paper';
+import Avatar from '../../components/Avatar';
 import { Message } from '../../types/message';
 
 type MessageProps = Message;
@@ -10,6 +11,7 @@ const MessageBox = ({
   created_at,
   isSend,
   isSender,
+  pubkey,
 }: MessageProps) => {
   const time = new Date(created_at * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -17,16 +19,17 @@ const MessageBox = ({
   });
 
   return (
-    <View style={styles.root}>
-      <View
-        style={[
-          styles.messageContainer,
-          isSender
-            ? [styles.rightBox, styles.right]
-            : [styles.leftBox, styles.left],
-        ]}
-      >
-        <Text style={isSender ? styles.rightText : {}}>{content}</Text>
+    <View>
+      <View style={[styles.root, isSender ? styles.right : styles.left]}>
+        {!isSender ? <Avatar pubkey={pubkey} size={30} /> : <></>}
+        <View
+          style={[
+            styles.messageContainer,
+            isSender ? styles.rightBox : styles.leftBox,
+          ]}
+        >
+          <Text style={isSender ? styles.rightText : {}}>{content}</Text>
+        </View>
       </View>
       <View
         style={[styles.timeContainer, isSender ? styles.right : styles.left]}
@@ -34,7 +37,7 @@ const MessageBox = ({
         {isSender ? (
           <>
             <Text>{time}</Text>
-            <Avatar.Icon
+            <AvatarPaper.Icon
               icon={isSend ? 'check-all' : 'check'}
               size={20}
               style={styles.avatar}
@@ -49,11 +52,12 @@ const MessageBox = ({
 };
 
 const styles = StyleSheet.create({
-  root: {},
+  root: { flexDirection: 'row', alignItems: 'center' },
   messageContainer: {
     padding: 15,
     borderRadius: 15,
     margin: 5,
+    maxWidth: '70%',
   },
   timeContainer: {
     flexDirection: 'row',

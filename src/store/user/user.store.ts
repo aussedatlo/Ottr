@@ -5,17 +5,21 @@ import { getPublicKey } from 'nostr-tools';
 import { DEFAULT_RELAYS_URL } from '../../constant/relay';
 import { Contact } from '../../types/contact';
 
+export type ThemeMode = 'system' | 'light' | 'dark';
+
 export interface UserStore {
   key: string | undefined;
   pubkey: string;
   isLoaded: boolean;
   profile: Contact | undefined;
   relays: Array<string>;
+  themeMode: ThemeMode;
 
   setKey: (key: string) => void;
   setIsLoaded: (isLoaded: boolean) => void;
   setProfile: (profile: Contact) => void;
   setRelays: (relays: Array<string>) => void;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 class userStore implements UserStore {
@@ -24,12 +28,13 @@ class userStore implements UserStore {
   isLoaded = false;
   profile = undefined;
   relays = DEFAULT_RELAYS_URL;
+  themeMode: ThemeMode = 'system';
 
   constructor() {
     makeAutoObservable(this);
     makePersistable(this, {
       name: 'userStore',
-      properties: ['key', 'profile', 'relays'],
+      properties: ['key', 'profile', 'relays', 'themeMode'],
       storage: AsyncStorage,
     })
       .then(() => {
@@ -54,6 +59,10 @@ class userStore implements UserStore {
 
   setRelays = (relays: Array<string>) => {
     this.relays = relays;
+  };
+
+  setThemeMode = (mode: ThemeMode) => {
+    this.themeMode = mode;
   };
 }
 

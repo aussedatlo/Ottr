@@ -9,11 +9,13 @@
         "projectId": "2d7f71c4-e9a3-4c25-9f04-c273054b518a"
       }
     },
+    "userInterfaceStyle": "automatic",
     "android": {
       "package": "com.laiin.anostr",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icon-512-maskable.png"
-      }
+      },
+      "userInterfaceStyle": "automatic"
     }
   }
 }

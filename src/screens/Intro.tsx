@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Observer } from 'mobx-react';
 import { generatePrivateKey } from 'nostr-tools';
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { RootStackParamList } from '../navigation';
 import { useStores } from '../store';
@@ -24,11 +24,7 @@ const IntroScreen = ({ navigation }: IntroScreenProps) => {
           <Text>Welcome to ANostr</Text>
           <Text>An android app to suf on nostr protocol!</Text>
 
-          <Button
-            mode="contained"
-            style={{ margin: 30 }}
-            onPress={handleNewKey}
-          >
+          <Button mode="contained" style={styles.button} onPress={handleNewKey}>
             Generate a new key
           </Button>
         </View>
@@ -36,5 +32,11 @@ const IntroScreen = ({ navigation }: IntroScreenProps) => {
     </Observer>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    width: 200,
+  },
+});
 
 export default IntroScreen;

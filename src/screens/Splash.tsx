@@ -1,4 +1,5 @@
-import React, { Text } from 'react-native-paper';
+import React from 'react';
+import { Text } from 'react-native-paper';
 
 const SplashScreen = () => {
   return <Text>SplashScreen</Text>;

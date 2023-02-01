@@ -3,6 +3,8 @@ import React from 'react';
 import { View } from 'react-native';
 import { SettingsStackParamList } from '../../navigation/SettingsNavigation';
 import ButtonSettings from './ButtonSettings';
+import ModalController from '../../components/Modal/ModalController';
+import SelectThemeModal from './SelectThemeModal';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   SettingsStackParamList,
@@ -16,6 +18,11 @@ const SettingsScreen = ({ navigation }: SelectContactScreenProps) => {
         icon="account-circle-outline"
         title="Profile"
         onPress={() => navigation.navigate('Profile')}
+      />
+      <ButtonSettings
+        icon="theme-light-dark"
+        title="Theme"
+        onPress={() => ModalController.showModal('Theme', <SelectThemeModal />)}
       />
       <ButtonSettings
         icon="lan"

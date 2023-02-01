@@ -93,7 +93,6 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: 'center',
   },
-  avatar: { overflow: 'hidden', borderWidth: 2 },
 });
 
 export default ProfileSection;

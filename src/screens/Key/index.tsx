@@ -68,7 +68,7 @@ const KeyScreen = observer(() => {
         <Button
           icon="key"
           mode="contained"
-          style={[styles.button]}
+          style={styles.button}
           onPress={() => setDisplayKey(true)}
         >
           Edit private key
@@ -85,7 +85,7 @@ const KeyScreen = observer(() => {
           <Button
             icon="key"
             mode="contained"
-            style={[styles.button]}
+            style={styles.button}
             onPress={onUpdateKey}
           >
             Update private key
@@ -93,7 +93,7 @@ const KeyScreen = observer(() => {
           <Button
             icon="pencil-outline"
             mode="contained"
-            style={[styles.button]}
+            style={styles.button}
             onPress={onNewKey}
           >
             New private key
