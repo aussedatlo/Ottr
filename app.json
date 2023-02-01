@@ -10,7 +10,10 @@
       }
     },
     "android": {
-      "package": "com.laiin.anostr"
+      "package": "com.laiin.anostr",
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/icon-512-maskable.png"
+      }
     }
   }
 }

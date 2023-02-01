@@ -6,7 +6,7 @@
     "@react-navigation/native": "^6.1.2",
     "@react-navigation/native-stack": "^6.9.8",
     "base-64": "^1.0.0",
-    "expo": "^47.0.0",
+    "expo": "~47.0.12",
     "expo-clipboard": "~4.0.1",
     "expo-linking": "~3.3.0",
     "expo-random": "^13.0.0",
@@ -28,7 +28,9 @@
     "react-native-web": "~0.18.7",
     "react-native-webview": "11.23.1",
     "react-native-webview-crypto": "^0.0.25",
-    "text-encoding": "^0.7.0"
+    "text-encoding": "^0.7.0",
+    "expo-splash-screen": "~0.17.5",
+    "expo-status-bar": "~1.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
@@ -49,9 +51,9 @@
   },
   "scripts": {
     "postinstall": "patch-package",
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "prettier": "prettier --check ./src",
     "prettier:write": "prettier --write ./src",
