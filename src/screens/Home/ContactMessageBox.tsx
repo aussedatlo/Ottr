@@ -1,25 +1,35 @@
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
-import { Text } from "react-native-paper";
-import Avatar from "../../components/Avatar";
-import useLastMessage from "../../hooks/useLastMessage";
-import { RootStackParamList } from "../../navigation";
-import { Contact } from "../../types/contact";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
+import React, { useMemo } from 'react';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
+import Avatar from '../../components/Avatar';
+import { RootStackParamList } from '../../navigation';
+import { Theme } from '../../providers/ThemeProvider';
+import { useStores } from '../../store';
 
 type ContactMessageBoxProps = {
-  contact: Contact;
+  pubkey: string;
 };
-const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
-  const { pubkey, name } = contact;
-  const { content } = useLastMessage(pubkey);
+
+const ContactMessageBox = observer(({ pubkey }: ContactMessageBoxProps) => {
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { contactStore, messageStore } = useStores();
+  const contact = contactStore.contactList.find(
+    (contact) => contact.pubkey === pubkey,
+  );
+  const name = contact?.name || pubkey.substring(0, 8);
+  const messageList = messageStore.messageList.get(pubkey);
+  const lastMessage = messageList[messageList?.length - 1];
 
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <TouchableWithoutFeedback
-      onPress={() => navigate("Talk", { pubkey: pubkey })}
+      onPress={() => navigate('Talk', { pubkey: pubkey })}
     >
       <View style={styles.root}>
         <Avatar pubkey={pubkey} size={50} />
@@ -31,28 +41,30 @@ const ContactMessageBox = ({ contact }: ContactMessageBoxProps) => {
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {content}
+            {lastMessage.content}
           </Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
-};
-
-const styles = StyleSheet.create({
-  root: {
-    flexDirection: "row",
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  container: {
-    flex: 1,
-    marginLeft: 15,
-    justifyContent: "center",
-  },
-  secondary: {
-    color: "grey",
-  },
 });
+
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    root: {
+      flexDirection: 'row',
+      marginTop: 5,
+      marginBottom: 5,
+    },
+    container: {
+      flex: 1,
+      marginLeft: 15,
+      justifyContent: 'center',
+    },
+    secondary: {
+      color: colors.onSurfaceDisabled,
+    },
+  });
+};
 
 export default ContactMessageBox;

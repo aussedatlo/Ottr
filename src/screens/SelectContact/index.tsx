@@ -1,51 +1,52 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useCallback, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Button, Searchbar, Text } from "react-native-paper";
-import { RootStackParamList } from "../../navigation";
-import { useStores } from "../../store";
-import ContactBox from "./ContactBox";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
+import React, { useCallback, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Button, Searchbar, useTheme } from 'react-native-paper';
+import { RootStackParamList } from '../../navigation';
+import { Theme } from '../../providers/ThemeProvider';
+import { useStores } from '../../store';
+import ContactBox from './ContactBox';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  "SelectContact"
+  'SelectContact'
 >;
 
-const SelectContactScreen = ({
-  route,
-  navigation,
-}: SelectContactScreenProps) => {
-  const [text, setText] = useState("");
-  const { messageStore } = useStores();
+const SelectContactScreen = observer(
+  ({ navigation }: SelectContactScreenProps) => {
+    const { colors } = useTheme<Theme>();
+    const [text, setText] = useState('');
+    const { messageStore } = useStores();
+    const keys = messageStore.messageList?.keys();
 
-  const onStartConversation = async () => {
-    // TODO: verify format
-    // userStore.follow({ pub: text });
-    navigation.navigate("Talk", { pubkey: text });
-  };
+    const onStartConversation = () => {
+      // TODO: verify format
+      navigation.navigate('Talk', { pubkey: text });
+    };
 
-  const renderItemCallback = useCallback(
-    ({ item }) => <ContactBox key={item} pubkey={item} />,
-    []
-  );
+    const renderItemCallback = useCallback(
+      ({ item }: { item: string }) => <ContactBox key={item} pubkey={item} />,
+      [],
+    );
 
-  return (
-    <View style={styles.root}>
-      <Searchbar
-        value={text}
-        onChangeText={(text) => setText(text)}
-        placeholder="public key or identifier"
-      />
+    return (
+      <View style={styles.root}>
+        <Searchbar
+          value={text}
+          onChangeText={(text) => setText(text)}
+          placeholder="public key or identifier"
+          placeholderTextColor={colors.onSurfaceDisabled}
+          selectionColor={colors.outlineVariant}
+        />
 
-      <Button onPress={onStartConversation}>Start a conversation</Button>
+        <Button onPress={onStartConversation}>Start a conversation</Button>
 
-      <FlatList
-        data={Object.keys(messageStore.messageList)}
-        renderItem={renderItemCallback}
-      />
-    </View>
-  );
-};
+        <FlatList data={[...keys]} renderItem={renderItemCallback} />
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   root: {

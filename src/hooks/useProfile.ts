@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { useStores } from "../store";
+import { useMemo } from 'react';
+import { useStores } from '../store';
 
 const useProfile = (pubkey: string) => {
   const { contactStore } = useStores();
@@ -7,7 +7,7 @@ const useProfile = (pubkey: string) => {
 
   return useMemo(
     () => contactList.find((item) => item.pubkey === pubkey),
-    [contactList.length]
+    [contactList, pubkey],
   );
 };
 

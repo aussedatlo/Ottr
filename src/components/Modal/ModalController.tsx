@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactElement } from "react";
+import { MutableRefObject, ReactElement } from 'react';
 
 export type CustomModalRef = {
   show: (title: string, children: ReactElement) => void;
@@ -7,7 +7,7 @@ export type CustomModalRef = {
 
 export default class ModalController {
   static modalRef: MutableRefObject<CustomModalRef>;
-  static setModalRef = (ref: any) => {
+  static setModalRef = (ref: MutableRefObject<CustomModalRef>) => {
     this.modalRef = ref;
   };
 

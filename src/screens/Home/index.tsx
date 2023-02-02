@@ -1,60 +1,64 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { observer } from "mobx-react";
-import { useCallback, useEffect } from "react";
-import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
-import { FAB } from "react-native-paper";
-import { RootStackParamList } from "../../navigation";
-import { useStores } from "../../store";
-import ContactMessageBox from "./ContactMessageBox";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { observer } from 'mobx-react';
+import React, { useMemo } from 'react';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FAB, useTheme } from 'react-native-paper';
+import { RootStackParamList } from '../../navigation';
+import { Theme } from '../../providers/ThemeProvider';
+import { useStores } from '../../store';
+import ContactMessageBox from './ContactMessageBox';
 
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen = observer(({ route, navigation }: HomeScreenProps) => {
-  const { contactStore, messageStore } = useStores();
-  const { contactList } = contactStore;
-  const { messageList } = messageStore;
+const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { messageStore } = useStores();
+  const keys = messageStore.messageList?.keys();
 
-  useEffect(() => {
-    console.log("updateHome"), console.log(contactList);
-  }, [JSON.stringify(contactList), JSON.stringify(messageList)]);
-
-  const renderItemCallback = useCallback(
-    ({ item }) => {
-      return <ContactMessageBox contact={item} key={item.pubkey} />;
-    },
-    [JSON.stringify(contactList), JSON.stringify(messageList)]
+  const renderItem = ({ item }: { item: string }) => (
+    <ContactMessageBox pubkey={item} key={item} />
   );
 
   return (
     <View style={styles.root}>
       <SafeAreaView>
         <FlatList
-          data={contactList}
-          renderItem={renderItemCallback}
-          keyExtractor={(item) => item.pubkey}
-          style={{ height: " 100%" }}
+          data={[...keys]}
+          renderItem={renderItem}
+          keyExtractor={(item) => item}
+          style={styles.list}
         />
       </SafeAreaView>
 
       <FAB
-        icon="plus"
+        icon="pencil"
         style={styles.fab}
-        onPress={() => navigation.navigate("SelectContact")}
+        color={theme.colors.onPrimary}
+        onPress={() => navigation.navigate('SelectContact')}
       />
     </View>
   );
 });
 
-const styles = StyleSheet.create({
-  root: {
-    margin: 15,
-  },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    root: {
+      margin: 15,
+    },
+    list: {
+      height: '100%',
+    },
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors.primary,
+      color: colors.onPrimary,
+      borderRadius: 15,
+    },
+  });
+};
 
 export default HomeScreen;

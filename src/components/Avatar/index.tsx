@@ -1,10 +1,10 @@
-import { thumbs } from "@dicebear/collection";
-import { createAvatar } from "@dicebear/core";
-import { memo, useEffect, useState } from "react";
-import { View } from "react-native";
-import { Avatar as AvatarPaper } from "react-native-paper";
-import { SvgCss } from "react-native-svg";
-import useProfile from "../../hooks/useProfile";
+import { thumbs } from '@dicebear/collection';
+import { createAvatar } from '@dicebear/core';
+import React, { memo, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Avatar as AvatarPaper } from 'react-native-paper';
+import { SvgCss } from 'react-native-svg';
+import useProfile from '../../hooks/useProfile';
 
 type AvatarProps = {
   pubkey: string;
@@ -24,7 +24,7 @@ const AvatarFromPicture = ({ pubkey, picture, size }: AvatarProps) => {
 
   if (isPictureError || picture.length === 0)
     return (
-      <View style={{ width: size, borderRadius: 100, overflow: "hidden" }}>
+      <View style={styles.avatar}>
         <SvgCss xml={avatar} width={size} height={size} />
       </View>
     );
@@ -44,11 +44,15 @@ const AvatarFromPubkey = ({ pubkey, size }: AvatarProps) => {
     seed: pubkey,
   }).toString();
 
-  if (!!profile && !!profile.picture && profile.picture.includes("http"))
-    return <AvatarPaper.Image source={{ uri: profile.picture }} size={size} />;
+  if (!!profile && !!profile.picture && profile.picture.includes('http'))
+    return (
+      <View style={styles.avatar}>
+        <AvatarPaper.Image source={{ uri: profile.picture }} size={size} />
+      </View>
+    );
 
   return (
-    <View style={{ overflow: "hidden", borderRadius: 100 }}>
+    <View style={styles.avatar}>
       <SvgCss xml={avatar} width={size} height={size} />
     </View>
   );
@@ -59,5 +63,9 @@ const Avatar = (props: AvatarProps) => {
 
   return <AvatarFromPicture {...props} />;
 };
+
+const styles = StyleSheet.create({
+  avatar: { overflow: 'hidden', borderRadius: 100 },
+});
 
 export default memo(Avatar);
