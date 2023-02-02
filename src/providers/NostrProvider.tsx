@@ -10,23 +10,26 @@ type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
-const NostrUpdater = (): null => {
+const NostrUpdater = observer((): null => {
+  const { userStore } = useStores();
   const { onDisconnect } = useNostr();
 
   onDisconnect((relay) => {
     setTimeout(
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      () =>
-        relay
-          .connect()
-          .then(() => console.log(`reconnected: ${relay.url}`))
-          .catch(() => console.log(`unable to reconnect: ${relay.url}`)),
+      () => {
+        if (userStore.relays.includes(relay.url))
+          relay
+            .connect()
+            .then(() => console.log(`reconnected: ${relay.url}`))
+            .catch(() => console.log(`unable to reconnect: ${relay.url}`));
+      },
       30000,
     );
   });
 
   return null;
-};
+});
 
 const NostrProvider = observer(({ children }: ThemeProviderProps) => {
   const { userStore } = useStores();
