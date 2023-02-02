@@ -9,7 +9,6 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import { DEFAULT_RELAYS_URL } from '../../constant/relay';
 import useProfile from '../../hooks/useProfile';
 import { Theme } from '../../providers/ThemeProvider';
 import { useStores } from '../../store';
@@ -79,7 +78,7 @@ const AppBar = observer(
           <IconButton
             icon="checkbox-multiple-marked-circle"
             iconColor={
-              connectedRelays.length === DEFAULT_RELAYS_URL.length
+              connectedRelays.length === userStore.relays.length
                 ? theme.colors.success
                 : theme.colors.error
             }
