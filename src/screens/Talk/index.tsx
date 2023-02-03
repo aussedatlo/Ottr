@@ -6,6 +6,7 @@ import React, { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import Input from '../../components/Input';
+import useProfile from '../../hooks/useProfile';
 import { RootStackParamList } from '../../navigation';
 import { useStores } from '../../store';
 import { Message } from '../../types/message';
@@ -13,8 +14,12 @@ import MessageBox from './MessageBox';
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
-const TalkScreen = observer(({ route }: TalkScreenProps) => {
+const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
+  const profile = useProfile(pubkey);
+  navigation.setOptions({
+    title: profile && profile.name ? profile.name : pubkey.slice(0, 8),
+  });
   const [text, setText] = useState('');
   const { userStore, messageStore } = useStores();
   const { publish } = useNostr();
@@ -61,7 +66,7 @@ const TalkScreen = observer(({ route }: TalkScreenProps) => {
   const renderItem = ({ item }) => <MessageBox {...item} />;
 
   return (
-    <View>
+    <>
       <View style={styles.list}>
         <FlatList
           data={messageList?.slice().reverse()}
@@ -79,19 +84,18 @@ const TalkScreen = observer(({ route }: TalkScreenProps) => {
           multiline
         />
       </View>
-    </View>
+    </>
   );
 });
 
 const styles = StyleSheet.create({
+  root: { flex: 1 },
   list: {
-    paddingBottom: 50,
-    height: '100%',
+    flex: 1,
   },
   bottom: {
-    position: 'absolute',
-    bottom: 0,
     width: '100%',
+    justifyContent: 'space-around',
   },
 });
 

@@ -1,4 +1,4 @@
-package com.laiin.anostr.newarchitecture.components;
+package com.laiin.ottr.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

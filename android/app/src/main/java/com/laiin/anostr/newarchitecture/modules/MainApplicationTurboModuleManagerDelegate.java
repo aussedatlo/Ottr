@@ -1,4 +1,4 @@
-package com.laiin.anostr.newarchitecture.modules;
+package com.laiin.ottr.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

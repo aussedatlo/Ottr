@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
 import React, { useMemo } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { FAB, useTheme } from 'react-native-paper';
 import { RootStackParamList } from '../../navigation';
 import { Theme } from '../../providers/ThemeProvider';
@@ -22,14 +22,12 @@ const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
 
   return (
     <View style={styles.root}>
-      <SafeAreaView>
-        <FlatList
-          data={[...keys]}
-          renderItem={renderItem}
-          keyExtractor={(item) => item}
-          style={styles.list}
-        />
-      </SafeAreaView>
+      <FlatList
+        data={[...keys]}
+        renderItem={renderItem}
+        keyExtractor={(item) => item}
+        style={styles.list}
+      />
 
       <FAB
         icon="pencil"

@@ -1,23 +1,25 @@
 diff --git a/node_modules/@noble/secp256k1/lib/index.js b/node_modules/@noble/secp256k1/lib/index.js
-index 33a0843..7d5893c 100644
+index 33a0843..9e78a2a 100644
 --- a/node_modules/@noble/secp256k1/lib/index.js
 +++ b/node_modules/@noble/secp256k1/lib/index.js
-@@ -1135,12 +1135,13 @@ exports.utils = {
-         if (crypto.web) {
-             return crypto.web.getRandomValues(new Uint8Array(bytesLength));
-         }
+@@ -1132,15 +1132,11 @@ exports.utils = {
+         return numTo32b(num);
+     },
+     randomBytes: (bytesLength = 32) => {
+-        if (crypto.web) {
+-            return crypto.web.getRandomValues(new Uint8Array(bytesLength));
+-        }
 -        else if (crypto.node) {
 -            const { randomBytes } = crypto.node;
 -            return Uint8Array.from(randomBytes(bytesLength));
 -        }
-         else {
+-        else {
 -            throw new Error("The environment doesn't have randomBytes function");
-+            try {
-+                const randomBytes = require('expo-random').getRandomBytes;
-+                return randomBytes(bytesLength);
-+            } catch (e) {
-+                throw new Error("The environment doesn't have randomBytes function and we couldn't use expo-random");
-+            }
++        try {
++            const randomBytes = require('expo-random').getRandomBytes;
++            return randomBytes(bytesLength);
++        } catch (e) {
++            throw new Error("The environment doesn't have randomBytes function and we couldn't use expo-random");
          }
      },
      randomPrivateKey: () => exports.utils.hashToPrivateKey(exports.utils.randomBytes(groupLen + 8)),

@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { getPublicKey } from 'nostr-tools';
-import { DEFAULT_RELAYS_URL } from '../../constant/relay';
 import { Contact } from '../../types/contact';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
@@ -27,7 +26,7 @@ class userStore implements UserStore {
   pubkey = '';
   isLoaded = false;
   profile = undefined;
-  relays = DEFAULT_RELAYS_URL;
+  relays = [];
   themeMode: ThemeMode = 'system';
 
   constructor() {

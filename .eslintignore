@@ -1,3 +1,5 @@
 babel.config.js
 .eslintrc.js
 metro.config.js
+app.config.ts
+app.config.js
