@@ -14,7 +14,6 @@ const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { messageStore } = useStores();
-  const keys = messageStore.messageList?.keys();
 
   const renderItem = ({ item }: { item: string }) => (
     <ContactMessageBox pubkey={item} key={item} />
@@ -23,7 +22,7 @@ const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
   return (
     <View style={styles.root}>
       <FlatList
-        data={[...keys]}
+        data={[...messageStore.messagePubkeyOrder]}
         renderItem={renderItem}
         keyExtractor={(item) => item}
         style={styles.list}

@@ -10,7 +10,7 @@ import {
 import { observer } from 'mobx-react';
 import { useNostr } from 'nostr-react';
 import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Theme } from '../providers/ThemeProvider';
@@ -63,7 +63,7 @@ const Navigation = observer(() => {
       ...DefaultTheme,
       colors: {
         ...DefaultTheme.colors,
-        background: theme.colors.background,
+        background: theme.colors.primaryContainer,
       },
     }),
     [theme],

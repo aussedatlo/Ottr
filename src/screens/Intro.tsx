@@ -2,7 +2,7 @@ import { StackActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
 import { generatePrivateKey } from 'nostr-tools';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import Icon from '../../assets/icon.svg';

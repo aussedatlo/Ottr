@@ -53,8 +53,7 @@ const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
     root: {
       flexDirection: 'row',
-      marginTop: 5,
-      marginBottom: 5,
+      margin: 10,
     },
     container: {
       flex: 1,
@@ -62,7 +61,7 @@ const createStyles = ({ colors }: Theme) => {
       justifyContent: 'center',
     },
     secondary: {
-      color: colors.onSurfaceDisabled,
+      color: colors.tertiary,
     },
   });
 };

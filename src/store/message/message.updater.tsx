@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import { useStores } from '..';
 
 const ReceiveMessageUpdater = observer((): null => {
-  const { userStore, messageStore } = useStores();
+  const { userStore, messageStore, contactStore } = useStores();
   const { onEvent } = useNostrEvents({
     filter: {
       kinds: [Kind.EncryptedDirectMessage],
@@ -30,8 +30,12 @@ const ReceiveMessageUpdater = observer((): null => {
         isSend: true,
         isSender: false,
       });
+
+      contactStore.addContact({
+        pubkey: event.pubkey,
+      });
     },
-    [messageStore, userStore.key],
+    [contactStore, messageStore, userStore.key],
   );
 
   onEvent(onEventCallback);

@@ -37,7 +37,7 @@ class contactStore implements ContactStore {
       (element: Contact) => element.pubkey === contact.pubkey,
     );
     if (contactIndex >= 0) {
-      console.log(`update contact ${contact.name}`);
+      console.log(`update contact ${contact.pubkey}`);
       this.contactList[contactIndex] = contact;
     } else {
       console.log(`add contact ${contact.name}`);

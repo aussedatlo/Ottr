@@ -8,6 +8,7 @@ export type MessageList = ObservableMap<string, Array<Message>>;
 export interface MessageStore {
   isLoaded: boolean;
   messageList: MessageList;
+  messagePubkeyOrder: Array<string>;
   lastSend: number;
   lastReceive: number;
   lastSendFromStart: number;
@@ -22,6 +23,7 @@ export interface MessageStore {
 class messageStore implements MessageStore {
   isLoaded = false;
   messageList: MessageList = observable.map();
+  messagePubkeyOrder = observable.array([]);
   lastSend = dateToUnix();
   lastReceive = 0;
   lastSendFromStart = 0;
@@ -31,7 +33,12 @@ class messageStore implements MessageStore {
     makeAutoObservable(this);
     makePersistable(this, {
       name: 'messageStore',
-      properties: ['lastSend', 'lastReceive', 'messageList'],
+      properties: [
+        'lastSend',
+        'lastReceive',
+        'messageList',
+        'messagePubkeyOrder',
+      ],
       storage: AsyncStorage,
     })
       .then(() => {
@@ -62,6 +69,12 @@ class messageStore implements MessageStore {
       console.warn(`message ${message.id} already exist, skipping`);
       return;
     }
+
+    // update message pubkey order
+    this.messagePubkeyOrder = observable.array([
+      pubkey,
+      ...this.messagePubkeyOrder.filter((pk) => pk !== pubkey),
+    ]);
 
     console.log(`adding message ${JSON.stringify(message)}`);
     this.messageList.set(pubkey, [...this.messageList.get(pubkey), message]);

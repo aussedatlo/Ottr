@@ -40,15 +40,14 @@ const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
     root: {
       flexDirection: 'row',
-      marginTop: 5,
-      marginBottom: 5,
+      margin: 10,
     },
     container: {
       marginLeft: 10,
       justifyContent: 'center',
     },
     label: {
-      color: colors.onSurfaceDisabled,
+      color: colors.tertiary,
     },
   });
 };
