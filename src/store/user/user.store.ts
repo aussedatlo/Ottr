@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { getPublicKey } from 'nostr-tools';
+import { DEFAULT_RELAYS_URL } from '../../constant/relay';
 import { Contact } from '../../types/contact';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
@@ -37,6 +38,9 @@ class userStore implements UserStore {
       storage: AsyncStorage,
     })
       .then(() => {
+        if (this.key === '') {
+          this.setRelays(DEFAULT_RELAYS_URL);
+        }
         if (this.key) this.pubkey = getPublicKey(this.key);
         this.setIsLoaded(true);
       })
