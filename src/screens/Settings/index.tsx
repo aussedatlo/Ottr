@@ -1,10 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { View } from 'react-native';
+import { ToastAndroid, View } from 'react-native';
 import { SettingsStackParamList } from '../../navigation/SettingsNavigation';
 import ButtonSettings from './ButtonSettings';
 import ModalController from '../../components/Modal/ModalController';
 import SelectThemeModal from './SelectThemeModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type SelectContactScreenProps = NativeStackScreenProps<
   SettingsStackParamList,
@@ -39,6 +40,21 @@ const SettingsScreen = ({ navigation }: SelectContactScreenProps) => {
         title="About"
         onPress={() => {
           console.log('pressed');
+        }}
+      />
+      <ButtonSettings
+        icon="delete-outline"
+        title="Erase all datas"
+        onPress={async () => {
+          try {
+            await AsyncStorage.clear();
+            ToastAndroid.show(
+              'data erased, restart the app',
+              ToastAndroid.SHORT,
+            );
+          } catch (e) {
+            console.error(e);
+          }
         }}
       />
     </View>
