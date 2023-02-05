@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@babel/runtime": "^7.20.13",
     "@dicebear/collection": "^5.2.0",
     "@dicebear/core": "^5.2.0",
     "@react-native-async-storage/async-storage": "^1.17.11",
@@ -9,6 +10,7 @@
     "expo": "~47.0.12",
     "expo-clipboard": "~4.0.1",
     "expo-linking": "~3.3.0",
+    "expo-modules-autolinking": "~1.0.0",
     "expo-random": "^13.0.0",
     "expo-splash-screen": "~0.17.5",
     "expo-standard-web-crypto": "^1.4.1",
@@ -62,5 +64,5 @@
   },
   "version": "1.0.0",
   "private": true,
-  "name": "anostr"
+  "name": "ottr"
 }

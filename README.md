@@ -1,4 +1,4 @@
-# Anostr
+# Ottr
 
 Android client for Nostr protocol
 Built with Expo

@@ -5,18 +5,18 @@ const config: ExpoConfig = {
   slug: 'Ottr',
   version: '1.0.0',
   jsEngine: 'hermes',
-  platforms: ['android'],
+  platforms: ['android', 'ios'],
   extra: { eas: { projectId: '135f5956-8d65-4ae1-906f-1761c5d70bc9' } },
   icon: './assets/icon.png',
   splash: { image: './assets/splash-screen.png', resizeMode: 'contain' },
   assetBundlePatterns: ['**/*'],
   userInterfaceStyle: 'automatic',
   android: {
-    package: 'laiin.ottr.com',
+    package: 'com.laiin.Ottr',
     adaptiveIcon: { foregroundImage: './assets/adaptative-icon.png' },
-    splash: {
-      image: './assets/splash-screen.png',
-    },
+  },
+  ios: {
+    bundleIdentifier: 'com.laiin.Ottr',
   },
 };
 
