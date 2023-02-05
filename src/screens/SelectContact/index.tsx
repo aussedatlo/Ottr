@@ -8,6 +8,7 @@ import Input from '../../components/Input';
 import { RootStackParamList } from '../../navigation';
 import { Theme } from '../../providers/ThemeProvider';
 import { useStores } from '../../store';
+import { Contact } from '../../types/contact';
 import ContactBox from './ContactBox';
 
 type SelectContactScreenProps = NativeStackScreenProps<
@@ -22,14 +23,17 @@ const SelectContactScreen = observer(
     const [text, setText] = useState('');
     const { contactStore } = useStores();
 
-    const keys = useMemo(
+    const keys: Array<string> = useMemo(
       () =>
         contactStore.contactList
           .filter(
             (contact) =>
               contact.pubkey.includes(text) || contact.name?.includes(text),
           )
-          .reduce((prev, curr) => [...prev, curr.pubkey], []),
+          .reduce(
+            (prev: Array<string>, curr: Contact) => [...prev, curr.pubkey],
+            [],
+          ),
       [contactStore.contactList, text],
     );
 

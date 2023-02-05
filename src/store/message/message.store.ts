@@ -23,7 +23,7 @@ export interface MessageStore {
 class messageStore implements MessageStore {
   isLoaded = false;
   messageList: MessageList = observable.map();
-  messagePubkeyOrder = observable.array([]);
+  messagePubkeyOrder = observable.array<string>([]);
   lastSend = dateToUnix();
   lastReceive = 0;
   lastSendFromStart = 0;
@@ -73,7 +73,7 @@ class messageStore implements MessageStore {
     // update message pubkey order
     this.messagePubkeyOrder = observable.array([
       pubkey,
-      ...this.messagePubkeyOrder.filter((pk) => pk !== pubkey),
+      ...this.messagePubkeyOrder.filter((pk: string) => pk !== pubkey),
     ]);
 
     console.log(`adding message ${JSON.stringify(message)}`);

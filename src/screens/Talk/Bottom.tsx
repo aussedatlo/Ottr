@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
 import Input from '../../components/Input';
