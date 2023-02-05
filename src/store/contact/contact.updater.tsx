@@ -1,27 +1,21 @@
 import { observer } from 'mobx-react';
 import { useNostrEvents } from 'nostr-react';
 import { Event, Kind } from 'nostr-tools';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useStores } from '..';
 import { Contact } from '../../types/contact';
 
 const ContactUpdater = observer((): null => {
-  const { contactStore, messageStore } = useStores();
-  const { messageList } = messageStore;
+  const { contactStore } = useStores();
   const { contactList } = contactStore;
-  const contacts = messageList?.keys();
 
-  const metadataToBeFetch: Array<string> = useMemo(
-    () =>
-      [...contacts].reduce((previous: Array<string>, pubkey: string) => {
-        const contact = contactList.filter(
-          (value) => value.pubkey === pubkey,
-        )[0];
-        if (!contact || (!!contact && !contact.about && !contact.picture))
-          return [...previous, pubkey];
-        return previous;
-      }, []),
-    [contactList, contacts],
+  // Update component when a new contact is added
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const contactListLength = contactList.length;
+
+  const metadataToBeFetch: Array<string> = contactList.reduce(
+    (prev: Array<string>, curr: Contact) => [...prev, curr.pubkey],
+    [],
   );
 
   const { onEvent } = useNostrEvents({

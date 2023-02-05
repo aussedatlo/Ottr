@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 import { Contact } from '../../types/contact';
 
@@ -13,7 +13,7 @@ export interface ContactStore {
 }
 class contactStore implements ContactStore {
   isLoaded = false;
-  contactList = [];
+  contactList = observable.array([]);
 
   constructor() {
     makeAutoObservable(this);
@@ -46,7 +46,7 @@ class contactStore implements ContactStore {
   };
 
   reset = () => {
-    this.contactList = [];
+    this.contactList = observable.array([]);
   };
 }
 
