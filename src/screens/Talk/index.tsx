@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import useProfile from '../../hooks/useProfile';
 import { RootStackParamList } from '../../navigation';
@@ -14,11 +14,14 @@ type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
   const profile = useProfile(pubkey);
-  navigation.setOptions({
-    title: profile && profile.name ? profile.name : pubkey.slice(0, 8),
-  });
   const { messageStore } = useStores();
   const messageList = messageStore.messageList.get(pubkey);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: profile && profile.name ? profile.name : pubkey.slice(0, 8),
+    });
+  }, [navigation, profile, pubkey]);
 
   // Update component when messages status is updated
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
