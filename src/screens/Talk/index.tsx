@@ -30,16 +30,20 @@ const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
       ? messageList.filter((message) => !message.isSend)
       : [];
 
-  const renderItem = ({ item }) => <MessageBox {...item} />;
+  const reverseMessageList = messageList?.slice().reverse();
+
+  const renderItem = ({ item, index }: { item: Message; index: number }) => (
+    <MessageBox
+      {...item}
+      prevMessage={reverseMessageList?.[index + 1]}
+      nextMessage={reverseMessageList?.[index - 1]}
+    />
+  );
 
   return (
     <>
       <View style={styles.list}>
-        <FlatList
-          data={messageList?.slice().reverse()}
-          renderItem={renderItem}
-          inverted
-        />
+        <FlatList data={reverseMessageList} renderItem={renderItem} inverted />
       </View>
 
       <Bottom pubkey={pubkey} />

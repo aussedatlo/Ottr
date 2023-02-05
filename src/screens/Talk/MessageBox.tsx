@@ -1,97 +1,95 @@
-import React, { memo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Avatar as AvatarPaper } from 'react-native-paper';
-import Avatar from '../../components/Avatar';
+import React, { memo, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Divider, Text, useTheme } from 'react-native-paper';
+import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
+import ContactMessageBox from './ContactMessageBox';
+import UserMessageBox from './UserMessageBox';
 
-type MessageProps = Message;
+type MessageProps = Message & { prevMessage: Message; nextMessage: Message };
 
-const MessageBox = ({
-  content,
-  created_at,
-  isSend,
-  isSender,
-  pubkey,
-}: MessageProps) => {
-  const time = new Date(created_at * 1000).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+const MessageBox = (props: MessageProps) => {
+  const {
+    content,
+    created_at,
+    isSend,
+    isSender,
+    pubkey,
+    prevMessage,
+    nextMessage,
+  } = props;
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const prevMessageDate = prevMessage
+    ? new Date(prevMessage.created_at * 1000).toLocaleDateString()
+    : undefined;
+  const currMessageDate = new Date(created_at * 1000).toLocaleDateString();
+
+  const nextMessageCreatedAt = nextMessage
+    ? new Date(nextMessage.created_at * 1000).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : new Date();
+  const currCreatedAt = new Date(created_at * 1000).toLocaleTimeString(
+    'en-US',
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    },
+  );
 
   return (
     <View>
-      <View style={[styles.root, isSender ? styles.right : styles.left]}>
-        {!isSender ? <Avatar pubkey={pubkey} size={30} /> : <></>}
-        <View
-          style={[
-            styles.messageContainer,
-            isSender ? styles.rightBox : styles.leftBox,
-          ]}
-        >
-          <Text style={isSender ? styles.rightText : {}}>{content}</Text>
+      {prevMessageDate === undefined || prevMessageDate !== currMessageDate ? (
+        <View>
+          <Divider style={styles.divider} />
+          <Text variant="labelSmall" style={styles.date}>
+            {currMessageDate}
+          </Text>
         </View>
-      </View>
-      <View
-        style={[styles.timeContainer, isSender ? styles.right : styles.left]}
-      >
-        {isSender ? (
-          <>
-            <Text>{time}</Text>
-            <AvatarPaper.Icon
-              icon={isSend ? 'check-all' : 'check'}
-              size={20}
-              style={styles.avatar}
-            />
-          </>
-        ) : (
-          <></>
-        )}
-      </View>
+      ) : (
+        <></>
+      )}
+      {isSender ? (
+        <UserMessageBox
+          content={content}
+          isSend={isSend}
+          time={
+            currCreatedAt !== nextMessageCreatedAt || !nextMessage.isSender
+              ? currCreatedAt
+              : undefined
+          }
+        />
+      ) : (
+        <ContactMessageBox
+          pubkey={pubkey}
+          content={content}
+          time={
+            currCreatedAt !== nextMessageCreatedAt || nextMessage.isSender
+              ? currCreatedAt
+              : undefined
+          }
+        />
+      )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  root: { flexDirection: 'row', alignItems: 'center' },
-  messageContainer: {
-    padding: 15,
-    borderRadius: 15,
-    margin: 5,
-    maxWidth: '70%',
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    margin: 0,
-    marginRight: 15,
-    marginBottom: 10,
-  },
-  right: {
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end',
-  },
-  left: {
-    alignSelf: 'flex-start',
-  },
-  rightBox: {
-    backgroundColor: '#1280FA',
-  },
-  leftBox: {
-    backgroundColor: '#EDEBF0',
-  },
-  rightText: {
-    color: 'white',
-  },
-  bottom: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red',
-  },
-  time: { fontSize: 10, marginRight: 5 },
-  name: { fontSize: 14, fontWeight: '600', marginBottom: 5 },
-  avatar: {
-    marginLeft: 5,
-  },
-});
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    divider: {
+      marginLeft: 50,
+      marginRight: 50,
+      marginTop: 10,
+    },
+    date: {
+      alignSelf: 'center',
+      marginTop: 5,
+      color: colors.onSurfaceDisabled,
+    },
+  });
+};
 
 export default memo(MessageBox);
