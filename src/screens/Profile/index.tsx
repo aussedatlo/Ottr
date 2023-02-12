@@ -3,48 +3,51 @@ import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import Input from '../../components/Input';
-import { useStores } from '../../store';
-import { Contact } from '../../types/contact';
+import { useUserContext } from '../../context/UserContext';
 
 const ProfileSection = () => {
-  const { userStore } = useStores();
-  const { profile } = userStore;
-  const [state, setState] = useState<Contact>({
-    pubkey: userStore.pubkey,
-    name: '',
-    about: '',
-    picture: '',
-  });
+  const { pubkey, user, setUser } = useUserContext();
+  const [name, setName] = useState<string>('');
+  const [about, setAbout] = useState<string>('');
+  const [picture, setPicture] = useState<string>('');
 
   useEffect(() => {
-    setState((state) => ({ ...state, ...profile }));
-  }, [profile]);
+    setName(user?.name || '');
+    setAbout(user?.about || '');
+    setPicture(user?.picture || '');
+  }, [user]);
 
   const onUpdateProfile = () => {
     ToastAndroid.show('updated', ToastAndroid.SHORT);
-    userStore.setProfile(state);
+    setUser({
+      ...user,
+      pubkey: pubkey,
+      name: name,
+      about: about,
+      picture: picture,
+    });
   };
 
   return (
     <View style={styles.root}>
       <View style={styles.picture}>
-        <Avatar pubkey={userStore.pubkey} picture={state.picture} size={60} />
+        <Avatar pubkey={pubkey} picture={picture} size={60} />
       </View>
       <Text variant="labelLarge" style={styles.title}>
         Display name:
       </Text>
       <Input
-        value={state.name}
+        value={name}
         placeholder="name to display"
-        onChange={(e) => setState({ ...state, name: e.nativeEvent.text })}
+        onChange={(e) => setName(e.nativeEvent.text)}
       />
       <Text variant="labelLarge" style={styles.title}>
         About you:
       </Text>
       <Input
-        value={state.about}
+        value={about}
         placeholder="A little description of yourself"
-        onChange={(e) => setState({ ...state, about: e.nativeEvent.text })}
+        onChange={(e) => setAbout(e.nativeEvent.text)}
         numberOfLines={3}
         multiline
       />
@@ -52,9 +55,9 @@ const ProfileSection = () => {
         Picture url:
       </Text>
       <Input
-        value={state.picture}
+        value={picture}
         placeholder="https://"
-        onChange={(e) => setState({ ...state, picture: e.nativeEvent.text })}
+        onChange={(e) => setPicture(e.nativeEvent.text)}
       />
 
       <View style={styles.buttonContainer}>

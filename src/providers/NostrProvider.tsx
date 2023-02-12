@@ -1,55 +1,34 @@
-import { observer } from 'mobx-react';
-import { NostrProvider as Provider, useNostr } from 'nostr-react';
-import React, { useCallback } from 'react';
-import { useStores } from '../store';
-import ContactUpdater from '../store/contact/contact.updater';
-import MessageUpdater from '../store/message/message.updater';
-import UserUpdater from '../store/user/user.updater';
+import { NostrProvider as Provider } from 'nostr-react';
+import React from 'react';
+import { useUserContext } from '../context/UserContext';
+import ContactUpdater from '../nostr/contact.updater';
+import MessageUpdater from '../nostr/message.updater';
+import RelayUpdater from '../nostr/relay.updater';
+import UserUpdater from '../nostr/user.updater';
 
 type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
-const NostrUpdater = observer((): null => {
-  const { userStore } = useStores();
-  const { onDisconnect } = useNostr();
-
-  const onDisconnectCallback = useCallback(
-    (relay) => {
-      if (!userStore.isLoaded) return;
-
-      setTimeout(
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        () => {
-          if (userStore.relays.includes(relay.url))
-            relay
-              .connect()
-              .then(() => console.log(`reconnected: ${relay.url}`))
-              .catch(() => console.log(`unable to reconnect: ${relay.url}`));
-        },
-        30000,
-      );
-    },
-    [userStore.relays, userStore.isLoaded],
-  );
-
-  onDisconnect(onDisconnectCallback);
-
-  return null;
-});
-
-const NostrProvider = observer(({ children }: ThemeProviderProps) => {
-  const { userStore } = useStores();
+const NostrProvider = ({ children }: ThemeProviderProps) => {
+  const { key, pubkey, relays } = useUserContext();
 
   return (
-    <Provider relayUrls={userStore.relays} debug={true}>
+    <Provider relayUrls={relays || []} debug={true}>
       <>{children}</>
-      <NostrUpdater />
-      <ContactUpdater />
-      <MessageUpdater />
-      <UserUpdater />
+
+      {!key || !pubkey ? (
+        <></>
+      ) : (
+        <>
+          <RelayUpdater />
+          <ContactUpdater />
+          <MessageUpdater />
+          <UserUpdater />
+        </>
+      )}
     </Provider>
   );
-});
+};
 
 export default NostrProvider;

@@ -1,66 +1,54 @@
-import { observer } from 'mobx-react';
 import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
 import Input from '../../components/Input';
+import { useUserContext } from '../../context/UserContext';
+import { useMessages } from '../../hooks/useMessages';
+import { useUsers } from '../../hooks/useUsers';
 import { Theme } from '../../providers/ThemeProvider';
-import { useStores } from '../../store';
 
 type BottomProps = {
   pubkey: string;
 };
 
-const Bottom = observer(({ pubkey }: BottomProps) => {
+const Bottom = ({ pubkey }: BottomProps) => {
   const [text, setText] = useState('');
-  const { userStore, messageStore, contactStore } = useStores();
+  const { addUser } = useUsers();
+  const { key, pubkey: userPubkey } = useUserContext();
   const { publish } = useNostr();
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { addMessage } = useMessages();
 
   const onSend = useCallback(async () => {
     // TODO: verify pubkey
     console.log(`send to: ${pubkey}`);
     setText('');
 
-    const message = await nip04.encrypt(userStore.key, pubkey, text);
+    const message = await nip04.encrypt(key, pubkey, text);
     const created_at = dateToUnix();
-
-    messageStore.addMessage(pubkey, {
-      id: undefined,
-      content: text,
-      created_at: created_at,
-      pubkey: userStore.pubkey,
-      isSend: false,
-      isSender: true,
-    });
 
     const event: Event = {
       content: message,
       kind: Kind.EncryptedDirectMessage,
       tags: [['p', pubkey]],
       created_at: created_at,
-      pubkey: userStore.pubkey,
+      pubkey: userPubkey,
     };
 
     event.id = getEventHash(event);
-    event.sig = signEvent(event, userStore.key);
+    event.sig = signEvent(event, key);
 
-    publish(event);
+    await addMessage({ ...event, pending: true, seen: true, content: text });
 
-    contactStore.addContact({
+    await addUser({
       pubkey: pubkey,
     });
-  }, [
-    contactStore,
-    messageStore,
-    pubkey,
-    publish,
-    userStore.key,
-    userStore.pubkey,
-    text,
-  ]);
+
+    publish(event);
+  }, [addUser, pubkey, publish, key, userPubkey, text, addMessage]);
 
   return (
     <View style={styles.root}>
@@ -82,7 +70,7 @@ const Bottom = observer(({ pubkey }: BottomProps) => {
       />
     </View>
   );
-});
+};
 
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({

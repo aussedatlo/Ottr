@@ -1,24 +1,23 @@
 import * as Clipboard from 'expo-clipboard';
-import { observer } from 'mobx-react';
 import React from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import SvgQRCode from 'react-native-qrcode-svg';
-import { useStores } from '../../store';
+import { useUserContext } from '../../context/UserContext';
 
-const ShareKeyModal = observer(() => {
-  const { userStore } = useStores();
+const ShareKeyModal = () => {
+  const { pubkey } = useUserContext();
 
   const onCopy = async () => {
-    await Clipboard.setStringAsync(userStore.pubkey);
+    await Clipboard.setStringAsync(pubkey);
     ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
   };
 
   return (
     <View style={styles.root}>
-      <SvgQRCode value={userStore.pubkey} size={250} />
+      <SvgQRCode value={pubkey} size={250} />
       <Text variant="labelMedium" style={styles.pubkey}>
-        {userStore.pubkey}
+        {pubkey}
       </Text>
 
       <Button
@@ -32,7 +31,7 @@ const ShareKeyModal = observer(() => {
       </Button>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: {

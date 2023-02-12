@@ -1,55 +1,51 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { observer } from 'mobx-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import useProfile from '../../hooks/useProfile';
+import { useDatabaseContext } from '../../context/DatabaseContext';
+import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
-import { useStores } from '../../store';
 import { Message } from '../../types/message';
 import Bottom from './Bottom';
 import MessageBox from './MessageBox';
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
-const TalkScreen = observer(({ route, navigation }: TalkScreenProps) => {
+const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
-  const profile = useProfile(pubkey);
-  const { messageStore } = useStores();
-  const messageList = messageStore.messageList.get(pubkey);
+  const { allMessages } = useDatabaseContext();
+  const messages = useMemo(
+    () =>
+      allMessages.filter(
+        (m) => m.pubkey === pubkey || m.tags.toString().includes(pubkey),
+      ),
+    [allMessages, pubkey],
+  );
+  const user = useUser(pubkey);
 
   useEffect(() => {
     navigation.setOptions({
-      title: profile && profile.name ? profile.name : pubkey.slice(0, 8),
+      title: user?.name ? user.name : pubkey.slice(0, 8),
     });
-  }, [navigation, profile, pubkey]);
-
-  // Update component when messages status is updated
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const messagesNotSend: Array<Message> =
-    messageList?.length > 0
-      ? messageList.filter((message) => !message.isSend)
-      : [];
-
-  const reverseMessageList = messageList?.slice().reverse();
+  }, [navigation, user, pubkey]);
 
   const renderItem = ({ item, index }: { item: Message; index: number }) => (
     <MessageBox
       {...item}
-      prevMessage={reverseMessageList?.[index + 1]}
-      nextMessage={reverseMessageList?.[index - 1]}
+      prevMessage={messages?.[index + 1]}
+      nextMessage={messages?.[index - 1]}
     />
   );
 
   return (
     <>
       <View style={styles.list}>
-        <FlatList data={reverseMessageList} renderItem={renderItem} inverted />
+        <FlatList data={messages} renderItem={renderItem} inverted />
       </View>
 
       <Bottom pubkey={pubkey} />
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: { flex: 1 },

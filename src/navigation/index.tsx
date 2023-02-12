@@ -7,18 +7,20 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import { observer } from 'mobx-react';
+import { hideAsync } from 'expo-splash-screen';
 import { useNostr } from 'nostr-react';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import GenericModal from '../components/Modal/GenericModal';
+import { useDatabaseContext } from '../context/DatabaseContext';
+import { useUserContext } from '../context/UserContext';
 import { Theme } from '../providers/ThemeProvider';
 import HomeScreen from '../screens/Home';
 import IntroScreen from '../screens/Intro';
 import SelectContactScreen from '../screens/SelectContact';
 import TalkScreen from '../screens/Talk';
-import { useStores } from '../store';
 import SettingsNavigation from './SettingsNavigation';
 
 export type RootStackParamList = {
@@ -33,7 +35,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const HeaderRight = () => {
   const { connectedRelays } = useNostr();
-  const { userStore } = useStores();
+  const { relays } = useUserContext();
   const { colors } = useTheme<Theme>();
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -44,19 +46,28 @@ const HeaderRight = () => {
       <IconButton
         icon="checkbox-multiple-marked-circle"
         iconColor={
-          connectedRelays.length === userStore.relays.length
+          connectedRelays.length === relays?.length
             ? colors.success
-            : colors.error
+            : connectedRelays.length === 0
+            ? colors.error
+            : colors.warning
         }
       />
     </>
   );
 };
 
-const Navigation = observer(() => {
-  const { userStore } = useStores();
+const Navigation = () => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { pubkey, isLoaded: userContextLoaded } = useUserContext();
+  const { isLoaded: databaseContextLoaded } = useDatabaseContext();
+
+  const isLoaded = userContextLoaded && databaseContextLoaded;
+
+  const onLayout = useCallback(() => {
+    if (isLoaded) hideAsync().catch(console.error);
+  }, [isLoaded]);
 
   const navigationTheme = useMemo(
     () => ({
@@ -69,11 +80,13 @@ const Navigation = observer(() => {
     [theme],
   );
 
+  if (!isLoaded) return <></>;
+
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={styles.root} onLayout={onLayout}>
       <NavigationContainer theme={navigationTheme}>
         <Stack.Navigator
-          initialRouteName={!userStore.key ? 'Intro' : 'Home'}
+          initialRouteName={!pubkey ? 'Intro' : 'Home'}
           screenOptions={{
             statusBarColor: theme.colors.background,
             statusBarStyle: theme.dark ? 'light' : 'dark',
@@ -118,10 +131,11 @@ const Navigation = observer(() => {
             }}
           />
         </Stack.Navigator>
+        <GenericModal />
       </NavigationContainer>
     </SafeAreaView>
   );
-});
+};
 
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({

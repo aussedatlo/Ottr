@@ -1,13 +1,13 @@
-import { observer } from 'mobx-react';
 import React from 'react';
 import { useColorScheme } from 'react-native';
-import { MD3LightTheme, MD3DarkTheme, Provider } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, Provider } from 'react-native-paper';
 import { MD3Colors, MD3Theme } from 'react-native-paper/lib/typescript/types';
-import { useStores } from '../store';
+import { useUserContext } from '../context/UserContext';
 
 export type ThemeColors = {
   success: string;
   transparent: string;
+  warning: string;
 } & MD3Colors;
 
 export type Theme = {
@@ -27,6 +27,7 @@ const lightTheme: Theme = {
     secondary: '#db4534',
     tertiary: '#a1b2c3',
     success: '#26a65b',
+    warning: '#db9934',
     transparent: '#00000000',
   },
 };
@@ -45,6 +46,7 @@ const darkTheme: Theme = {
     secondary: '#db4534',
     tertiary: '#a1b2c3',
     success: '#26a65b',
+    warning: '#db9934',
     transparent: '#00000000',
   },
 };
@@ -53,17 +55,16 @@ type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
-const ThemeProvider = observer(({ children }: ThemeProviderProps) => {
+const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const colorScheme = useColorScheme();
-  const { userStore } = useStores();
+  const { themeMode } = useUserContext();
 
   const theme =
-    (userStore.themeMode === 'system' && colorScheme === 'light') ||
-    userStore.themeMode === 'light'
+    (themeMode === 'system' && colorScheme === 'light') || themeMode === 'light'
       ? lightTheme
       : darkTheme;
 
   return <Provider theme={theme}>{children}</Provider>;
-});
+};
 
 export default ThemeProvider;

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Theme } from '../providers/ThemeProvider';
 import KeyScreen from '../screens/Key';
 import ProfileScreen from '../screens/Profile';
@@ -21,7 +21,7 @@ const SettingsNavigator = () => {
   const { colors, dark } = useTheme<Theme>();
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Stack.Navigator
         initialRouteName={'Settings'}
         screenOptions={{
@@ -44,7 +44,7 @@ const SettingsNavigator = () => {
         <Stack.Screen name="Key" component={KeyScreen} />
         <Stack.Screen name="Relays" component={RelaysScreen} />
       </Stack.Navigator>
-    </View>
+    </SafeAreaView>
   );
 };
 

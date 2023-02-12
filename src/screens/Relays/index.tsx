@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import Input from '../../components/Input';
-import { useStores } from '../../store';
+import { useUserContext } from '../../context/UserContext';
 import RelayItem from './RelayItem';
 
 const RelaysScreen = () => {
-  const [relays, setRelays] = useState<Array<string>>([]);
   const [newRelay, setNewRelay] = useState<string>('');
-  const { userStore } = useStores();
+  const { relays, setRelays } = useUserContext();
+  const [newRelays, setNewRelays] = useState<Array<string>>([]);
 
   useEffect(() => {
-    setRelays(userStore.relays);
-  }, [userStore.relays]);
+    setNewRelays(relays);
+  }, [relays]);
 
   const onAdd = () => {
     if (relays.includes(newRelay)) {
@@ -20,24 +20,21 @@ const RelaysScreen = () => {
       return;
     }
 
-    setRelays((relays) => [newRelay, ...relays]);
+    setNewRelays([newRelay, ...relays]);
     setNewRelay('');
   };
 
   const onDelete = (relay: string) => {
-    setRelays((relays) => relays.filter((item) => item !== relay));
+    setNewRelays(newRelays.filter((item) => item !== relay));
   };
 
   const onApply = () => {
-    userStore.setRelays(relays);
+    setRelays(newRelays);
     ToastAndroid.show('updated', ToastAndroid.SHORT);
   };
 
-  const renderItemCallback = useCallback(
-    ({ item }: { item: string }) => (
-      <RelayItem relay={item} onClose={onDelete} />
-    ),
-    [],
+  const renderItemCallback = ({ item }: { item: string }) => (
+    <RelayItem relay={item} onClose={onDelete} />
   );
 
   return (
@@ -52,7 +49,7 @@ const RelaysScreen = () => {
         right={<TextInput.Icon icon="plus" onPress={onAdd} />}
       />
       <FlatList
-        data={relays}
+        data={newRelays}
         renderItem={renderItemCallback}
         style={styles.list}
       />

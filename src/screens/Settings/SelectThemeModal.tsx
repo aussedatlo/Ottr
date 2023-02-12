@@ -1,12 +1,10 @@
-import { observer } from 'mobx-react';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { RadioButton, Text } from 'react-native-paper';
-import { useStores } from '../../store';
+import { useUserContext } from '../../context/UserContext';
 
-const SelectThemeModal = observer(() => {
-  const { userStore } = useStores();
-  const { themeMode, setThemeMode } = userStore;
+const SelectThemeModal = () => {
+  const { themeMode, setThemeMode } = useUserContext();
 
   return (
     <View style={styles.root}>
@@ -36,7 +34,7 @@ const SelectThemeModal = observer(() => {
       </View>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: {

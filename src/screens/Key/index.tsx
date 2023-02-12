@@ -1,21 +1,19 @@
 import * as Clipboard from 'expo-clipboard';
-import { observer } from 'mobx-react-lite';
 import { generatePrivateKey, getPublicKey } from 'nostr-tools';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import SvgQRCode from 'react-native-qrcode-svg';
 import Input from '../../components/Input';
-import { useStores } from '../../store';
+import { useUserContext } from '../../context/UserContext';
 
 type KeyScreenState = {
   key: string;
   pubkey: string;
 };
 
-const KeyScreen = observer(() => {
-  const { userStore } = useStores();
-  const { key, pubkey } = userStore;
+const KeyScreen = () => {
+  const { key, pubkey, setKey } = useUserContext();
   const [state, setState] = useState<KeyScreenState>({
     key: '',
     pubkey: '',
@@ -27,14 +25,14 @@ const KeyScreen = observer(() => {
   }, [key, pubkey]);
 
   const onCopy = async () => {
-    await Clipboard.setStringAsync(userStore.pubkey);
+    await Clipboard.setStringAsync(pubkey);
     ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
   };
 
   const onUpdateKey = () => {
     try {
       getPublicKey(state.key);
-      userStore.setKey(state.key);
+      setKey(state.key);
       ToastAndroid.show('Key updated', ToastAndroid.SHORT);
       setDisplayKey(false);
     } catch (e) {
@@ -44,14 +42,14 @@ const KeyScreen = observer(() => {
 
   const onNewKey = () => {
     setDisplayKey(false);
-    userStore.setKey(generatePrivateKey());
+    setKey(generatePrivateKey());
   };
 
   return (
     <View style={styles.root}>
-      <SvgQRCode value={userStore.pubkey} size={280} />
+      <SvgQRCode value={pubkey} size={280} />
       <Text variant="labelMedium" style={styles.pubkey}>
-        {userStore.pubkey}
+        {pubkey}
       </Text>
 
       <Button
@@ -102,7 +100,7 @@ const KeyScreen = observer(() => {
       )}
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: {

@@ -1,25 +1,23 @@
 import React, { memo, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
+import { useUserContext } from '../../context/UserContext';
 import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
 import ContactMessageBox from './ContactMessageBox';
 import UserMessageBox from './UserMessageBox';
 
-type MessageProps = Message & { prevMessage: Message; nextMessage: Message };
+type MessageProps = Message & {
+  prevMessage: Message;
+  nextMessage: Message;
+};
 
 const MessageBox = (props: MessageProps) => {
-  const {
-    content,
-    created_at,
-    isSend,
-    isSender,
-    pubkey,
-    prevMessage,
-    nextMessage,
-  } = props;
+  const { content, created_at, pending, pubkey, prevMessage, nextMessage } =
+    props;
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { pubkey: userPubkey } = useUserContext();
 
   const prevMessageDate = prevMessage
     ? new Date(prevMessage.created_at * 1000).toLocaleDateString()
@@ -52,27 +50,30 @@ const MessageBox = (props: MessageProps) => {
       ) : (
         <></>
       )}
-      {isSender ? (
-        <UserMessageBox
-          content={content}
-          isSend={isSend}
-          time={
-            currCreatedAt !== nextMessageCreatedAt || !nextMessage.isSender
-              ? currCreatedAt
-              : undefined
-          }
-        />
-      ) : (
-        <ContactMessageBox
-          pubkey={pubkey}
-          content={content}
-          time={
-            currCreatedAt !== nextMessageCreatedAt || nextMessage.isSender
-              ? currCreatedAt
-              : undefined
-          }
-        />
-      )}
+
+      <Animated.View>
+        {userPubkey === pubkey ? (
+          <UserMessageBox
+            content={content}
+            pending={pending}
+            time={
+              currCreatedAt !== nextMessageCreatedAt || !(userPubkey === pubkey)
+                ? currCreatedAt
+                : undefined
+            }
+          />
+        ) : (
+          <ContactMessageBox
+            pubkey={pubkey}
+            content={content}
+            time={
+              currCreatedAt !== nextMessageCreatedAt || userPubkey === pubkey
+                ? currCreatedAt
+                : undefined
+            }
+          />
+        )}
+      </Animated.View>
     </View>
   );
 };
