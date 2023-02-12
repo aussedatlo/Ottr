@@ -48,7 +48,9 @@ const HeaderRight = () => {
         iconColor={
           connectedRelays.length === relays?.length
             ? colors.success
-            : colors.error
+            : connectedRelays.length === 0
+            ? colors.error
+            : colors.warning
         }
       />
     </>

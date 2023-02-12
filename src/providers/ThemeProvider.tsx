@@ -7,6 +7,7 @@ import { useUserContext } from '../context/UserContext';
 export type ThemeColors = {
   success: string;
   transparent: string;
+  warning: string;
 } & MD3Colors;
 
 export type Theme = {
@@ -26,6 +27,7 @@ const lightTheme: Theme = {
     secondary: '#db4534',
     tertiary: '#a1b2c3',
     success: '#26a65b',
+    warning: '#db9934',
     transparent: '#00000000',
   },
 };
@@ -44,6 +46,7 @@ const darkTheme: Theme = {
     secondary: '#db4534',
     tertiary: '#a1b2c3',
     success: '#26a65b',
+    warning: '#db9934',
     transparent: '#00000000',
   },
 };
