@@ -5,11 +5,11 @@ import { Theme } from '../../providers/ThemeProvider';
 
 type UserMessageBoxProps = {
   content: string;
-  isSend: boolean;
+  pending: boolean;
   time?: string;
 };
 
-const UserMessageBox = ({ content, isSend, time }: UserMessageBoxProps) => {
+const UserMessageBox = ({ content, pending, time }: UserMessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -20,7 +20,7 @@ const UserMessageBox = ({ content, isSend, time }: UserMessageBoxProps) => {
         <AvatarPaper.Icon
           icon={'check-bold'}
           size={12}
-          style={isSend ? styles.avatar : styles.hide}
+          style={!pending ? styles.avatar : styles.hide}
           color={theme.colors.primary}
         />
       </View>

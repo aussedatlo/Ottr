@@ -1,28 +1,37 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { observer } from 'mobx-react';
 import React, { useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { FAB, useTheme } from 'react-native-paper';
+import { useDatabaseContext } from '../../context/DatabaseContext';
 import { RootStackParamList } from '../../navigation';
 import { Theme } from '../../providers/ThemeProvider';
-import { useStores } from '../../store';
+import { User } from '../../types/user';
 import ContactMessageBox from './ContactMessageBox';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
+const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { messageStore } = useStores();
+  const { allUsers } = useDatabaseContext();
 
   const renderItem = ({ item }: { item: string }) => (
     <ContactMessageBox pubkey={item} key={item} />
   );
 
+  const keys = useMemo(
+    () =>
+      allUsers?.reduce(
+        (prev: Array<string>, curr: User) => [...prev, curr.pubkey],
+        [],
+      ),
+    [allUsers],
+  );
+
   return (
     <View style={styles.root}>
       <FlatList
-        data={[...messageStore.messagePubkeyOrder]}
+        data={keys}
         renderItem={renderItem}
         keyExtractor={(item) => item}
         style={styles.list}
@@ -36,7 +45,7 @@ const HomeScreen = observer(({ navigation }: HomeScreenProps) => {
       />
     </View>
   );
-});
+};
 
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({

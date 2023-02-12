@@ -4,7 +4,7 @@ import React, { memo, useMemo } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
-import useProfile from '../../hooks/useProfile';
+import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
 import { Theme } from '../../providers/ThemeProvider';
 
@@ -15,18 +15,18 @@ type ContactBoxProps = {
 const ContactBox = ({ pubkey }: ContactBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { name } = useProfile(pubkey) || { name: '' };
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const user = useUser(pubkey);
 
   return (
     <TouchableWithoutFeedback
       onPress={() => navigate('Talk', { pubkey: pubkey })}
     >
       <View style={styles.root}>
-        <Avatar pubkey={pubkey} size={50} />
+        <Avatar pubkey={pubkey} picture={user?.picture} size={50} />
         <View style={styles.container}>
-          <Text>{name ? name : pubkey.slice(0, 8)}</Text>
+          <Text>{user?.name ? user.name : pubkey.slice(0, 8)}</Text>
           <Text variant="labelSmall" style={styles.label}>
             {pubkey.slice(0, 30)}...
           </Text>

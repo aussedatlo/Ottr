@@ -1,8 +1,6 @@
-export type Message = {
-  id: string;
-  content: string;
-  created_at: number;
-  pubkey: string;
-  isSend: boolean;
-  isSender: boolean;
+import { Event } from 'nostr-tools';
+
+export type Message = Event & {
+  pending: boolean;
+  seen: boolean;
 };

@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
+import { useUser } from '../../hooks/useUsers';
 import { Theme } from '../../providers/ThemeProvider';
 
 type ContactMessageBoxProps = {
@@ -17,11 +18,12 @@ const ContactMessageBox = ({
 }: ContactMessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { picture } = useUser(pubkey);
 
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <Avatar pubkey={pubkey} size={40} />
+        <Avatar pubkey={pubkey} picture={picture} size={40} />
         <View style={styles.contentContainer}>
           <Text style={styles.content}>{content}</Text>
         </View>

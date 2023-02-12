@@ -1,21 +1,20 @@
 import { StackActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { observer } from 'mobx-react';
 import { generatePrivateKey } from 'nostr-tools';
 import React from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import Icon from '../../assets/icon.svg';
+import { useUserContext } from '../context/UserContext';
 import { RootStackParamList } from '../navigation';
-import { useStores } from '../store';
 
 type IntroScreenProps = NativeStackScreenProps<RootStackParamList, 'Intro'>;
 
-const IntroScreen = observer(({ navigation }: IntroScreenProps) => {
-  const { userStore } = useStores();
+const IntroScreen = ({ navigation }: IntroScreenProps) => {
+  const { setKey } = useUserContext();
 
   const handleNewKey = () => {
-    userStore.setKey(generatePrivateKey());
+    setKey(generatePrivateKey());
     const action = StackActions.replace('Home');
     navigation.dispatch(action);
   };
@@ -49,7 +48,7 @@ const IntroScreen = observer(({ navigation }: IntroScreenProps) => {
       </Button>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   root: {
