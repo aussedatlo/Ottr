@@ -30,7 +30,7 @@ const DatabaseContextProvider = ({
   const [lastEvent, setLastEvent] = useState<number>(0);
   const lastEventRef = useRef(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const { key } = useUserContext();
+  const { key, isLoaded: isUserContextLoaded } = useUserContext();
 
   useEffect(() => {
     const init = async () => {
@@ -41,6 +41,7 @@ const DatabaseContextProvider = ({
       setIsLoaded(true);
     };
 
+    if (!isUserContextLoaded) return;
     if (key) init();
     else {
       // initialize empty arrays
@@ -50,7 +51,7 @@ const DatabaseContextProvider = ({
       setLastEvent(1);
       setIsLoaded(true);
     }
-  }, [key]);
+  }, [key, isUserContextLoaded]);
 
   useEffect(() => {
     if (lastEventRef.current !== 0 || allMessages.length === 0) {
