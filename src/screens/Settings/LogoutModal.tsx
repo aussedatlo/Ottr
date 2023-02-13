@@ -6,6 +6,8 @@ import { Button, Text } from 'react-native-paper';
 import ModalController from '../../components/Modal/ModalController';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUserContext } from '../../context/UserContext';
+import { deleteDatabase } from '../../database/delete';
+import { initDatabase } from '../../database/init';
 
 const LogoutModal = () => {
   const { database } = useDatabaseContext();
@@ -15,12 +17,13 @@ const LogoutModal = () => {
   const onLogout = async () => {
     try {
       ToastAndroid.show('logout', ToastAndroid.SHORT);
-      await AsyncStorage.clear();
-      await database.reset();
-      await logout();
       const action = StackActions.replace('Intro');
-      ModalController.hideModal();
       navigation.dispatch(action);
+      await AsyncStorage.clear();
+      await deleteDatabase(database);
+      await initDatabase(database);
+      await logout();
+      ModalController.hideModal();
     } catch (e) {
       console.error(e);
     }

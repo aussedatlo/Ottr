@@ -4,4 +4,5 @@ export type User = {
   about?: string;
   picture?: string;
   mainRelay?: string;
+  lastEventAt?: number;
 };

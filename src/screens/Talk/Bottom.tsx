@@ -15,7 +15,7 @@ type BottomProps = {
 
 const Bottom = ({ pubkey }: BottomProps) => {
   const [text, setText] = useState('');
-  const { addUser } = useUsers();
+  const { addUser, updateUserLastEventAt } = useUsers();
   const { key, pubkey: userPubkey } = useUserContext();
   const { publish } = useNostr();
   const theme = useTheme<Theme>();
@@ -45,6 +45,10 @@ const Bottom = ({ pubkey }: BottomProps) => {
 
     await addUser({
       pubkey: pubkey,
+    });
+    await updateUserLastEventAt({
+      pubkey: pubkey,
+      lastEventAt: created_at,
     });
 
     publish(event);

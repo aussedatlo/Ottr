@@ -1,4 +1,10 @@
 import { useDatabaseContext } from '../context/DatabaseContext';
+import {
+  getAllUsers,
+  addUser as dbAddUser,
+  updateUser as dbUpdateUser,
+  updateUserLastEventAt as dbUpdateUserLastEventAt,
+} from '../database/functions/user';
 import { User } from '../types/user';
 
 export function useUser(pubkey: string): User | undefined {
@@ -11,24 +17,31 @@ export function useUsers() {
 
   async function refreshUsers() {
     console.log('REFRESH USERS');
-    const results = await database.getAllUsers();
+    const results = await getAllUsers(database);
     setAllUsers(results);
   }
 
   async function updateUser(user: User): Promise<void> {
     console.log('UPDATE USER');
-    const [results] = await database.updateUser(user);
+    const results = await dbUpdateUser(database, user);
     if (results.rowsAffected) await refreshUsers();
   }
 
   async function addUser(user: User): Promise<void> {
     console.log('ADD USER');
-    const [results] = await database.addUser(user);
+    const results = await dbAddUser(database, user);
+    if (results.rowsAffected) await refreshUsers();
+  }
+
+  async function updateUserLastEventAt(user: User): Promise<void> {
+    console.log('UPDATE USER LAST EVENT AT');
+    const results = await dbUpdateUserLastEventAt(database, user);
     if (results.rowsAffected) await refreshUsers();
   }
 
   return {
     updateUser,
+    updateUserLastEventAt,
     addUser,
   };
 }
