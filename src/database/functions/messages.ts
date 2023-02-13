@@ -1,16 +1,18 @@
-import { ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 import { Message } from '../../types/message';
+import { ExecuteQuery } from './utils';
 
 export const getAllMessages = async (
-  db: SQLiteDatabase,
+  db: WebSQLDatabase,
 ): Promise<Array<Message>> => {
   console.log('[db] Fetching messages from the db...');
 
-  const [results] = await db.executeSql(
+  const results = await ExecuteQuery(
+    db,
     'SELECT * FROM Messages ORDER BY created_at DESC;',
   );
 
-  return results.rows.raw().reduce(
+  return results.rows._array.reduce(
     (prev: Message[], curr: Message) => [
       ...prev,
       {
@@ -26,11 +28,12 @@ export const getAllMessages = async (
 
 // Insert a new list into the database
 export const addMessage = async (
-  db: SQLiteDatabase,
+  db: WebSQLDatabase,
   { id, content, created_at, kind, pubkey, sig, tags, pending, seen }: Message,
-): Promise<[ResultSet]> => {
+): Promise<SQLResultSet> => {
   try {
-    const results = await db.executeSql(
+    const results = await ExecuteQuery(
+      db,
       `INSERT OR IGNORE INTO Messages (id, content, created_at, kind, pubkey, sig, tags, pending, seen) VALUES ('${id}','${content}','${created_at}','${kind}','${pubkey}','${sig}','${JSON.stringify(
         tags,
       )}','${pending}','${seen}');`,
@@ -44,11 +47,12 @@ export const addMessage = async (
 
 // set pending to a message
 export const updateMessage = async (
-  db: SQLiteDatabase,
+  db: WebSQLDatabase,
   { id, pending, seen }: Message,
-): Promise<[ResultSet]> => {
+): Promise<SQLResultSet> => {
   try {
-    const results = await db.executeSql(
+    const results = await ExecuteQuery(
+      db,
       `UPDATE Messages SET pending='${pending}' WHERE id='${id}' AND NOT EXISTS (SELECT * FROM Messages WHERE id='${id}' AND pending='${pending}' AND seen='${seen}');`,
     );
     return results;
