@@ -1,27 +1,31 @@
-import { ResultSet, SQLiteDatabase } from 'react-native-sqlite-storage';
+import { ExecuteQuery } from './utils';
 import { User } from '../../types/user';
+import { SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 
-export const getAllUsers = async (db: SQLiteDatabase): Promise<Array<User>> => {
+export const getAllUsers = async (db: WebSQLDatabase): Promise<Array<User>> => {
   console.log('[db] Fetching users from the db...');
-  const [results] = await db.executeSql('SELECT * FROM Users;');
+
+  const results = await ExecuteQuery(db, 'SELECT * FROM Users;');
 
   if (!results) return [];
 
-  return results.rows
-    .raw()
-    .reduce<User[]>((prev: User[], curr: User) => [...prev, curr], []);
+  return results.rows._array.reduce<User[]>(
+    (prev: User[], curr: User) => [...prev, curr],
+    [],
+  );
 };
 
 export const addUser = async (
-  db: SQLiteDatabase,
+  db: WebSQLDatabase,
   { pubkey }: User,
-): Promise<[ResultSet]> => {
+): Promise<SQLResultSet> => {
   try {
-    const result = await db.executeSql(
+    const results = await ExecuteQuery(
+      db,
       `INSERT OR IGNORE INTO Users (pubkey) VALUES ('${pubkey}');`,
     );
 
-    return result;
+    return results;
   } catch (e) {
     console.error(e);
     return undefined;
@@ -29,14 +33,15 @@ export const addUser = async (
 };
 
 export const updateUser = async (
-  db: SQLiteDatabase,
+  db: WebSQLDatabase,
   { pubkey, name = '', about = '', picture = '', mainRelay = '' }: User,
-): Promise<[ResultSet]> => {
+): Promise<SQLResultSet> => {
   try {
-    const result = await db.executeSql(
+    const results = await ExecuteQuery(
+      db,
       `UPDATE Users SET name='${name}', about='${about}', picture='${picture}', mainRelay='${mainRelay}' WHERE pubkey='${pubkey}' AND NOT EXISTS (SELECT * FROM Users WHERE name='${name}' AND about='${about}' AND picture='${picture}' AND mainRelay='${mainRelay}');`,
     );
-    return result;
+    return results;
   } catch (e) {
     console.error(e);
     return undefined;

@@ -1,11 +1,14 @@
+import { openDatabase, WebSQLDatabase } from 'expo-sqlite';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Database, sqliteDatabase as database } from '../database';
+import { getAllMessages } from '../database/functions/messages';
+import { getAllUsers } from '../database/functions/user';
+import { initDatabase } from '../database/init';
 import { Message } from '../types/message';
 import { User } from '../types/user';
 import { useUserContext } from './UserContext';
 
 type DatabaseContextProps = {
-  database: Database;
+  database: WebSQLDatabase;
   allMessages: Array<Message>;
   setAllMessages: (allMessages: Array<Message>) => void;
   allUsers: Array<User>;
@@ -31,17 +34,30 @@ const DatabaseContextProvider = ({
   const lastEventRef = useRef(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { key, isLoaded: isUserContextLoaded } = useUserContext();
+  const [db, setDb] = useState<WebSQLDatabase>(undefined);
 
+  // init database
   useEffect(() => {
     const init = async () => {
-      setAllUsers(await database.getAllUsers());
-      const allMessages = await database.getAllMessages();
+      const db = openDatabase('ottr.sql');
+      await initDatabase(db);
+      setDb(db);
+    };
+
+    init();
+  }, []);
+
+  // init messages and users
+  useEffect(() => {
+    const init = async () => {
+      setAllUsers(await getAllUsers(db));
+      const allMessages = await getAllMessages(db);
       setAllMessages(allMessages);
       if (allMessages.length === 0) setLastEvent(1);
       setIsLoaded(true);
     };
 
-    if (!isUserContextLoaded) return;
+    if (!isUserContextLoaded || !db) return;
     if (key) init();
     else {
       // initialize empty arrays
@@ -51,8 +67,9 @@ const DatabaseContextProvider = ({
       setLastEvent(1);
       setIsLoaded(true);
     }
-  }, [key, isUserContextLoaded]);
+  }, [key, isUserContextLoaded, db]);
 
+  // init last event ref
   useEffect(() => {
     if (lastEventRef.current !== 0 || allMessages.length === 0) {
       return;
@@ -65,7 +82,7 @@ const DatabaseContextProvider = ({
   return (
     <DatabaseContext.Provider
       value={{
-        database,
+        database: db,
         allMessages,
         setAllMessages,
         allUsers,

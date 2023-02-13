@@ -1,7 +1,8 @@
-import { Transaction } from 'react-native-sqlite-storage';
+import { WebSQLDatabase } from 'expo-sqlite';
+import { ExecuteQuery } from './functions/utils';
 
-export const deleteDatabase = (transaction: Transaction) => {
-  transaction.executeSql('DROP TABLE IF EXISTS Messages;');
-  transaction.executeSql('DROP TABLE IF EXISTS Users;');
-  transaction.executeSql('DROP TABLE IF EXISTS Version;');
+export const deleteDatabase = async (db: WebSQLDatabase) => {
+  await ExecuteQuery(db, 'DROP TABLE IF EXISTS Messages;');
+  await ExecuteQuery(db, 'DROP TABLE IF EXISTS Users;');
+  await ExecuteQuery(db, 'DROP TABLE IF EXISTS Version;');
 };
