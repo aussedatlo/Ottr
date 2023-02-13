@@ -17,13 +17,13 @@ export function useUsers() {
 
   async function updateUser(user: User): Promise<void> {
     console.log('UPDATE USER');
-    const [results] = await database.updateUser(user);
+    const results = await database.updateUser(user);
     if (results.rowsAffected) await refreshUsers();
   }
 
   async function addUser(user: User): Promise<void> {
     console.log('ADD USER');
-    const [results] = await database.addUser(user);
+    const results = await database.addUser(user);
     if (results.rowsAffected) await refreshUsers();
   }
 

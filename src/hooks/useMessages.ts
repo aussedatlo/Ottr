@@ -11,13 +11,13 @@ export function useMessages() {
 
   async function addMessage(message: Message): Promise<void> {
     console.log('ADD MESSAGE');
-    const [results] = await database.addMessage(message);
+    const results = await database.addMessage(message);
     if (results.rowsAffected) await refreshMessages();
   }
 
   async function updateMessage(message: Message): Promise<void> {
     console.log('SET PENDING');
-    const [results] = await database.updateMessage(message);
+    const results = await database.updateMessage(message);
     if (results.rowsAffected) await refreshMessages();
   }
 

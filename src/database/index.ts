@@ -1,5 +1,5 @@
 import { AppState, AppStateStatus } from 'react-native';
-import SQLite from 'react-native-sqlite-storage';
+import { openDatabase, SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 import { Message } from '../types/message';
 import { User } from '../types/user';
 import { deleteDatabase } from './delete';
@@ -13,19 +13,19 @@ import { initDatabase } from './init';
 
 export interface Database {
   // Create
-  addMessage(message: Message): Promise<[SQLite.ResultSet]>;
-  addUser(user: User): Promise<[SQLite.ResultSet]>;
+  addMessage(message: Message): Promise<SQLResultSet>;
+  addUser(user: User): Promise<SQLResultSet>;
   // Read
   getAllMessages(): Promise<Array<Message>>;
   getAllUsers(): Promise<Array<User>>;
   // update
-  updateMessage(message: Message): Promise<[SQLite.ResultSet]>;
-  updateUser(user: User): Promise<[SQLite.ResultSet]>;
+  updateMessage(message: Message): Promise<SQLResultSet>;
+  updateUser(user: User): Promise<SQLResultSet>;
   // delete
   reset(): Promise<void>;
 }
 
-let databaseInstance: SQLite.SQLiteDatabase | undefined;
+let databaseInstance: WebSQLDatabase | undefined;
 let appState = 'active';
 
 const handleAppStateChange = async (nextAppState: AppStateStatus) => {
@@ -36,53 +36,43 @@ const handleAppStateChange = async (nextAppState: AppStateStatus) => {
 };
 AppState.addEventListener('change', handleAppStateChange);
 
-export const getDatabase = (): Promise<SQLite.SQLiteDatabase> => {
+export const getDatabase = (): WebSQLDatabase => {
   if (databaseInstance !== undefined) {
-    return Promise.resolve(databaseInstance);
-  }
-  return open();
-};
-
-export const reset = async (): Promise<void> => {
-  const db = await getDatabase();
-  await db.transaction(deleteDatabase);
-  databaseInstance = undefined;
-};
-
-const open = async (): Promise<SQLite.SQLiteDatabase> => {
-  SQLite.DEBUG(false);
-  SQLite.enablePromise(true);
-
-  if (databaseInstance) {
     return databaseInstance;
   }
 
-  const db = await SQLite.openDatabase({
-    name: 'ottr.sql',
-    location: 'Documents',
-  });
+  try {
+    const db = openDatabase('ottr.sql');
+    db.transaction(initDatabase);
+    databaseInstance = db;
+    return db;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
 
-  await db.transaction(initDatabase);
-  databaseInstance = db;
-  return db;
+export const reset = async (): Promise<void> => {
+  const db = getDatabase();
+  db.transaction(deleteDatabase);
+  databaseInstance = undefined;
 };
 
 const close = async (): Promise<void> => {
   if (databaseInstance === undefined) {
     return;
   }
-  await databaseInstance.close();
+  databaseInstance.closeAsync();
   console.log('[db] Database closed.');
   databaseInstance = undefined;
 };
 
 export const sqliteDatabase: Database = {
-  addMessage: async (message: Message) =>
-    addMessage(await getDatabase(), message),
-  addUser: async (user: User) => addUser(await getDatabase(), user),
-  getAllMessages: async () => getAllMessages(await getDatabase()),
-  getAllUsers: async () => getAllUsers(await getDatabase()),
-  updateMessage: async (message) => updateMessage(await getDatabase(), message),
-  updateUser: async (user: User) => updateUser(await getDatabase(), user),
+  addMessage: async (message: Message) => addMessage(getDatabase(), message),
+  addUser: async (user: User) => addUser(getDatabase(), user),
+  getAllMessages: async () => getAllMessages(getDatabase()),
+  getAllUsers: async () => getAllUsers(getDatabase()),
+  updateMessage: async (message) => updateMessage(getDatabase(), message),
+  updateUser: async (user: User) => updateUser(getDatabase(), user),
   reset,
 };

@@ -1,8 +1,8 @@
 import { Transaction } from 'react-native-sqlite-storage';
 
-export const initDatabase = (transaction: Transaction) => {
+export const initDatabase = async (transaction: Transaction) => {
   // Messages table
-  transaction.executeSql(`
+  await transaction.executeSql(`
       CREATE TABLE IF NOT EXISTS Messages(
       id TEXT PRIMARY KEY NOT NULL,
       content TEXT NOT NULL,
@@ -17,7 +17,7 @@ export const initDatabase = (transaction: Transaction) => {
     `);
 
   // Users table
-  transaction.executeSql(`
+  await transaction.executeSql(`
       CREATE TABLE IF NOT EXISTS Users(
       pubkey TEXT PRIMARY KEY NOT NULL,
       name TEXT,
@@ -28,7 +28,7 @@ export const initDatabase = (transaction: Transaction) => {
     `);
 
   // Version table
-  transaction.executeSql(`
+  await transaction.executeSql(`
       CREATE TABLE IF NOT EXISTS Version(
         version_id INTEGER PRIMARY KEY NOT NULL,
         version INTEGER
