@@ -3,6 +3,7 @@ import {
   getAllUsers,
   addUser as dbAddUser,
   updateUser as dbUpdateUser,
+  updateUserLastEventAt as dbUpdateUserLastEventAt,
 } from '../database/functions/user';
 import { User } from '../types/user';
 
@@ -32,8 +33,15 @@ export function useUsers() {
     if (results.rowsAffected) await refreshUsers();
   }
 
+  async function updateUserLastEventAt(user: User): Promise<void> {
+    console.log('UPDATE USER LAST EVENT AT');
+    const results = await dbUpdateUserLastEventAt(database, user);
+    if (results.rowsAffected) await refreshUsers();
+  }
+
   return {
     updateUser,
+    updateUserLastEventAt,
     addUser,
   };
 }

@@ -27,7 +27,8 @@ pubkey TEXT PRIMARY KEY NOT NULL,
 name TEXT,
 about TEXT,
 picture TEXT,
-mainRelay TEXT
+mainRelay TEXT,
+lastEventAt INT
 );
 `,
   );

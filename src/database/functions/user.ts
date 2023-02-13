@@ -5,7 +5,7 @@ import { SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 export const getAllUsers = async (db: WebSQLDatabase): Promise<Array<User>> => {
   console.log('[db] Fetching users from the db...');
 
-  const results = await ExecuteQuery(db, 'SELECT * FROM Users;');
+  const results = await ExecuteQuery(db, 'SELECT * FROM Users ORDER BY lastEventAt DESC;');
 
   if (!results) return [];
 
@@ -34,12 +34,35 @@ export const addUser = async (
 
 export const updateUser = async (
   db: WebSQLDatabase,
-  { pubkey, name = '', about = '', picture = '', mainRelay = '' }: User,
+  {
+    pubkey,
+    name = '',
+    about = '',
+    picture = '',
+    mainRelay = '',
+    lastEventAt = 0,
+  }: User,
 ): Promise<SQLResultSet> => {
   try {
     const results = await ExecuteQuery(
       db,
-      `UPDATE Users SET name='${name}', about='${about}', picture='${picture}', mainRelay='${mainRelay}' WHERE pubkey='${pubkey}' AND NOT EXISTS (SELECT * FROM Users WHERE name='${name}' AND about='${about}' AND picture='${picture}' AND mainRelay='${mainRelay}');`,
+      `UPDATE Users SET name='${name}', about='${about}', picture='${picture}', mainRelay='${mainRelay}', lastEventAt='${lastEventAt}' WHERE pubkey='${pubkey}' AND NOT EXISTS (SELECT * FROM Users WHERE name='${name}' AND about='${about}' AND picture='${picture}' AND mainRelay='${mainRelay}' AND lastEventAt='${lastEventAt}');`,
+    );
+    return results;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
+export const updateUserLastEventAt = async (
+  db: WebSQLDatabase,
+  { pubkey, lastEventAt = 0 }: User,
+): Promise<SQLResultSet> => {
+  try {
+    const results = await ExecuteQuery(
+      db,
+      `UPDATE Users SET lastEventAt='${lastEventAt}' WHERE pubkey='${pubkey}' AND NOT EXISTS (SELECT * FROM Users WHERE lastEventAt>${lastEventAt});`,
     );
     return results;
   } catch (e) {

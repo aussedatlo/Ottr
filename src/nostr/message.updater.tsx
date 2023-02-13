@@ -8,7 +8,7 @@ import { useUsers } from '../hooks/useUsers';
 
 const ReceiveMessageUpdater = (): null => {
   const { key, pubkey } = useUserContext();
-  const { addUser } = useUsers();
+  const { addUser, updateUserLastEventAt } = useUsers();
   const { lastEvent } = useDatabaseContext();
   const since = lastEvent === 0 ? dateToUnix() : lastEvent;
   const { addMessage } = useMessages();
@@ -35,6 +35,10 @@ const ReceiveMessageUpdater = (): null => {
 
       await addUser({
         pubkey: event.pubkey,
+      });
+      await updateUserLastEventAt({
+        pubkey: event.pubkey,
+        lastEventAt: event.created_at,
       });
     },
     [addMessage, addUser, key, pubkey],
