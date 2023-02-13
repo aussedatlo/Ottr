@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { useUserContext } from '../../context/UserContext';
@@ -10,14 +10,38 @@ import UserMessageBox from './UserMessageBox';
 type MessageProps = Message & {
   prevMessage: Message;
   nextMessage: Message;
+  animate: boolean;
 };
 
 const MessageBox = (props: MessageProps) => {
-  const { content, created_at, pending, pubkey, prevMessage, nextMessage } =
-    props;
+  const {
+    content,
+    created_at,
+    pending,
+    pubkey,
+    prevMessage,
+    nextMessage,
+    animate,
+  } = props;
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { pubkey: userPubkey } = useUserContext();
+  const animation = useRef(animate ? new Animated.Value(150) : new Animated.Value(0));
+
+  useEffect(() => {
+
+    console.log(animate)
+    console.log(content)
+    if (!animate) return;
+    Animated.timing(animation.current, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => {
+      animation.current = new Animated.Value(0);
+      //If you remove above line then it will stop the animation at toValue point
+    });
+  }, [animate, animation]);
 
   const prevMessageDate = prevMessage
     ? new Date(prevMessage.created_at * 1000).toLocaleDateString()
@@ -51,7 +75,15 @@ const MessageBox = (props: MessageProps) => {
         <></>
       )}
 
-      <Animated.View>
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateX: animation.current,
+            },
+          ],
+        }}
+      >
         {userPubkey === pubkey ? (
           <UserMessageBox
             content={content}

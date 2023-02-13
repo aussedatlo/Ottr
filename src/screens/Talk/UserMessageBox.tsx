@@ -17,12 +17,14 @@ const UserMessageBox = ({ content, pending, time }: UserMessageBoxProps) => {
     <View style={styles.root}>
       <View style={styles.contentContainer}>
         <Text style={styles.content}>{content}</Text>
-        <AvatarPaper.Icon
-          icon={'check-bold'}
-          size={12}
-          style={!pending ? styles.avatar : styles.hide}
-          color={theme.colors.primary}
-        />
+        <View style={styles.avatarContainer}>
+          <AvatarPaper.Icon
+            icon={'check-bold'}
+            size={12}
+            style={!pending ? styles.avatar : styles.hide}
+            color={theme.colors.primary}
+          />
+        </View>
       </View>
       {time ? (
         <Text variant="labelSmall" style={styles.time}>
@@ -37,7 +39,12 @@ const UserMessageBox = ({ content, pending, time }: UserMessageBoxProps) => {
 
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
-    root: { marginRight: 5, marginTop: 2 },
+    root: {
+      marginRight: 5,
+      marginTop: 2,
+      maxWidth: '70%',
+      alignSelf: 'flex-end',
+    },
     contentContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -45,17 +52,22 @@ const createStyles = ({ colors }: Theme) => {
       alignSelf: 'flex-end',
       borderRadius: 15,
       padding: 15,
-      maxWidth: '70%',
+      paddingRight: 10,
       backgroundColor: colors.primary,
     },
-    content: { color: colors.onPrimary },
+    content: { color: colors.onPrimary, paddingRight: 8 },
+    avatarContainer: {
+      flexDirection: 'row',
+      height: '100%',
+      alignItems: 'flex-end',
+    },
     avatar: {
+      marginBottom: 3,
       backgroundColor: colors.primaryContainer,
-      marginLeft: 5,
     },
     hide: {
+      marginBottom: 3,
       backgroundColor: colors.primary,
-      marginLeft: 5,
     },
     time: { alignSelf: 'flex-end', marginBottom: 10, marginRight: 5 },
   });

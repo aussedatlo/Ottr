@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUser } from '../../hooks/useUsers';
@@ -21,6 +21,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     [allMessages, pubkey],
   );
   const user = useUser(pubkey);
+  const messagesLengthRef = useRef(messages.length)
 
   useEffect(() => {
     navigation.setOptions({
@@ -33,6 +34,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       {...item}
       prevMessage={messages?.[index + 1]}
       nextMessage={messages?.[index - 1]}
+      animate={index + messagesLengthRef.current < messages.length}
     />
   );
 
