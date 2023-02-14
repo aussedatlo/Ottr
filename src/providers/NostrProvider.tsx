@@ -15,7 +15,7 @@ const NostrProvider = ({ children }: ThemeProviderProps) => {
   const { key, pubkey, relays } = useUserContext();
   const { isLoaded } = useDatabaseContext();
 
-  if (!key || !pubkey || !relays || !isLoaded) return <></>;
+  if (!key || !pubkey || !relays || !isLoaded) return <>{children}</>;
 
   return (
     <Provider relayUrls={relays} debug={true}>
