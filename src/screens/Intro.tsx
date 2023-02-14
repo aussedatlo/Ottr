@@ -1,22 +1,15 @@
-import { StackActions } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { generatePrivateKey } from 'nostr-tools';
 import React from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import Icon from '../../assets/icon.svg';
 import { useUserContext } from '../context/UserContext';
-import { RootStackParamList } from '../navigation';
 
-type IntroScreenProps = NativeStackScreenProps<RootStackParamList, 'Intro'>;
-
-const IntroScreen = ({ navigation }: IntroScreenProps) => {
+const IntroScreen = () => {
   const { setKey } = useUserContext();
 
   const handleNewKey = () => {
     setKey(generatePrivateKey());
-    const action = StackActions.replace('Home');
-    navigation.dispatch(action);
   };
 
   return (

@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { getPublicKey } from 'nostr-tools';
 import React, { useContext, useEffect, useState } from 'react';
 import { DEFAULT_RELAYS_URL } from '../constant/relay';
 import { ThemeMode } from '../types/themeMode';
 import { User } from '../types/user';
 import { getLocalStorage, setLocalStorage } from '../utils/storage';
-import * as SecureStore from 'expo-secure-store';
 
 type UserContextProps = {
   key?: string;
@@ -54,8 +55,10 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
   const logout = async () => {
     await SecureStore.deleteItemAsync('key');
+    await AsyncStorage.clear();
     setKey(undefined);
     setPubkey(undefined);
+    setRelays(DEFAULT_RELAYS_URL);
   };
 
   useEffect(() => {

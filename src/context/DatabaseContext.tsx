@@ -1,5 +1,6 @@
 import { openDatabase, WebSQLDatabase } from 'expo-sqlite';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { deleteDatabase } from '../database/delete';
 import { getAllMessages } from '../database/functions/messages';
 import { getAllUsers } from '../database/functions/user';
 import { initDatabase } from '../database/init';
@@ -15,6 +16,7 @@ type DatabaseContextProps = {
   setAllUsers: (allUsers: Array<User>) => void;
   lastEvent: number;
   isLoaded: boolean;
+  logout: () => Promise<void>;
 };
 
 const DatabaseContext = React.createContext<DatabaseContextProps | undefined>(
@@ -35,6 +37,11 @@ const DatabaseContextProvider = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { key, isLoaded: isUserContextLoaded } = useUserContext();
   const [db, setDb] = useState<WebSQLDatabase>(undefined);
+
+  const logout = async () => {
+    await deleteDatabase(db);
+    await initDatabase(db);
+  };
 
   // init database
   useEffect(() => {
@@ -89,6 +96,7 @@ const DatabaseContextProvider = ({
         setAllUsers,
         lastEvent,
         isLoaded,
+        logout,
       }}
     >
       {children}

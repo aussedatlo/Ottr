@@ -1,28 +1,19 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StackActions, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import ModalController from '../../components/Modal/ModalController';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUserContext } from '../../context/UserContext';
-import { deleteDatabase } from '../../database/delete';
-import { initDatabase } from '../../database/init';
 
 const LogoutModal = () => {
-  const { database } = useDatabaseContext();
   const { logout } = useUserContext();
-  const navigation = useNavigation();
+  const { logout: databaseLogout } = useDatabaseContext();
 
   const onLogout = async () => {
     try {
       ToastAndroid.show('logout', ToastAndroid.SHORT);
-      const action = StackActions.replace('Intro');
-      navigation.dispatch(action);
-      await AsyncStorage.clear();
-      await deleteDatabase(database);
-      await initDatabase(database);
       await logout();
+      await databaseLogout();
       ModalController.hideModal();
     } catch (e) {
       console.error(e);

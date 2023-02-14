@@ -1,11 +1,11 @@
 import {
   DefaultTheme,
   NavigationContainer,
-  useNavigation,
+  useNavigation
 } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
-  NativeStackNavigationProp,
+  NativeStackNavigationProp
 } from '@react-navigation/native-stack';
 import { hideAsync } from 'expo-splash-screen';
 import { useNostr } from 'nostr-react';
@@ -85,52 +85,67 @@ const Navigation = () => {
   return (
     <SafeAreaView style={styles.root} onLayout={onLayout}>
       <NavigationContainer theme={navigationTheme}>
-        <Stack.Navigator
-          initialRouteName={!pubkey ? 'Intro' : 'Home'}
-          screenOptions={{
-            statusBarColor: theme.colors.background,
-            statusBarStyle: theme.dark ? 'light' : 'dark',
-            headerStyle: { backgroundColor: theme.colors.background },
-            headerTintColor: theme.colors.onBackground,
-            animationTypeForReplace: 'pop',
-            animation: 'fade',
-          }}
-        >
-          <Stack.Screen
-            name="Intro"
-            component={IntroScreen}
-            options={{ title: '', header: () => <></> }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              title: 'Ottr',
-              headerRight: HeaderRight,
+        {!pubkey ? (
+          <Stack.Navigator
+            initialRouteName={'Intro'}
+            screenOptions={{
+              statusBarColor: theme.colors.background,
+              statusBarStyle: theme.dark ? 'light' : 'dark',
+              headerStyle: { backgroundColor: theme.colors.background },
+              headerTintColor: theme.colors.onBackground,
+              animationTypeForReplace: 'pop',
+              animation: 'fade',
             }}
-          />
-          <Stack.Screen
-            name="SettingsNav"
-            component={SettingsNavigation}
-            options={{
-              title: 'Settings',
-              header: () => <></>,
+          >
+            <Stack.Screen
+              name="Intro"
+              component={IntroScreen}
+              options={{ title: '', header: () => <></> }}
+            />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator
+            initialRouteName={'Home'}
+            screenOptions={{
+              statusBarColor: theme.colors.background,
+              statusBarStyle: theme.dark ? 'light' : 'dark',
+              headerStyle: { backgroundColor: theme.colors.background },
+              headerTintColor: theme.colors.onBackground,
+              animationTypeForReplace: 'pop',
+              animation: 'fade',
             }}
-          />
-          <Stack.Screen
-            name="SelectContact"
-            component={SelectContactScreen}
-            options={{ title: 'Select Contact', headerRight: HeaderRight }}
-          />
-          <Stack.Screen
-            name="Talk"
-            component={TalkScreen}
-            options={{
-              animationTypeForReplace: 'push',
-              animation: 'fade_from_bottom',
-            }}
-          />
-        </Stack.Navigator>
+          >
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                title: 'Ottr',
+                headerRight: HeaderRight,
+              }}
+            />
+            <Stack.Screen
+              name="SettingsNav"
+              component={SettingsNavigation}
+              options={{
+                title: 'Settings',
+                header: () => <></>,
+              }}
+            />
+            <Stack.Screen
+              name="SelectContact"
+              component={SelectContactScreen}
+              options={{ title: 'Select Contact', headerRight: HeaderRight }}
+            />
+            <Stack.Screen
+              name="Talk"
+              component={TalkScreen}
+              options={{
+                animationTypeForReplace: 'push',
+                animation: 'fade_from_bottom',
+              }}
+            />
+          </Stack.Navigator>
+        )}
         <GenericModal />
       </NavigationContainer>
     </SafeAreaView>
