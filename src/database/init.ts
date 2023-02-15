@@ -19,6 +19,19 @@ export const initDatabase = async (db: WebSQLDatabase) => {
 `,
   );
 
+  try {
+    await ExecuteQuery(
+      db,
+      `ALTER TABLE Messages
+  ADD reaction TEXT`,
+    );
+    await ExecuteQuery(
+      db,
+      `ALTER TABLE Messages
+  ADD other_reaction TEXT`,
+    );
+  } catch {}
+
   await ExecuteQuery(
     db,
     `

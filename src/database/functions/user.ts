@@ -5,7 +5,10 @@ import { SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 export const getAllUsers = async (db: WebSQLDatabase): Promise<Array<User>> => {
   console.log('[db] Fetching users from the db...');
 
-  const results = await ExecuteQuery(db, 'SELECT * FROM Users ORDER BY lastEventAt DESC;');
+  const results = await ExecuteQuery(
+    db,
+    'SELECT * FROM Users ORDER BY lastEventAt DESC;',
+  );
 
   if (!results) return [];
 

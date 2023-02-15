@@ -1,18 +1,28 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useDatabaseContext } from '../../context/DatabaseContext';
+import { useUserContext } from '../../context/UserContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
 import { Message } from '../../types/message';
-import Bottom from './Bottom';
+import DateDivider from './DateDivider';
+import InputSend from './InputSend';
 import MessageBox from './MessageBox';
+import ReplyBox from './ReplyBox';
+import ReplyInfo from './ReplyInfo';
+import TimeIndicator from './TimeIndicator';
+
+export type Side = 'left' | 'right';
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
 const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
+  const { pubkey: userPubkey } = useUserContext();
+  const [reply, setReply] = useState<Message>(undefined);
   const { allMessages } = useDatabaseContext();
+  const user = useUser(pubkey);
   const messages = useMemo(
     () =>
       allMessages.filter(
@@ -20,7 +30,6 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       ),
     [allMessages, pubkey],
   );
-  const user = useUser(pubkey);
 
   useEffect(() => {
     navigation.setOptions({
@@ -28,12 +37,31 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     });
   }, [navigation, user, pubkey]);
 
-  const renderItem = ({ item, index }: { item: Message; index: number }) => (
-    <MessageBox
-      {...item}
-      prevMessage={messages?.[index + 1]}
-      nextMessage={messages?.[index - 1]}
-    />
+  const renderItem = useCallback(
+    ({ item, index }: { item: Message; index: number }) => {
+      const messageReplyId = item.tags.find((tag) => tag[0] === 'e')?.[1];
+      const replyMessage = messages.find((m) => m.id === messageReplyId);
+      const side = item.pubkey === userPubkey ? 'right' : 'left';
+
+      return (
+        <View>
+          <DateDivider message={item} prevMessage={messages?.[index + 1]} />
+          <ReplyBox replyMessage={replyMessage} side={side} />
+          <MessageBox
+            message={item}
+            onReply={setReply}
+            side={side}
+            user={side === 'left' ? user : undefined}
+          />
+          <TimeIndicator
+            message={item}
+            nextMessage={messages?.[index - 1]}
+            side={side}
+          />
+        </View>
+      );
+    },
+    [messages, userPubkey],
   );
 
   return (
@@ -42,19 +70,22 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         <FlatList data={messages} renderItem={renderItem} inverted />
       </View>
 
-      <Bottom pubkey={pubkey} />
+      <ReplyInfo
+        messageReply={reply}
+        onCloseReply={() => setReply(undefined)}
+      />
+      <InputSend
+        pubkey={pubkey}
+        messageReply={reply}
+        onCloseReply={() => setReply(undefined)}
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
   list: {
     flex: 1,
-  },
-  bottom: {
-    width: '100%',
-    justifyContent: 'space-around',
   },
 });
 

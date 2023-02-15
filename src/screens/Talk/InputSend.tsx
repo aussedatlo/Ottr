@@ -8,12 +8,15 @@ import { useUserContext } from '../../context/UserContext';
 import { useMessages } from '../../hooks/useMessages';
 import { useUsers } from '../../hooks/useUsers';
 import { Theme } from '../../providers/ThemeProvider';
+import { Message } from '../../types/message';
 
-type BottomProps = {
+type InputSendProps = {
   pubkey: string;
+  onCloseReply: () => void;
+  messageReply?: Message;
 };
 
-const Bottom = ({ pubkey }: BottomProps) => {
+const InputSend = ({ pubkey, messageReply, onCloseReply }: InputSendProps) => {
   const [text, setText] = useState('');
   const { addUser, updateUserLastEventAt } = useUsers();
   const { key, pubkey: userPubkey } = useUserContext();
@@ -38,6 +41,11 @@ const Bottom = ({ pubkey }: BottomProps) => {
       pubkey: userPubkey,
     };
 
+    if (messageReply) {
+      event.tags.push(['e', messageReply.id]);
+      onCloseReply();
+    }
+
     event.id = getEventHash(event);
     event.sig = signEvent(event, key);
 
@@ -52,7 +60,16 @@ const Bottom = ({ pubkey }: BottomProps) => {
     });
 
     publish(event);
-  }, [addUser, pubkey, publish, key, userPubkey, text, addMessage]);
+  }, [
+    addUser,
+    pubkey,
+    publish,
+    key,
+    userPubkey,
+    text,
+    addMessage,
+    messageReply,
+  ]);
 
   return (
     <View style={styles.root}>
@@ -85,9 +102,9 @@ const createStyles = ({ colors }: Theme) => {
       margin: 10,
       borderRadius: 20,
       borderTopLeftRadius: 20,
-      backgroundColor: colors.tertiaryContainer,
+      backgroundColor: colors.secondaryContainer,
     },
   });
 };
 
-export default Bottom;
+export default InputSend;

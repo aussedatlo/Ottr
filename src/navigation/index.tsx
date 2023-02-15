@@ -1,11 +1,11 @@
 import {
   DefaultTheme,
   NavigationContainer,
-  useNavigation
+  useNavigation,
 } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
-  NativeStackNavigationProp
+  NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import { hideAsync } from 'expo-splash-screen';
 import { useNostr } from 'nostr-react';

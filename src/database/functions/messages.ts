@@ -1,5 +1,6 @@
 import { SQLResultSet, WebSQLDatabase } from 'expo-sqlite';
 import { Message } from '../../types/message';
+import { Reaction } from '../../types/reaction';
 import { ExecuteQuery } from './utils';
 
 export const getAllMessages = async (
@@ -38,6 +39,42 @@ export const addMessage = async (
         tags,
       )}','${pending}','${seen}');`,
     );
+    return results;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
+export const addReaction = async (
+  db: WebSQLDatabase,
+  messageId: string,
+  reaction: Reaction,
+): Promise<SQLResultSet> => {
+  try {
+    const results = await ExecuteQuery(
+      db,
+      `UPDATE Messages SET reaction='${reaction}' WHERE id='${messageId}' AND NOT EXISTS (SELECT * FROM Messages WHERE id='${messageId}' AND reaction='${reaction}');`,
+    );
+    console.log(results);
+    return results;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
+export const addOtherReaction = async (
+  db: WebSQLDatabase,
+  messageId: string,
+  reaction: Reaction,
+): Promise<SQLResultSet> => {
+  try {
+    const results = await ExecuteQuery(
+      db,
+      `UPDATE Messages SET other_reaction='${reaction}' WHERE id='${messageId}' AND NOT EXISTS (SELECT * FROM Messages WHERE id='${messageId}' AND other_reaction='${reaction}');`,
+    );
+    console.log(results);
     return results;
   } catch (e) {
     console.error(e);
