@@ -6,12 +6,9 @@ import { useUserContext } from '../../context/UserContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
 import { Message } from '../../types/message';
-import DateDivider from './DateDivider';
 import InputSend from './InputSend';
-import MessageBox from './MessageBox';
-import ReplyBox from './ReplyBox';
+import ListItem from './ListItem';
 import ReplyInfo from './ReplyInfo';
-import TimeIndicator from './TimeIndicator';
 
 export type Side = 'left' | 'right';
 
@@ -44,21 +41,15 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       const side = item.pubkey === userPubkey ? 'right' : 'left';
 
       return (
-        <View style={styles.scaleYInverted}>
-          <DateDivider message={item} prevMessage={messages?.[index + 1]} />
-          <ReplyBox replyMessage={replyMessage} side={side} />
-          <MessageBox
-            message={item}
-            onReply={setReply}
-            side={side}
-            user={side === 'left' ? user : undefined}
-          />
-          <TimeIndicator
-            message={item}
-            nextMessage={messages?.[index - 1]}
-            side={side}
-          />
-        </View>
+        <ListItem
+          message={item}
+          user={user}
+          nextMessage={messages?.[index - 1]}
+          prevMessage={messages?.[index + 1]}
+          replyMessage={replyMessage}
+          side={side}
+          setReply={setReply}
+        />
       );
     },
     [messages, userPubkey],
