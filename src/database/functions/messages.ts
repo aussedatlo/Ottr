@@ -35,9 +35,18 @@ export const addMessage = async (
   try {
     const results = await ExecuteQuery(
       db,
-      `INSERT OR IGNORE INTO Messages (id, content, created_at, kind, pubkey, sig, tags, pending, seen) VALUES ('${id}','${content}','${created_at}','${kind}','${pubkey}','${sig}','${JSON.stringify(
-        tags,
-      )}','${pending}','${seen}');`,
+      `INSERT OR IGNORE INTO Messages (id, content, created_at, kind, pubkey, sig, tags, pending, seen) VALUES (?,?,?,?,?,?,?,?,?);`,
+      [
+        id,
+        content,
+        created_at,
+        kind,
+        pubkey,
+        sig,
+        JSON.stringify(tags),
+        pending.toString(),
+        seen.toString(),
+      ],
     );
     return results;
   } catch (e) {
