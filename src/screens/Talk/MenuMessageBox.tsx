@@ -1,70 +1,30 @@
-import * as Clipboard from 'expo-clipboard';
-import { Event, getEventHash, Kind, signEvent } from 'nostr-tools';
-import { dateToUnix, useNostr } from 'nostr-react';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Menu } from 'react-native-material-menu';
 import { IconButton, useTheme } from 'react-native-paper';
+import { Side } from '.';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
-import { useUserContext } from '../../context/UserContext';
 import { Reaction } from '../../types/reaction';
 
 type MenuMessageBoxProps = {
-  message: Message;
   visible: boolean;
+  side: Side;
   onChange: (visible: boolean) => void;
-  onReply: (message: Message) => void;
+  onReply: () => void;
+  onCopy: () => void;
+  onReaction: (reaction: Reaction) => void;
 };
 
 const MenuMessageBox = ({
-  message,
   visible,
+  side,
   onChange,
-  onReply: onReplyCb,
+  onReply,
+  onReaction,
+  onCopy,
 }: MenuMessageBoxProps) => {
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme), [theme]);
-  const { publish } = useNostr();
-  const { pubkey, key } = useUserContext();
-
-  const onCopy = async () => {
-    onChange(false);
-    await Clipboard.setStringAsync(message.content);
-    ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
-  };
-
-  const onReply = () => {
-    onChange(false);
-    onReplyCb(message);
-  };
-
-  const onReaction = (reaction: Reaction) => {
-    onChange(false);
-    console.log(message);
-    const tags =
-      message.pubkey === pubkey
-        ? [
-            ...message.tags.filter((tag) => tag[0] !== 'e'),
-            ['e', message.id],
-            ['p', pubkey],
-          ]
-        : [
-            ...message.tags.filter((tag) => tag[0] !== 'e'),
-            ['e', message.id],
-            ['p', message.pubkey],
-          ];
-    const event: Event = {
-      content: reaction,
-      kind: Kind.Reaction,
-      tags: tags,
-      pubkey: pubkey,
-      created_at: dateToUnix(),
-    };
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, key);
-    publish(event);
-  };
+  const styles = useMemo(() => createStyles(theme, side), [theme]);
 
   const onNonImplemented = () => {
     ToastAndroid.show('Not implemented', ToastAndroid.SHORT);
@@ -96,17 +56,12 @@ const MenuMessageBox = ({
           onPress={onNonImplemented}
           style={styles.button}
         />
-        {message.pending ? (
-          <IconButton
-            size={20}
-            icon="redo-variant"
-            onPress={() => onChange(false)}
-            style={styles.button}
-          />
-        ) : (
-          <></>
-        )}
-
+        <IconButton
+          size={20}
+          icon="redo-variant"
+          onPress={() => onChange(false)}
+          style={styles.button}
+        />
         <IconButton
           size={20}
           icon="thumb-up-outline"
@@ -125,13 +80,15 @@ const MenuMessageBox = ({
   );
 };
 
-const createStyles = ({ colors }: Theme) => {
+const createStyles = ({ colors }: Theme, side: Side) => {
   return StyleSheet.create({
     menu: {
       backgroundColor: colors.tertiaryContainer,
       borderRadius: 10,
-      marginTop: 3,
+      marginRight: 15,
       elevation: 2,
+      alignSelf: side === 'right' ? 'flex-end' : 'flex-start',
+      position: 'relative',
     },
     container: { flexDirection: 'row' },
     button: {
@@ -140,4 +97,4 @@ const createStyles = ({ colors }: Theme) => {
   });
 };
 
-export default MenuMessageBox;
+export default memo(MenuMessageBox);

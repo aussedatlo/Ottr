@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Avatar as AvatarPaper, Text, useTheme } from 'react-native-paper';
 import { Side } from '.';
@@ -6,20 +6,18 @@ import Avatar from '../../components/Avatar';
 import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
 import { User } from '../../types/user';
-import MenuMessageBox from './MenuMessageBox';
 import ReactionBox from './ReactionBox';
 
 type MessageBoxProps = {
   message: Message;
   user: User;
   side: Side;
-  onReply: (message: Message) => void;
+  onMenu: (visible: boolean) => void;
 };
 
-const MessageBox = ({ message, user, side, onReply }: MessageBoxProps) => {
+const MessageBox = ({ message, user, side, onMenu }: MessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme, side), [theme]);
-  const [visible, setVisible] = useState<boolean>(false);
 
   return (
     <View style={styles.root}>
@@ -30,7 +28,7 @@ const MessageBox = ({ message, user, side, onReply }: MessageBoxProps) => {
       )}
       <View style={styles.container}>
         <Pressable
-          onLongPress={() => setVisible(true)}
+          onLongPress={() => onMenu(true)}
           android_ripple={{ color: theme.colors.backdrop }}
           style={styles.pressable}
         >
@@ -48,12 +46,6 @@ const MessageBox = ({ message, user, side, onReply }: MessageBoxProps) => {
             <></>
           )}
         </Pressable>
-        <MenuMessageBox
-          message={message}
-          onChange={setVisible}
-          onReply={onReply}
-          visible={visible}
-        />
       </View>
       <ReactionBox message={message} side={side} />
     </View>
