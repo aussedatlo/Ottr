@@ -44,7 +44,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       const side = item.pubkey === userPubkey ? 'right' : 'left';
 
       return (
-        <View>
+        <View style={styles.scaleYInverted}>
           <DateDivider message={item} prevMessage={messages?.[index + 1]} />
           <ReplyBox replyMessage={replyMessage} side={side} />
           <MessageBox
@@ -67,7 +67,11 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   return (
     <>
       <View style={styles.list}>
-        <FlatList data={messages} renderItem={renderItem} inverted />
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          style={styles.scaleYInverted}
+        />
       </View>
 
       <ReplyInfo
@@ -86,6 +90,9 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
 const styles = StyleSheet.create({
   list: {
     flex: 1,
+  },
+  scaleYInverted: {
+    scaleY: -1,
   },
 });
 
