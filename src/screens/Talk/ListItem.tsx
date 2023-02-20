@@ -96,7 +96,13 @@ const ListItem = ({
         visible={visible}
         side={side}
       />
-      <TimeIndicator message={message} nextMessage={nextMessage} side={side} />
+      <TimeIndicator
+        createdAt={message.created_at}
+        nextCreatedAt={nextMessage?.created_at}
+        pubkey={message.pubkey}
+        nextPubkey={nextMessage?.pubkey}
+        side={side}
+      />
     </View>
   );
 };

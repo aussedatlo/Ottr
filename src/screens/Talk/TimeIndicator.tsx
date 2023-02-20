@@ -1,37 +1,38 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Side } from '.';
 import { Message } from '../../types/message';
 
 type TimeIndicatorProps = {
-  message: Message;
-  nextMessage: Message;
+  createdAt: number;
+  nextCreatedAt: number;
+  pubkey: string;
+  nextPubkey: string;
   side: Side;
 };
 
-const TimeIndicator = ({ message, nextMessage, side }: TimeIndicatorProps) => {
+const TimeIndicator = ({
+  createdAt,
+  nextCreatedAt,
+  pubkey,
+  nextPubkey,
+  side,
+}: TimeIndicatorProps) => {
   const styles = useMemo(() => createStyles(side), [side]);
 
   const nextMessageCreatedAt = new Date(
-    nextMessage?.created_at * 1000,
+    nextCreatedAt * 1000,
   ).toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
   });
-  const currCreatedAt = new Date(message.created_at * 1000).toLocaleTimeString(
-    'en-US',
-    {
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-  );
+  const currCreatedAt = new Date(createdAt * 1000).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
-  if (
-    nextMessageCreatedAt === currCreatedAt &&
-    nextMessage.pubkey === message.pubkey
-  )
-    return;
+  if (nextMessageCreatedAt === currCreatedAt && nextPubkey === pubkey) return;
 
   return (
     <Text variant="labelSmall" style={styles.time}>
