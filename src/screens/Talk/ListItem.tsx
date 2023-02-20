@@ -16,6 +16,7 @@ import TimeIndicator from './TimeIndicator';
 
 type ListItemProps = {
   user: User;
+  userPubkey: string;
   message: Message;
   prevMessage: Message;
   nextMessage: Message;
@@ -26,6 +27,7 @@ type ListItemProps = {
 
 const ListItem = ({
   user,
+  userPubkey,
   message,
   prevMessage,
   nextMessage,
@@ -46,34 +48,29 @@ const ListItem = ({
     setVisible(false);
     await Clipboard.setStringAsync(message.content);
     ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
-  }, []);
+  }, [message.content]);
 
-  const onReaction = useCallback((reaction: Reaction) => {
-    setVisible(false);
-    console.log(message);
-    const tags =
-      message.pubkey === pubkey
-        ? [
-            ...message.tags.filter((tag) => tag[0] !== 'e'),
-            ['e', message.id],
-            ['p', pubkey],
-          ]
-        : [
-            ...message.tags.filter((tag) => tag[0] !== 'e'),
-            ['e', message.id],
-            ['p', message.pubkey],
-          ];
-    const event: Event = {
-      content: reaction,
-      kind: Kind.Reaction,
-      tags: tags,
-      pubkey: pubkey,
-      created_at: dateToUnix(),
-    };
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, key);
-    publish(event);
-  }, []);
+  const onReaction = useCallback(
+    (reaction: Reaction) => {
+      setVisible(false);
+      const tags = [
+        ['e', message.id],
+        ['p', pubkey],
+        ['p', userPubkey],
+      ];
+      const event: Event = {
+        content: reaction,
+        kind: Kind.Reaction,
+        tags: tags,
+        pubkey: pubkey,
+        created_at: dateToUnix(),
+      };
+      event.id = getEventHash(event);
+      event.sig = signEvent(event, key);
+      publish(event);
+    },
+    [key, pubkey, publish, message.id, userPubkey],
+  );
 
   return (
     <View style={styles.scaleYInverted}>

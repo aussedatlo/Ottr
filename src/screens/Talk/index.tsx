@@ -46,6 +46,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         <ListItem
           message={item}
           user={user}
+          userPubkey={pubkey}
           nextMessage={messages?.[index - 1]}
           prevMessage={messages?.[index + 1]}
           replyMessage={replyMessage}
@@ -54,7 +55,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         />
       );
     },
-    [messages, userPubkey],
+    [messages, user, userPubkey],
   );
 
   return (
