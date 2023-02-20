@@ -8,15 +8,14 @@ import { useUserContext } from '../../context/UserContext';
 import { useMessages } from '../../hooks/useMessages';
 import { useUsers } from '../../hooks/useUsers';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
 
 type InputSendProps = {
   pubkey: string;
   onCloseReply: () => void;
-  messageReply?: Message;
+  replyId?: string;
 };
 
-const InputSend = ({ pubkey, messageReply, onCloseReply }: InputSendProps) => {
+const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
   const [text, setText] = useState('');
   const { addUser, updateUserLastEventAt } = useUsers();
   const { key, pubkey: userPubkey } = useUserContext();
@@ -41,8 +40,8 @@ const InputSend = ({ pubkey, messageReply, onCloseReply }: InputSendProps) => {
       pubkey: userPubkey,
     };
 
-    if (messageReply) {
-      event.tags.push(['e', messageReply.id]);
+    if (replyId) {
+      event.tags.push(['e', replyId]);
       onCloseReply();
     }
 
@@ -68,7 +67,9 @@ const InputSend = ({ pubkey, messageReply, onCloseReply }: InputSendProps) => {
     userPubkey,
     text,
     addMessage,
-    messageReply,
+    replyId,
+    onCloseReply,
+    updateUserLastEventAt,
   ]);
 
   return (

@@ -17,7 +17,9 @@ type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
   const { pubkey: userPubkey } = useUserContext();
-  const [reply, setReply] = useState<Message>(undefined);
+  const [reply, setReply] = useState<{ id: string; content: string }>(
+    undefined,
+  );
   const { allMessages } = useDatabaseContext();
   const user = useUser(pubkey);
   const messages = useMemo(
@@ -66,12 +68,12 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       </View>
 
       <ReplyInfo
-        messageReply={reply}
+        replyContent={reply?.content}
         onCloseReply={() => setReply(undefined)}
       />
       <InputSend
         pubkey={pubkey}
-        messageReply={reply}
+        replyId={reply?.id}
         onCloseReply={() => setReply(undefined)}
       />
     </>

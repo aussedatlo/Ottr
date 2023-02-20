@@ -2,24 +2,23 @@ import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, IconButton, Text, useTheme } from 'react-native-paper';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
 
 type ReplyInfoProps = {
   onCloseReply: () => void;
-  messageReply?: Message;
+  replyContent?: string;
 };
 
-const ReplyInfo = ({ messageReply, onCloseReply }: ReplyInfoProps) => {
+const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  if (!messageReply) return <></>;
+  if (!replyContent) return <></>;
 
   return (
     <View style={styles.root}>
       <Avatar.Icon icon="reply-outline" size={20} style={styles.icon} />
       <Text style={styles.text} numberOfLines={1}>
-        {messageReply.content}
+        {replyContent}
       </Text>
       <IconButton
         icon="close"

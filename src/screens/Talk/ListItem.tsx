@@ -21,7 +21,7 @@ type ListItemProps = {
   nextMessage: Message;
   replyMessage: Message;
   side: Side;
-  setReply: (message: Message) => void;
+  setReply: ({ id, content }: { id: string; content: string }) => void;
 };
 
 const ListItem = ({
@@ -39,8 +39,8 @@ const ListItem = ({
 
   const onReply = useCallback(() => {
     setVisible(false);
-    setReply(message);
-  }, []);
+    setReply({ id: message.id, content: message.content });
+  }, [message.id, message.content, setReply]);
 
   const onCopy = useCallback(async () => {
     setVisible(false);
