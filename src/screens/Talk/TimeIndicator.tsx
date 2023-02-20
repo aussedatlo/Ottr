@@ -1,8 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { Side } from '.';
-import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
 
 type TimeIndicatorProps = {
@@ -12,8 +11,7 @@ type TimeIndicatorProps = {
 };
 
 const TimeIndicator = ({ message, nextMessage, side }: TimeIndicatorProps) => {
-  const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme, side), [theme]);
+  const styles = useMemo(() => createStyles(side), [side]);
 
   const nextMessageCreatedAt = new Date(
     nextMessage?.created_at * 1000,
@@ -42,7 +40,7 @@ const TimeIndicator = ({ message, nextMessage, side }: TimeIndicatorProps) => {
   );
 };
 
-const createStyles = ({ colors }: Theme, side: Side) => {
+const createStyles = (side: Side) => {
   return StyleSheet.create({
     time: {
       alignSelf: side === 'right' ? 'flex-end' : 'flex-start',

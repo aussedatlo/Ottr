@@ -17,7 +17,7 @@ type MessageBoxProps = {
 
 const MessageBox = ({ message, user, side, onMenu }: MessageBoxProps) => {
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme, side), [theme]);
+  const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
   return (
     <View style={styles.root}>

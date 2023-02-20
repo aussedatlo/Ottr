@@ -24,7 +24,7 @@ const MenuMessageBox = ({
   onCopy,
 }: MenuMessageBoxProps) => {
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme, side), [theme]);
+  const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
   const onNonImplemented = () => {
     ToastAndroid.show('Not implemented', ToastAndroid.SHORT);
