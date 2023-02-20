@@ -1,94 +1,115 @@
 import React, { memo, useMemo } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
-import { Divider, Text, useTheme } from 'react-native-paper';
-import { useUserContext } from '../../context/UserContext';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Avatar as AvatarPaper, Text, useTheme } from 'react-native-paper';
+import { Side } from '.';
+import Avatar from '../../components/Avatar';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
-import ContactMessageBox from './ContactMessageBox';
-import UserMessageBox from './UserMessageBox';
+import { Reaction } from '../../types/reaction';
+import { User } from '../../types/user';
+import ReactionBox from './ReactionBox';
 
-type MessageProps = Message & {
-  prevMessage: Message;
-  nextMessage: Message;
+type MessageBoxProps = {
+  content: string;
+  pending: boolean;
+  reaction: Reaction;
+  other_reaction: Reaction;
+  user: User;
+  side: Side;
+  onMenu: (visible: boolean) => void;
 };
 
-const MessageBox = (props: MessageProps) => {
-  const { content, created_at, pending, pubkey, prevMessage, nextMessage } =
-    props;
+const MessageBox = ({
+  content,
+  pending,
+  reaction,
+  other_reaction,
+  user,
+  side,
+  onMenu,
+}: MessageBoxProps) => {
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme), [theme]);
-  const { pubkey: userPubkey } = useUserContext();
-
-  const prevMessageDate = prevMessage
-    ? new Date(prevMessage.created_at * 1000).toLocaleDateString()
-    : undefined;
-  const currMessageDate = new Date(created_at * 1000).toLocaleDateString();
-
-  const nextMessageCreatedAt = nextMessage
-    ? new Date(nextMessage.created_at * 1000).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    : new Date();
-  const currCreatedAt = new Date(created_at * 1000).toLocaleTimeString(
-    'en-US',
-    {
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-  );
+  const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
   return (
-    <View>
-      {prevMessageDate === undefined || prevMessageDate !== currMessageDate ? (
-        <View>
-          <Divider style={styles.divider} />
-          <Text variant="labelSmall" style={styles.date}>
-            {currMessageDate}
-          </Text>
-        </View>
+    <View style={styles.root}>
+      {side === 'left' ? (
+        <Avatar picture={user.picture} pubkey={user.pubkey} size={35} />
       ) : (
         <></>
       )}
-
-      <Animated.View>
-        {userPubkey === pubkey ? (
-          <UserMessageBox
-            content={content}
-            pending={pending}
-            time={
-              currCreatedAt !== nextMessageCreatedAt || !(userPubkey === pubkey)
-                ? currCreatedAt
-                : undefined
-            }
-          />
-        ) : (
-          <ContactMessageBox
-            pubkey={pubkey}
-            content={content}
-            time={
-              currCreatedAt !== nextMessageCreatedAt || userPubkey === pubkey
-                ? currCreatedAt
-                : undefined
-            }
-          />
-        )}
-      </Animated.View>
+      <View style={styles.container}>
+        <Pressable
+          onLongPress={() => onMenu(true)}
+          android_ripple={{ color: theme.colors.backdrop }}
+          style={styles.pressable}
+        >
+          <Text style={styles.content}>{content}</Text>
+          {side === 'right' ? (
+            <View style={styles.checkContainer}>
+              <AvatarPaper.Icon
+                icon={'check-bold'}
+                size={12}
+                style={!pending ? styles.check : styles.hide}
+                color={theme.colors.primary}
+              />
+            </View>
+          ) : (
+            <></>
+          )}
+        </Pressable>
+      </View>
+      <ReactionBox
+        reaction={reaction}
+        other_reaction={other_reaction}
+        side={side}
+      />
     </View>
   );
 };
 
-const createStyles = ({ colors }: Theme) => {
+const createStyles = ({ colors }: Theme, side: Side) => {
   return StyleSheet.create({
-    divider: {
-      marginLeft: 50,
-      marginRight: 50,
-      marginTop: 10,
+    root: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignSelf: side === 'right' ? 'flex-end' : 'flex-start',
+      paddingLeft: 5,
+      paddingRight: 5,
     },
-    date: {
-      alignSelf: 'center',
-      marginTop: 5,
-      color: colors.onSurfaceDisabled,
+    avatar: {
+      marginLeft: 5,
+    },
+    container: {
+      overflow: 'hidden',
+      padding: 0,
+      maxWidth: '70%',
+      marginBottom: 2,
+      borderRadius: 15,
+      marginLeft: 5,
+      backgroundColor: side === 'right' ? colors.primary : colors.secondary,
+    },
+    pressable: {
+      flexDirection: 'row',
+      padding: 15,
+    },
+    content: {
+      color: side === 'right' ? colors.onPrimary : colors.onSecondary,
+      paddingRight: 8,
+      flexShrink: 1,
+    },
+    checkContainer: {
+      flexDirection: 'row',
+      height: '100%',
+      alignItems: 'flex-end',
+    },
+    check: {
+      marginBottom: 3,
+      backgroundColor: colors.primaryContainer,
+    },
+    hide: {
+      marginBottom: 3,
+      backgroundColor: colors.transparent,
+      color: colors.transparent,
     },
   });
 };

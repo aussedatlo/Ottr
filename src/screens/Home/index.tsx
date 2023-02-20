@@ -15,6 +15,8 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { allUsers } = useDatabaseContext();
 
+  console.log(allUsers);
+
   const renderItem = ({ item }: { item: string }) => (
     <ContactMessageBox pubkey={item} key={item} />
   );

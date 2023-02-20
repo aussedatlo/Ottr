@@ -1,10 +1,13 @@
 import { useDatabaseContext } from '../context/DatabaseContext';
 import {
-  getAllMessages,
   addMessage as dbAddMessage,
+  addReaction as dbAddReaction,
+  addOtherReaction as dbAddOtherReaction,
+  getAllMessages,
   updateMessage as dbUpdateMessage,
 } from '../database/functions/messages';
 import { Message } from '../types/message';
+import { Reaction } from '../types/reaction';
 
 export function useMessages() {
   const { database, setAllMessages } = useDatabaseContext();
@@ -26,8 +29,28 @@ export function useMessages() {
     if (results.rowsAffected) await refreshMessages();
   }
 
+  async function addReaction(
+    messageId: string,
+    reaction: Reaction,
+  ): Promise<void> {
+    console.log('ADD REACTION');
+    const results = await dbAddReaction(database, messageId, reaction);
+    if (results.rowsAffected) await refreshMessages();
+  }
+
+  async function addOtherReaction(
+    messageId: string,
+    reaction: Reaction,
+  ): Promise<void> {
+    console.log('ADD OTHER REACTION');
+    const results = await dbAddOtherReaction(database, messageId, reaction);
+    if (results.rowsAffected) await refreshMessages();
+  }
+
   return {
     addMessage,
     updateMessage,
+    addReaction,
+    addOtherReaction,
   };
 }

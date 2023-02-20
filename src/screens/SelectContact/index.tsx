@@ -93,7 +93,7 @@ const createStyles = ({ colors }: Theme) => {
       alignSelf: 'center',
     },
     input: {
-      backgroundColor: colors.tertiaryContainer,
+      backgroundColor: colors.secondaryContainer,
       borderRadius: 20,
       marginBottom: 20,
     },

@@ -4,6 +4,7 @@ import { useDatabaseContext } from '../context/DatabaseContext';
 import { useUserContext } from '../context/UserContext';
 import ContactUpdater from '../nostr/contact.updater';
 import MessageUpdater from '../nostr/message.updater';
+import ReactionUpdater from '../nostr/reaction.updater';
 import RelayUpdater from '../nostr/relay.updater';
 import UserUpdater from '../nostr/user.updater';
 
@@ -25,6 +26,7 @@ const NostrProvider = ({ children }: ThemeProviderProps) => {
         <ContactUpdater />
         <MessageUpdater />
         <UserUpdater />
+        <ReactionUpdater />
       </>
     </Provider>
   );

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDatabaseContext } from '../context/DatabaseContext';
 import { useUserContext } from '../context/UserContext';
 import { useUsers } from '../hooks/useUsers';
-import { Contact } from '../types/contact';
+import { User } from '../types/user';
 
 const ContactUpdater = (): null => {
   const { updateUser } = useUsers();
@@ -18,7 +18,7 @@ const ContactUpdater = (): null => {
       return;
 
     const pubkeysToFetch: Array<string> = allUsers.reduce(
-      (prev: Array<string>, curr: Contact) =>
+      (prev: Array<string>, curr: User) =>
         prev.includes(curr.pubkey) || curr.pubkey === pubkey
           ? prev
           : [...prev, curr.pubkey],
@@ -36,7 +36,8 @@ const ContactUpdater = (): null => {
   const onEventCallback = useCallback(
     async (event: Event) => {
       try {
-        const user = JSON.parse(event.content) as Contact;
+        let user = JSON.parse(event.content) as User;
+        user.pubkey = event.pubkey;
         await updateUser(user);
       } catch {
         console.error('unable to parse metadata event');

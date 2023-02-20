@@ -1,18 +1,27 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useDatabaseContext } from '../../context/DatabaseContext';
+import { useUserContext } from '../../context/UserContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
 import { Message } from '../../types/message';
-import Bottom from './Bottom';
-import MessageBox from './MessageBox';
+import InputSend from './InputSend';
+import ListItem from './ListItem';
+import ReplyInfo from './ReplyInfo';
+
+export type Side = 'left' | 'right';
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
 const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
+  const { pubkey: userPubkey } = useUserContext();
+  const [reply, setReply] = useState<{ id: string; content: string }>(
+    undefined,
+  );
   const { allMessages } = useDatabaseContext();
+  const user = useUser(pubkey);
   const messages = useMemo(
     () =>
       allMessages.filter(
@@ -20,7 +29,6 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       ),
     [allMessages, pubkey],
   );
-  const user = useUser(pubkey);
 
   useEffect(() => {
     navigation.setOptions({
@@ -28,33 +36,57 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     });
   }, [navigation, user, pubkey]);
 
-  const renderItem = ({ item, index }: { item: Message; index: number }) => (
-    <MessageBox
-      {...item}
-      prevMessage={messages?.[index + 1]}
-      nextMessage={messages?.[index - 1]}
-    />
+  const renderItem = useCallback(
+    ({ item, index }: { item: Message; index: number }) => {
+      const messageReplyId = item.tags.find((tag) => tag[0] === 'e')?.[1];
+      const replyMessage = messages.find((m) => m.id === messageReplyId);
+      const side = item.pubkey === userPubkey ? 'right' : 'left';
+
+      return (
+        <ListItem
+          message={item}
+          user={user}
+          userPubkey={pubkey}
+          nextMessage={messages?.[index - 1]}
+          prevMessage={messages?.[index + 1]}
+          replyMessage={replyMessage}
+          side={side}
+          setReply={setReply}
+        />
+      );
+    },
+    [messages, user, userPubkey, pubkey],
   );
 
   return (
     <>
       <View style={styles.list}>
-        <FlatList data={messages} renderItem={renderItem} inverted />
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          style={styles.scaleYInverted}
+        />
       </View>
 
-      <Bottom pubkey={pubkey} />
+      <ReplyInfo
+        replyContent={reply?.content}
+        onCloseReply={() => setReply(undefined)}
+      />
+      <InputSend
+        pubkey={pubkey}
+        replyId={reply?.id}
+        onCloseReply={() => setReply(undefined)}
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
   list: {
     flex: 1,
   },
-  bottom: {
-    width: '100%',
-    justifyContent: 'space-around',
+  scaleYInverted: {
+    scaleY: -1,
   },
 });
 
