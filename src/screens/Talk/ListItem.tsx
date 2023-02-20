@@ -94,6 +94,7 @@ const ListItem = ({
         onCopy={onCopy}
         onReaction={onReaction}
         visible={visible}
+        pending={message.pending}
         side={side}
       />
       <TimeIndicator

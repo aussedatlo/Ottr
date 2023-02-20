@@ -9,6 +9,7 @@ import { Reaction } from '../../types/reaction';
 type MenuMessageBoxProps = {
   visible: boolean;
   side: Side;
+  pending: boolean;
   onChange: (visible: boolean) => void;
   onReply: () => void;
   onCopy: () => void;
@@ -18,6 +19,7 @@ type MenuMessageBoxProps = {
 const MenuMessageBox = ({
   visible,
   side,
+  pending,
   onChange,
   onReply,
   onReaction,
@@ -50,18 +52,29 @@ const MenuMessageBox = ({
           onPress={onReply}
           style={styles.button}
         />
-        <IconButton
-          size={20}
-          icon="delete-outline"
-          onPress={onNonImplemented}
-          style={styles.button}
-        />
-        <IconButton
-          size={20}
-          icon="redo-variant"
-          onPress={() => onChange(false)}
-          style={styles.button}
-        />
+
+        {side === 'right' ? (
+          <IconButton
+            size={20}
+            icon="delete-outline"
+            onPress={onNonImplemented}
+            style={styles.button}
+          />
+        ) : (
+          <></>
+        )}
+
+        {pending && side === 'right' ? (
+          <IconButton
+            size={20}
+            icon="redo-variant"
+            onPress={() => onChange(false)}
+            style={styles.button}
+          />
+        ) : (
+          <></>
+        )}
+
         <IconButton
           size={20}
           icon="thumb-up-outline"
