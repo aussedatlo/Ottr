@@ -74,7 +74,10 @@ const ListItem = ({
 
   return (
     <View style={styles.scaleYInverted}>
-      <DateDivider message={message} prevMessage={prevMessage} />
+      <DateDivider
+        createdAt={message.created_at}
+        prevCreatedAt={prevMessage?.created_at}
+      />
       <ReplyBox replyMessage={replyMessage} side={side} />
       <MessageBox
         content={message.content}

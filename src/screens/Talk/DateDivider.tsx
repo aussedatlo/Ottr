@@ -1,24 +1,19 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
 
 type DateDividerProps = {
-  message: Message;
-  prevMessage: Message;
+  createdAt: number;
+  prevCreatedAt: number;
 };
 
-const DateDivider = ({ message, prevMessage }: DateDividerProps) => {
+const DateDivider = ({ createdAt, prevCreatedAt }: DateDividerProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  const prevMessageDate = new Date(
-    prevMessage?.created_at * 1000,
-  ).toLocaleDateString();
-  const currMessageDate = new Date(
-    message.created_at * 1000,
-  ).toLocaleDateString();
+  const prevMessageDate = new Date(prevCreatedAt * 1000).toLocaleDateString();
+  const currMessageDate = new Date(createdAt * 1000).toLocaleDateString();
 
   if (prevMessageDate === currMessageDate) return <></>;
 
