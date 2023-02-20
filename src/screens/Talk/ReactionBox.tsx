@@ -1,35 +1,36 @@
 import React, { memo, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, useTheme } from 'react-native-paper';
 import { Side } from '.';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
+import { Reaction } from '../../types/reaction';
 import { getReactionIcon } from '../../utils/reactions';
 
 type ReactionBoxProps = {
-  message: Message;
+  reaction: Reaction;
+  other_reaction: Reaction;
   side: Side;
 };
 
-const ReactionBox = ({ message, side }: ReactionBoxProps) => {
+const ReactionBox = ({ reaction, other_reaction, side }: ReactionBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={[styles.root, side === 'right' ? styles.right : styles.left]}>
-      {message.reaction ? (
+      {reaction ? (
         <Avatar.Icon
           style={styles.reaction}
-          icon={getReactionIcon(message.reaction)}
+          icon={getReactionIcon(reaction)}
           size={18}
         />
       ) : (
         <></>
       )}
-      {message.other_reaction ? (
+      {other_reaction ? (
         <Avatar.Icon
           style={styles.other}
-          icon={getReactionIcon(message.other_reaction)}
+          icon={getReactionIcon(other_reaction)}
           size={18}
         />
       ) : (

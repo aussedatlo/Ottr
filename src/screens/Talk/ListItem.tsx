@@ -77,7 +77,10 @@ const ListItem = ({
       <DateDivider message={message} prevMessage={prevMessage} />
       <ReplyBox replyMessage={replyMessage} side={side} />
       <MessageBox
-        message={message}
+        content={message.content}
+        pending={message.pending}
+        reaction={message.reaction}
+        other_reaction={message.other_reaction}
         side={side}
         user={side === 'left' ? user : undefined}
         onMenu={setVisible}

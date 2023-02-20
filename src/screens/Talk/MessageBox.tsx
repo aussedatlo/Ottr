@@ -4,18 +4,29 @@ import { Avatar as AvatarPaper, Text, useTheme } from 'react-native-paper';
 import { Side } from '.';
 import Avatar from '../../components/Avatar';
 import { Theme } from '../../providers/ThemeProvider';
-import { Message } from '../../types/message';
+import { Reaction } from '../../types/reaction';
 import { User } from '../../types/user';
 import ReactionBox from './ReactionBox';
 
 type MessageBoxProps = {
-  message: Message;
+  content: string;
+  pending: boolean;
+  reaction: Reaction;
+  other_reaction: Reaction;
   user: User;
   side: Side;
   onMenu: (visible: boolean) => void;
 };
 
-const MessageBox = ({ message, user, side, onMenu }: MessageBoxProps) => {
+const MessageBox = ({
+  content,
+  pending,
+  reaction,
+  other_reaction,
+  user,
+  side,
+  onMenu,
+}: MessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
@@ -32,13 +43,13 @@ const MessageBox = ({ message, user, side, onMenu }: MessageBoxProps) => {
           android_ripple={{ color: theme.colors.backdrop }}
           style={styles.pressable}
         >
-          <Text style={styles.content}>{message.content}</Text>
+          <Text style={styles.content}>{content}</Text>
           {side === 'right' ? (
             <View style={styles.checkContainer}>
               <AvatarPaper.Icon
                 icon={'check-bold'}
                 size={12}
-                style={!message.pending ? styles.check : styles.hide}
+                style={!pending ? styles.check : styles.hide}
                 color={theme.colors.primary}
               />
             </View>
@@ -47,7 +58,11 @@ const MessageBox = ({ message, user, side, onMenu }: MessageBoxProps) => {
           )}
         </Pressable>
       </View>
-      <ReactionBox message={message} side={side} />
+      <ReactionBox
+        reaction={reaction}
+        other_reaction={other_reaction}
+        side={side}
+      />
     </View>
   );
 };
