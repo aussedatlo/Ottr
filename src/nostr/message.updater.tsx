@@ -41,7 +41,7 @@ const ReceiveMessageUpdater = (): null => {
         lastEventAt: event.created_at,
       });
     },
-    [addMessage, addUser, key, pubkey],
+    [addMessage, addUser, key, pubkey, updateUserLastEventAt],
   );
 
   onEvent(onEventCallback);

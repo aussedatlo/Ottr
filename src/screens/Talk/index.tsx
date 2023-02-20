@@ -55,7 +55,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         />
       );
     },
-    [messages, user, userPubkey],
+    [messages, user, userPubkey, pubkey],
   );
 
   return (

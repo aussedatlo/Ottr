@@ -31,7 +31,7 @@ const ReactionUpdater = (): null => {
       if (event.pubkey === pubkey) await addReaction(messageId, reaction);
       else await addOtherReaction(messageId, reaction);
     },
-    [addReaction, pubkey],
+    [addReaction, addOtherReaction, pubkey],
   );
 
   onEvent(onEventCallback);

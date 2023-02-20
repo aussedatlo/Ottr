@@ -1,8 +1,7 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Side } from '.';
-import { Message } from '../../types/message';
 
 type TimeIndicatorProps = {
   createdAt: number;

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider, Text, useTheme } from 'react-native-paper';
 import { Theme } from '../../providers/ThemeProvider';
