@@ -19,7 +19,7 @@ const NostrProvider = ({ children }: ThemeProviderProps) => {
   if (!key || !pubkey || !relays || !isLoaded) return <>{children}</>;
 
   return (
-    <Provider relayUrls={relays} debug={true}>
+    <Provider relayUrls={relays} debug={false}>
       <>{children}</>
       <>
         <RelayUpdater />
