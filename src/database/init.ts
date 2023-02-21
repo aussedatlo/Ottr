@@ -14,23 +14,12 @@ export const initDatabase = async (db: WebSQLDatabase) => {
   sig TEXT NOT NULL,
   tags TEXT NOT NULL,
   pending BOOLEAN DEFAULT FALSE,
-  seen BOOLEAN DEFAULT FALSE
+  seen BOOLEAN DEFAULT FALSE,
+  reaction TEXT,
+  other_reaction TEXT
   );
 `,
   );
-
-  try {
-    await ExecuteQuery(
-      db,
-      `ALTER TABLE Messages
-  ADD reaction TEXT`,
-    );
-    await ExecuteQuery(
-      db,
-      `ALTER TABLE Messages
-  ADD other_reaction TEXT`,
-    );
-  } catch {}
 
   await ExecuteQuery(
     db,
