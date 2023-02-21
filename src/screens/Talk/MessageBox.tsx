@@ -1,5 +1,5 @@
-import React, { memo, useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
 import { Avatar as AvatarPaper, Text, useTheme } from 'react-native-paper';
 import { Side } from '.';
 import Avatar from '../../components/Avatar';
@@ -30,6 +30,11 @@ const MessageBox = ({
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
+  const onBoxLongPress = useCallback(() => {
+      Keyboard.dismiss();
+      setTimeout(() => onMenu(true), 50);
+  }, [onMenu]);
+
   return (
     <View style={styles.root}>
       {side === 'left' ? (
@@ -39,7 +44,7 @@ const MessageBox = ({
       )}
       <View style={styles.container}>
         <Pressable
-          onLongPress={() => onMenu(true)}
+          onLongPress={onBoxLongPress}
           android_ripple={{ color: theme.colors.backdrop }}
           style={styles.pressable}
         >

@@ -71,6 +71,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           data={messages}
           renderItem={renderItem}
           style={styles.scaleYInverted}
+          keyboardShouldPersistTaps="handled"
         />
       </View>
 
