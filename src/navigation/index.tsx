@@ -1,17 +1,9 @@
-import {
-  DefaultTheme,
-  NavigationContainer,
-  useNavigation,
-} from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { hideAsync } from 'expo-splash-screen';
-import { useNostr } from 'nostr-react';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { IconButton, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GenericModal from '../components/Modal/GenericModal';
 import { useDatabaseContext } from '../context/DatabaseContext';
@@ -21,6 +13,7 @@ import HomeScreen from '../screens/Home';
 import IntroScreen from '../screens/Intro';
 import SelectContactScreen from '../screens/SelectContact';
 import TalkScreen from '../screens/Talk';
+import HeaderRight from './HeaderRight';
 import SettingsNavigation from './SettingsNavigation';
 
 export type RootStackParamList = {
@@ -32,30 +25,6 @@ export type RootStackParamList = {
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const HeaderRight = () => {
-  const { connectedRelays } = useNostr();
-  const { relays } = useUserContext();
-  const { colors } = useTheme<Theme>();
-  const { navigate } =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  return (
-    <>
-      <IconButton icon="cog" onPress={() => navigate('SettingsNav')} />
-      <IconButton
-        icon="checkbox-multiple-marked-circle"
-        iconColor={
-          connectedRelays.length === relays?.length
-            ? colors.success
-            : connectedRelays.length === 0
-            ? colors.error
-            : colors.warning
-        }
-      />
-    </>
-  );
-};
 
 const Navigation = () => {
   const theme = useTheme<Theme>();
@@ -120,7 +89,7 @@ const Navigation = () => {
               component={HomeScreen}
               options={{
                 title: 'Ottr',
-                headerRight: HeaderRight,
+                headerRight: () => <HeaderRight />,
               }}
             />
             <Stack.Screen
