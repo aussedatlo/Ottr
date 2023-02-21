@@ -30,7 +30,7 @@ const SettingsNavigator = () => {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.onBackground,
           animationTypeForReplace: 'push',
-          animation: 'slide_from_right',
+          animation: 'fade',
         }}
       >
         <Stack.Screen
