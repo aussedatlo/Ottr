@@ -8,6 +8,7 @@ export type ThemeColors = {
   success: string;
   transparent: string;
   warning: string;
+  reaction: string;
 } & MD3Colors;
 
 export type Theme = {
@@ -29,6 +30,7 @@ const lightTheme: Theme = {
     success: '#26a65b',
     warning: '#db9934',
     transparent: '#00000000',
+    reaction: '#f3b616',
   },
 };
 
@@ -44,10 +46,14 @@ const darkTheme: Theme = {
     primary: '#3498db',
     onPrimary: '#ffffff',
     secondary: '#db4534',
+    onSecondary: '#ffffff',
     tertiary: '#a1b2c3',
     success: '#26a65b',
     warning: '#db9934',
+    error: '#db4534',
     transparent: '#00000000',
+    reaction: '#f2b513',
+    backdrop: '#10101060',
   },
 };
 

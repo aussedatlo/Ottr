@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, useTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Side } from '.';
 import { Theme } from '../../providers/ThemeProvider';
 import { Reaction } from '../../types/reaction';
@@ -14,24 +15,29 @@ type ReactionBoxProps = {
 
 const ReactionBox = ({ reaction, other_reaction, side }: ReactionBoxProps) => {
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(
+    () => createStyles(theme, reaction && other_reaction ? 1 : 0),
+    [theme, reaction, other_reaction],
+  );
+
+  if (!reaction && !other_reaction) return;
 
   return (
     <View style={[styles.root, side === 'right' ? styles.right : styles.left]}>
       {reaction ? (
-        <Avatar.Icon
+        <Icon
           style={styles.reaction}
-          icon={getReactionIcon(reaction)}
-          size={18}
+          name={getReactionIcon(reaction)}
+          size={16}
         />
       ) : (
         <></>
       )}
       {other_reaction ? (
-        <Avatar.Icon
-          style={styles.other}
-          icon={getReactionIcon(other_reaction)}
-          size={18}
+        <Icon
+          style={styles.reaction}
+          name={getReactionIcon(other_reaction)}
+          size={16}
         />
       ) : (
         <></>
@@ -40,21 +46,24 @@ const ReactionBox = ({ reaction, other_reaction, side }: ReactionBoxProps) => {
   );
 };
 
-const createStyles = ({ colors }: Theme) => {
+const createStyles = ({ colors }: Theme, reactions: number) => {
   return StyleSheet.create({
     root: {
       position: 'absolute',
-      bottom: -2,
+      bottom: -15,
       flexDirection: 'row',
+      backgroundColor: colors.secondaryContainer,
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: colors.primaryContainer,
     },
     left: {
-      right: 10,
+      right: 0 - reactions * 22,
     },
-    right: { left: 20 },
+    right: { left: 0 - reactions * 22 },
     reaction: {
-      backgroundColor: colors.primary,
-      borderColor: colors.background,
-      borderWidth: 1,
+      color: colors.reaction,
+      padding: 5,
     },
     other: {
       backgroundColor: colors.secondary,

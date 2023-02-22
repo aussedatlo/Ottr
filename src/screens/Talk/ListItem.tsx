@@ -104,6 +104,11 @@ const ListItem = ({
         nextPubkey={nextMessage?.pubkey}
         side={side}
       />
+      {message.reaction || message.other_reaction ? (
+        <View style={styles.margin} />
+      ) : (
+        <></>
+      )}
     </View>
   );
 };
@@ -112,6 +117,7 @@ const styles = StyleSheet.create({
   scaleYInverted: {
     scaleY: -1,
   },
+  margin: { marginBottom: 18 },
 });
 
 export default memo(ListItem);

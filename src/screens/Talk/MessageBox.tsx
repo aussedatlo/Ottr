@@ -31,8 +31,8 @@ const MessageBox = ({
   const styles = useMemo(() => createStyles(theme, side), [theme, side]);
 
   const onBoxLongPress = useCallback(() => {
-      Keyboard.dismiss();
-      setTimeout(() => onMenu(true), 50);
+    Keyboard.dismiss();
+    setTimeout(() => onMenu(true), 50);
   }, [onMenu]);
 
   return (

@@ -44,9 +44,12 @@ const BottomSheet = (props: BottomSheetProps) => {
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
     wrapper: { backgroundColor: colors.backdrop },
-    draggableIcon: { backgroundColor: colors.primary, marginBottom: 20 },
+    draggableIcon: {
+      backgroundColor: colors.onPrimaryContainer,
+      marginBottom: 20,
+    },
     container: {
-      backgroundColor: colors.background,
+      backgroundColor: colors.primaryContainer,
       borderRadius: 20,
       paddingLeft: 20,
       paddingRight: 20,

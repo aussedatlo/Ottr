@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import Input from '../../components/Input';
 import { useUserContext } from '../../context/UserContext';
+import { Theme } from '../../providers/ThemeProvider';
 
 const ProfileSection = () => {
+  const theme = useTheme<Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { pubkey, user, setUser } = useUserContext();
   const [name, setName] = useState<string>('');
   const [about, setAbout] = useState<string>('');
@@ -37,6 +40,7 @@ const ProfileSection = () => {
         Display name:
       </Text>
       <Input
+        style={styles.input}
         value={name}
         placeholder="name to display"
         onChange={(e) => setName(e.nativeEvent.text)}
@@ -45,6 +49,7 @@ const ProfileSection = () => {
         About you:
       </Text>
       <Input
+        style={styles.input}
         value={about}
         placeholder="A little description of yourself"
         onChange={(e) => setAbout(e.nativeEvent.text)}
@@ -55,6 +60,7 @@ const ProfileSection = () => {
         Picture url:
       </Text>
       <Input
+        style={styles.input}
         value={picture}
         placeholder="https://"
         onChange={(e) => setPicture(e.nativeEvent.text)}
@@ -74,28 +80,36 @@ const ProfileSection = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  root: {
-    margin: 15,
-  },
-  title: {
-    marginTop: 15,
-    marginBottom: 5,
-  },
-  picture: {
-    width: 60,
-    alignSelf: 'center',
-    overflow: 'hidden',
-    borderRadius: 100,
-  },
-  button: {
-    marginTop: 5,
-  },
-  buttonContainer: {
-    marginTop: 30,
-    width: 200,
-    alignSelf: 'center',
-  },
-});
+const createStyles = ({ colors }: Theme) => {
+  return StyleSheet.create({
+    root: {
+      margin: 15,
+    },
+    title: {
+      marginTop: 15,
+      marginBottom: 5,
+    },
+    input: {
+      borderRadius: 20,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      backgroundColor: colors.secondaryContainer,
+    },
+    picture: {
+      width: 60,
+      alignSelf: 'center',
+      overflow: 'hidden',
+      borderRadius: 100,
+    },
+    button: {
+      marginTop: 5,
+    },
+    buttonContainer: {
+      marginTop: 30,
+      width: 200,
+      alignSelf: 'center',
+    },
+  });
+};
 
 export default ProfileSection;
