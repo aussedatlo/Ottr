@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useMemo } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
+import TimeAgo from '../../components/TimeAgo';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
@@ -29,12 +30,15 @@ const ContactMessageBox = ({ pubkey }: ContactMessageBoxProps) => {
     [allMessages, pubkey],
   );
 
+  const date = useMemo(() => new Date(user?.lastEventAt * 1000), [user]);
+
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       onPress={() => navigate('Talk', { pubkey: pubkey })}
+      android_ripple={{ color: theme.colors.backdrop }}
     >
       <View style={styles.root}>
         <Avatar pubkey={pubkey} picture={user?.picture} size={50} />
@@ -49,8 +53,15 @@ const ContactMessageBox = ({ pubkey }: ContactMessageBoxProps) => {
             {messages?.[0]?.content}
           </Text>
         </View>
+
+        <TimeAgo
+          date={date}
+          timeStyle="twitter"
+          locale="en-US"
+          style={styles.date}
+        />
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 
@@ -59,6 +70,9 @@ const createStyles = ({ colors }: Theme) => {
     root: {
       flexDirection: 'row',
       margin: 10,
+      marginLeft: 20,
+      marginRight: 20,
+      flexShrink: 1,
     },
     container: {
       flex: 1,
@@ -67,6 +81,9 @@ const createStyles = ({ colors }: Theme) => {
     },
     secondary: {
       color: colors.tertiary,
+    },
+    date: {
+      alignSelf: 'center',
     },
   });
 };

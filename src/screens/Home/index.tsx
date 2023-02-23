@@ -31,7 +31,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   );
 
   return (
-    <View style={styles.root}>
+    <View>
       <FlatList
         data={keys}
         renderItem={renderItem}
@@ -51,9 +51,6 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
-    root: {
-      margin: 15,
-    },
     list: {
       height: '100%',
     },

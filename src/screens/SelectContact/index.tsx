@@ -48,7 +48,7 @@ const SelectContactScreen = ({ navigation }: SelectContactScreenProps) => {
   );
 
   return (
-    <View style={styles.root}>
+    <View>
       <Input
         value={text}
         style={styles.input}
@@ -82,11 +82,9 @@ const SelectContactScreen = ({ navigation }: SelectContactScreenProps) => {
     </View>
   );
 };
+
 const createStyles = ({ colors }: Theme) => {
   return StyleSheet.create({
-    root: {
-      margin: 15,
-    },
     button: {
       width: 200,
       marginBottom: 20,
@@ -96,6 +94,7 @@ const createStyles = ({ colors }: Theme) => {
       backgroundColor: colors.secondaryContainer,
       borderRadius: 20,
       marginBottom: 20,
+      margin: 15,
     },
   });
 };

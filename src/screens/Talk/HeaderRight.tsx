@@ -37,7 +37,7 @@ const HeaderRight = ({ user }: HeaderRightProps) => {
           <Divider />
           <Avatar size={70} picture={user?.picture} pubkey={user?.pubkey} />
           <Text variant="titleSmall">
-            {user?.name || user.pubkey.slice(0, 8)}
+            {user?.name || user?.pubkey.slice(0, 8)}
           </Text>
           <Text style={styles.about}>
             {user?.about || 'no description available'}
