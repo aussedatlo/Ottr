@@ -1,4 +1,5 @@
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PolyfillCrypto from 'react-native-webview-crypto';
 import DatabaseContextProvider from './context/DatabaseContext';
@@ -15,7 +16,9 @@ export default function App() {
         <DatabaseContextProvider>
           <NostrProvider>
             <ThemeProvider>
-              <Navigation />
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Navigation />
+              </GestureHandlerRootView>
             </ThemeProvider>
           </NostrProvider>
         </DatabaseContextProvider>

@@ -26,6 +26,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const [reply, setReply] = useState<{ id: string; content: string }>(
     undefined,
   );
+  const [messageBoxRef, setMessageBoxRef] = useState(undefined);
 
   const messages = useMemo(
     () =>
@@ -41,6 +42,22 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       headerRight: () => <HeaderRight user={user} />,
     });
   }, [colors, navigation, user, pubkey]);
+
+  const handleMessageBoxRef = useCallback(
+    (ref: any) => {
+      setMessageBoxRef((oldRef) => {
+        console.log(oldRef?.current?.close);
+        oldRef?.current?.close();
+        return ref;
+      });
+
+      // setMessageBoxRef((old) => {
+      //   old?.current?.close();
+      //   return ref;
+      // });
+    },
+    [setMessageBoxRef],
+  );
 
   const renderItem = useCallback(
     ({ item, index }: { item: Message; index: number }) => {
@@ -58,10 +75,11 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           replyMessage={replyMessage}
           side={side}
           setReply={setReply}
+          setMessageBoxRef={(ref: any) => handleMessageBoxRef(ref)}
         />
       );
     },
-    [messages, user, userPubkey, pubkey],
+    [messages, user, userPubkey, pubkey, handleMessageBoxRef],
   );
 
   return (
@@ -77,12 +95,17 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
 
       <ReplyInfo
         replyContent={reply?.content}
-        onCloseReply={() => setReply(undefined)}
+        onCloseReply={() => {
+          setReply(undefined);
+          messageBoxRef?.current?.close();
+        }}
       />
       <InputSend
         pubkey={pubkey}
         replyId={reply?.id}
-        onCloseReply={() => setReply(undefined)}
+        onCloseReply={() => {
+          setReply(undefined);
+        }}
       />
     </>
   );

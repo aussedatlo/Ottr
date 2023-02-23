@@ -1,7 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, signEvent } from 'nostr-tools';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Side } from '.';
 import { useUserContext } from '../../context/UserContext';
@@ -23,6 +23,7 @@ type ListItemProps = {
   replyMessage: Message;
   side: Side;
   setReply: ({ id, content }: { id: string; content: string }) => void;
+  setMessageBoxRef: (ref: any) => void;
 };
 
 const ListItem = ({
@@ -34,15 +35,23 @@ const ListItem = ({
   replyMessage,
   side,
   setReply,
+  setMessageBoxRef,
 }: ListItemProps) => {
   const [visible, setVisible] = useState<boolean>(false);
   const { pubkey, key } = useUserContext();
   const { publish } = useNostr();
 
-  const onReply = useCallback(() => {
-    setVisible(false);
-    setReply({ id: message.id, content: message.content });
-  }, [message.id, message.content, setReply]);
+  const onReply = useCallback(
+    (ref: any) => {
+      setVisible(false);
+
+      if (ref) setReply({ id: message.id, content: message.content });
+      else setReply(undefined);
+
+      setMessageBoxRef(ref);
+    },
+    [message.id, message.content, setReply],
+  );
 
   const onCopy = useCallback(async () => {
     setVisible(false);
@@ -87,6 +96,7 @@ const ListItem = ({
         side={side}
         user={side === 'left' ? user : undefined}
         onMenu={setVisible}
+        onReply={onReply}
       />
       <MenuMessageBox
         onChange={setVisible}

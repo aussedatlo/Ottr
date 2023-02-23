@@ -11,7 +11,7 @@ type MenuMessageBoxProps = {
   side: Side;
   pending: boolean;
   onChange: (visible: boolean) => void;
-  onReply: () => void;
+  onReply: (ref: any) => void;
   onCopy: () => void;
   onReaction: (reaction: Reaction) => void;
 };
@@ -49,7 +49,7 @@ const MenuMessageBox = ({
         <IconButton
           size={20}
           icon="reply-outline"
-          onPress={onReply}
+          onPress={() => onReply(undefined)}
           style={styles.button}
         />
 
