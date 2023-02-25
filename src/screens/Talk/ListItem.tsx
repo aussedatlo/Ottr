@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { MenuState, Side } from '.';
+import { MenuState, Reply, Side } from '.';
 import { Message } from '../../types/message';
 import DateDivider from './DateDivider';
 import MessageBox from './MessageBox';
@@ -16,6 +16,7 @@ type ListItemProps = {
   nextMessage: Message;
   replyMessage: Message;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
+  onReply: React.Dispatch<React.SetStateAction<Reply>>;
   animate: boolean;
 };
 
@@ -28,6 +29,7 @@ const ListItem = ({
   nextMessage,
   replyMessage,
   onMenu,
+  onReply,
   animate,
 }: ListItemProps) => {
   const side: Side = useMemo(
@@ -52,6 +54,7 @@ const ListItem = ({
         otherPubkey={otherPubkey}
         otherPicture={otherPicture}
         onMenu={onMenu}
+        onReply={onReply}
         animate={animate}
       />
       <TimeIndicator

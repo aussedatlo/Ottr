@@ -7,12 +7,33 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Avatar as AvatarPaper, Text, useTheme } from 'react-native-paper';
-import { MenuState, Side } from '.';
+import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import {
+  Avatar as AvatarPaper,
+  IconButton,
+  Text,
+  useTheme,
+} from 'react-native-paper';
+import { MenuState, Reply, Side } from '.';
 import Avatar from '../../components/Avatar';
 import { Theme } from '../../providers/ThemeProvider';
 import { Reaction } from '../../types/reaction';
 import ReactionBox from './ReactionBox';
+
+const renderLeftActions = (progress) => {
+  const trans = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-1, 1],
+  });
+
+  return (
+    <RectButton>
+      <Animated.View>
+        <IconButton icon="reply-outline" style={{ opacity: trans }} />
+      </Animated.View>
+    </RectButton>
+  );
+};
 
 type MessageBoxProps = {
   id: string;
@@ -24,6 +45,7 @@ type MessageBoxProps = {
   otherPicture: string;
   side: Side;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
+  onReply: React.Dispatch<React.SetStateAction<Reply>>;
   animate: boolean;
 };
 
@@ -37,10 +59,12 @@ const MessageBox = ({
   otherPicture,
   side,
   onMenu,
+  onReply,
   animate,
 }: MessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme, side), [theme, side]);
+  const swipe = useRef(null);
 
   const anim = useRef(new Animated.Value(0));
 
@@ -80,54 +104,67 @@ const MessageBox = ({
   );
 
   return (
-    <Animated.View
-      style={[
-        styles.root,
-        animate
-          ? {
-              transform: [
-                {
-                  scale: anim.current,
-                },
-              ],
-            }
-          : {},
-      ]}
+    <Swipeable
+      ref={swipe}
+      containerStyle={{ overflow: 'visible' }}
+      renderLeftActions={side === 'left' ? renderLeftActions : undefined}
+      renderRightActions={side === 'right' ? renderLeftActions : undefined}
+      onSwipeableWillOpen={() => {
+        onReply({ id: id, content: content });
+        setTimeout(() => swipe.current.close(), 10);
+      }}
+      friction={5}
+      maxPointers={1}
     >
-      {side === 'left' ? (
-        <Avatar picture={otherPicture} pubkey={otherPubkey} size={35} />
-      ) : (
-        <></>
-      )}
-      <View style={styles.container}>
-        <Pressable
-          onLongPress={onBoxLongPress}
-          android_ripple={{ color: theme.colors.backdrop }}
-          style={styles.pressable}
-        >
-          <View pointerEvents="none" style={{ flexDirection: 'row' }}>
-            <Text style={styles.content}>{content}</Text>
-            {side === 'right' ? (
-              <View style={styles.checkContainer}>
-                <AvatarPaper.Icon
-                  icon={'check-bold'}
-                  size={12}
-                  style={!pending ? styles.check : styles.hide}
-                  color={theme.colors.primary}
-                />
-              </View>
-            ) : (
-              <></>
-            )}
-          </View>
-        </Pressable>
-      </View>
-      <ReactionBox
-        reaction={reaction}
-        otherReaction={otherReaction}
-        side={side}
-      />
-    </Animated.View>
+      <Animated.View
+        style={[
+          styles.root,
+          animate
+            ? {
+                transform: [
+                  {
+                    scale: anim.current,
+                  },
+                ],
+              }
+            : {},
+        ]}
+      >
+        {side === 'left' ? (
+          <Avatar picture={otherPicture} pubkey={otherPubkey} size={35} />
+        ) : (
+          <></>
+        )}
+        <View style={styles.container}>
+          <Pressable
+            onLongPress={onBoxLongPress}
+            android_ripple={{ color: theme.colors.backdrop }}
+            style={styles.pressable}
+          >
+            <View pointerEvents="none" style={{ flexDirection: 'row' }}>
+              <Text style={styles.content}>{content}</Text>
+              {side === 'right' ? (
+                <View style={styles.checkContainer}>
+                  <AvatarPaper.Icon
+                    icon={'check-bold'}
+                    size={12}
+                    style={!pending ? styles.check : styles.hide}
+                    color={theme.colors.primary}
+                  />
+                </View>
+              ) : (
+                <></>
+              )}
+            </View>
+          </Pressable>
+        </View>
+        <ReactionBox
+          reaction={reaction}
+          otherReaction={otherReaction}
+          side={side}
+        />
+      </Animated.View>
+    </Swipeable>
   );
 };
 

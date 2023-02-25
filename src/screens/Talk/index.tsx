@@ -38,6 +38,8 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
   const { pubkey: userPubkey } = useUserContext();
   const { allMessages } = useDatabaseContext();
+  const user = useUser(pubkey);
+
   const [reply, setReply] = useState<Reply>(undefined);
   const [menuState, setMenuState] = useState<MenuState>({
     visible: false,
@@ -56,8 +58,6 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       ),
     [allMessages, pubkey],
   );
-
-  const user = useUser(pubkey);
 
   const messagesLengthRef = useRef<number>(messages?.length || 0);
 
@@ -83,6 +83,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           prevMessage={messages?.[index + 1]}
           replyMessage={replyMessage}
           onMenu={setMenuState}
+          onReply={setReply}
           animate={index < messages?.length - messagesLengthRef.current}
         />
       );
