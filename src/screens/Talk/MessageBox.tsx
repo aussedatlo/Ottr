@@ -1,5 +1,6 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
+  Animated,
   GestureResponderEvent,
   Keyboard,
   Pressable,
@@ -23,6 +24,7 @@ type MessageBoxProps = {
   user: User;
   side: Side;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
+  animate: boolean;
 };
 
 const MessageBox = ({
@@ -34,9 +36,23 @@ const MessageBox = ({
   user,
   side,
   onMenu,
+  animate,
 }: MessageBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme, side), [theme, side]);
+
+  const anim = useRef(new Animated.Value(0));
+
+  useEffect(() => {
+    if (!animate) return;
+
+    console.log('start animations');
+    Animated.timing(anim.current, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => console.log('DONE'));
+  }, []);
 
   const onBoxLongPress = useCallback(
     (event: GestureResponderEvent) => {
@@ -64,7 +80,20 @@ const MessageBox = ({
   );
 
   return (
-    <View style={styles.root}>
+    <Animated.View
+      style={[
+        styles.root,
+        animate
+          ? {
+              transform: [
+                {
+                  scale: anim.current,
+                },
+              ],
+            }
+          : {},
+      ]}
+    >
       {side === 'left' ? (
         <Avatar picture={user.picture} pubkey={user.pubkey} size={35} />
       ) : (
@@ -98,7 +127,7 @@ const MessageBox = ({
         other_reaction={other_reaction}
         side={side}
       />
-    </View>
+    </Animated.View>
   );
 };
 

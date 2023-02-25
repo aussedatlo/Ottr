@@ -17,6 +17,7 @@ type ListItemProps = {
   replyMessage: Message;
   side: Side;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
+  animate: boolean;
 };
 
 const ListItem = ({
@@ -27,6 +28,7 @@ const ListItem = ({
   replyMessage,
   side,
   onMenu,
+  animate,
 }: ListItemProps) => {
   return (
     <View style={styles.scaleYInverted}>
@@ -44,6 +46,7 @@ const ListItem = ({
         side={side}
         user={side === 'left' ? user : undefined}
         onMenu={onMenu}
+        animate={animate}
       />
       <TimeIndicator
         createdAt={message.created_at}

@@ -1,5 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useDatabaseContext } from '../../context/DatabaseContext';
@@ -55,6 +61,8 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     [allMessages, pubkey],
   );
 
+  const messagesLengthRef = useRef<number>(messages?.length || 0);
+
   useEffect(() => {
     navigation.setOptions({
       title: user?.name ? user.name : pubkey.slice(0, 8),
@@ -78,6 +86,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           replyMessage={replyMessage}
           side={side}
           onMenu={setMenuState}
+          animate={index < messages?.length - messagesLengthRef.current}
         />
       );
     },
@@ -92,6 +101,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           renderItem={renderItem}
           style={styles.scaleYInverted}
           keyboardShouldPersistTaps="handled"
+          initialNumToRender={15}
         />
       </View>
 
