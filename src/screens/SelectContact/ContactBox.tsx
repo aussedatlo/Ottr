@@ -1,12 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { memo, useMemo } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import { useUser } from '../../hooks/useUsers';

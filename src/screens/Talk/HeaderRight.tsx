@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
-import { Divider, Text, useTheme } from 'react-native-paper';
+import { Divider, Text } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import BottomSheet from '../../components/BottomSheet';
 import { useKeyboard } from '../../hooks/useKeyboard';
-import { Theme } from '../../providers/ThemeProvider';
 import { User } from '../../types/user';
 
 type HeaderRightProps = {
@@ -12,8 +11,6 @@ type HeaderRightProps = {
 };
 
 const HeaderRight = ({ user }: HeaderRightProps) => {
-  const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme), [theme]);
   const [visible, setVisible] = useState<boolean>(false);
   const { open } = useKeyboard();
 
@@ -48,15 +45,13 @@ const HeaderRight = ({ user }: HeaderRightProps) => {
   );
 };
 
-const createStyles = ({ colors }: Theme) => {
-  return StyleSheet.create({
-    container: {
-      alignItems: 'center',
-    },
-    about: {
-      margin: 10,
-    },
-  });
-};
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
+  about: {
+    margin: 10,
+  },
+});
 
 export default HeaderRight;

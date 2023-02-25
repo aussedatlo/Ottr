@@ -25,7 +25,6 @@ const RelayUpdater = (): null => {
   );
 
   useEffect(() => {
-    console.log(timers);
     if (relaysRef.current === relays) return;
 
     relaysRef.current = relays;

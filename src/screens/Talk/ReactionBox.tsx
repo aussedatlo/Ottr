@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Avatar, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Side } from '.';
 import { Theme } from '../../providers/ThemeProvider';
@@ -9,18 +9,18 @@ import { getReactionIcon } from '../../utils/reactions';
 
 type ReactionBoxProps = {
   reaction: Reaction;
-  other_reaction: Reaction;
+  otherReaction: Reaction;
   side: Side;
 };
 
-const ReactionBox = ({ reaction, other_reaction, side }: ReactionBoxProps) => {
+const ReactionBox = ({ reaction, otherReaction, side }: ReactionBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(
-    () => createStyles(theme, reaction && other_reaction ? 1 : 0),
-    [theme, reaction, other_reaction],
+    () => createStyles(theme, reaction && otherReaction ? 1 : 0),
+    [theme, reaction, otherReaction],
   );
 
-  if (!reaction && !other_reaction) return;
+  if (!reaction && !otherReaction) return;
 
   return (
     <View style={[styles.root, side === 'right' ? styles.right : styles.left]}>
@@ -33,10 +33,10 @@ const ReactionBox = ({ reaction, other_reaction, side }: ReactionBoxProps) => {
       ) : (
         <></>
       )}
-      {other_reaction ? (
+      {otherReaction ? (
         <Icon
           style={styles.reaction}
-          name={getReactionIcon(other_reaction)}
+          name={getReactionIcon(otherReaction)}
           size={16}
         />
       ) : (

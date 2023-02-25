@@ -12,7 +12,6 @@ import { MenuState, Side } from '.';
 import Avatar from '../../components/Avatar';
 import { Theme } from '../../providers/ThemeProvider';
 import { Reaction } from '../../types/reaction';
-import { User } from '../../types/user';
 import ReactionBox from './ReactionBox';
 
 type MessageBoxProps = {
@@ -20,8 +19,9 @@ type MessageBoxProps = {
   content: string;
   pending: boolean;
   reaction: Reaction;
-  other_reaction: Reaction;
-  user: User;
+  otherReaction: Reaction;
+  otherPubkey: string;
+  otherPicture: string;
   side: Side;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
   animate: boolean;
@@ -32,8 +32,9 @@ const MessageBox = ({
   content,
   pending,
   reaction,
-  other_reaction,
-  user,
+  otherReaction,
+  otherPubkey,
+  otherPicture,
   side,
   onMenu,
   animate,
@@ -46,13 +47,12 @@ const MessageBox = ({
   useEffect(() => {
     if (!animate) return;
 
-    console.log('start animations');
     Animated.timing(anim.current, {
       toValue: 1,
       duration: 200,
       useNativeDriver: true,
-    }).start(() => console.log('DONE'));
-  }, []);
+    }).start();
+  }, [animate]);
 
   const onBoxLongPress = useCallback(
     (event: GestureResponderEvent) => {
@@ -95,7 +95,7 @@ const MessageBox = ({
       ]}
     >
       {side === 'left' ? (
-        <Avatar picture={user.picture} pubkey={user.pubkey} size={35} />
+        <Avatar picture={otherPicture} pubkey={otherPubkey} size={35} />
       ) : (
         <></>
       )}
@@ -124,7 +124,7 @@ const MessageBox = ({
       </View>
       <ReactionBox
         reaction={reaction}
-        other_reaction={other_reaction}
+        otherReaction={otherReaction}
         side={side}
       />
     </Animated.View>

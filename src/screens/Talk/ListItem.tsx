@@ -1,35 +1,40 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { MenuState, Side } from '.';
 import { Message } from '../../types/message';
-import { User } from '../../types/user';
 import DateDivider from './DateDivider';
 import MessageBox from './MessageBox';
 import ReplyBox from './ReplyBox';
 import TimeIndicator from './TimeIndicator';
 
 type ListItemProps = {
-  user: User;
   userPubkey: string;
+  otherPubkey: string;
+  otherPicture: string;
   message: Message;
   prevMessage: Message;
   nextMessage: Message;
   replyMessage: Message;
-  side: Side;
   onMenu: React.Dispatch<React.SetStateAction<MenuState>>;
   animate: boolean;
 };
 
 const ListItem = ({
-  user,
+  userPubkey,
+  otherPubkey,
+  otherPicture,
   message,
   prevMessage,
   nextMessage,
   replyMessage,
-  side,
   onMenu,
   animate,
 }: ListItemProps) => {
+  const side: Side = useMemo(
+    () => (message.pubkey === userPubkey ? 'right' : 'left'),
+    [message.pubkey, userPubkey],
+  );
+
   return (
     <View style={styles.scaleYInverted}>
       <DateDivider
@@ -42,9 +47,10 @@ const ListItem = ({
         content={message.content}
         pending={message.pending}
         reaction={message.reaction}
-        other_reaction={message.other_reaction}
+        otherReaction={message.other_reaction}
         side={side}
-        user={side === 'left' ? user : undefined}
+        otherPubkey={otherPubkey}
+        otherPicture={otherPicture}
         onMenu={onMenu}
         animate={animate}
       />

@@ -1,7 +1,7 @@
 import { useDatabaseContext } from '../context/DatabaseContext';
 import {
-  getAllUsers,
   addUser as dbAddUser,
+  getAllUsers,
   updateUser as dbUpdateUser,
   updateUserLastEventAt as dbUpdateUserLastEventAt,
 } from '../database/functions/user';

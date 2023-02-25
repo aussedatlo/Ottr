@@ -7,12 +7,10 @@ import React, {
   useState,
 } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUserContext } from '../../context/UserContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
-import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
 import HeaderRight from './HeaderRight';
 import InputSend from './InputSend';
@@ -40,8 +38,6 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
   const { pubkey: userPubkey } = useUserContext();
   const { allMessages } = useDatabaseContext();
-  const { colors } = useTheme<Theme>();
-  const user = useUser(pubkey);
   const [reply, setReply] = useState<Reply>(undefined);
   const [menuState, setMenuState] = useState<MenuState>({
     visible: false,
@@ -61,6 +57,8 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     [allMessages, pubkey],
   );
 
+  const user = useUser(pubkey);
+
   const messagesLengthRef = useRef<number>(messages?.length || 0);
 
   useEffect(() => {
@@ -68,29 +66,28 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
       title: user?.name ? user.name : pubkey.slice(0, 8),
       headerRight: () => <HeaderRight user={user} />,
     });
-  }, [colors, navigation, user, pubkey]);
+  }, [navigation, user, pubkey]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: Message; index: number }) => {
-      const messageReplyId = item.tags.find((tag) => tag[0] === 'e')?.[1];
-      const replyMessage = messages.find((m) => m.id === messageReplyId);
-      const side = item.pubkey === userPubkey ? 'right' : 'left';
+      const replyMessageId = item.tags.find((tag) => tag[0] === 'e')?.[1];
+      const replyMessage = messages.find((m) => m.id === replyMessageId);
 
       return (
         <ListItem
           message={item}
-          user={user}
-          userPubkey={pubkey}
+          otherPubkey={pubkey}
+          otherPicture={user?.picture}
+          userPubkey={userPubkey}
           nextMessage={messages?.[index - 1]}
           prevMessage={messages?.[index + 1]}
           replyMessage={replyMessage}
-          side={side}
           onMenu={setMenuState}
           animate={index < messages?.length - messagesLengthRef.current}
         />
       );
     },
-    [messages, user, userPubkey, pubkey],
+    [messages, userPubkey, pubkey, user?.picture],
   );
 
   return (
@@ -102,6 +99,8 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           style={styles.scaleYInverted}
           keyboardShouldPersistTaps="handled"
           initialNumToRender={15}
+          keyExtractor={(message) => message.id}
+          maxToRenderPerBatch={5}
         />
       </View>
 
