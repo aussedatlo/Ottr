@@ -7,7 +7,11 @@ const TimeAgo = (props) => {
 };
 
 const Time = ({ children, style }) => {
-  return <Text style={style}>{children}</Text>;
+  return (
+    <Text variant="labelMedium" style={style}>
+      {children}
+    </Text>
+  );
 };
 
 export default TimeAgo;

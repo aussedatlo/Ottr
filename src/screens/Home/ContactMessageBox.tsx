@@ -84,6 +84,7 @@ const createStyles = ({ colors }: Theme) => {
     },
     date: {
       alignSelf: 'center',
+      color: colors.onSurfaceDisabled,
     },
   });
 };
