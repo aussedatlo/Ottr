@@ -5,6 +5,7 @@ import { useUserContext } from '../context/UserContext';
 
 const NUMBER_OF_RETRY = 5;
 const TEN_SECONDS_MS = 10 * 1000;
+const ONE_SECOND_MS = 1 * 1000;
 
 const RelayUpdater = (): null => {
   const { onDisconnect } = useNostr();
@@ -50,7 +51,7 @@ const RelayUpdater = (): null => {
               })
               .catch(() => console.error(`unable to reconnect: ${relay.url}`));
           },
-          TEN_SECONDS_MS * nbTry,
+          ONE_SECOND_MS + TEN_SECONDS_MS * nbTry,
         );
 
         newState[relay.url] = [...(newState[relay.url] || []), timer];
