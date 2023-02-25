@@ -11,9 +11,22 @@ import { Message } from '../../types/message';
 import HeaderRight from './HeaderRight';
 import InputSend from './InputSend';
 import ListItem from './ListItem';
+import MenuMessageBox from './Menu';
 import ReplyInfo from './ReplyInfo';
 
 export type Side = 'left' | 'right';
+
+export type Reply = { id: string; content: string };
+
+export type MenuState = {
+  visible: boolean;
+  anchor: { x: number; y: number };
+  messageId: string;
+  messageContent: string;
+  otherPubkey: string;
+  pending: boolean;
+  side: Side;
+};
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
@@ -23,9 +36,16 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const { allMessages } = useDatabaseContext();
   const { colors } = useTheme<Theme>();
   const user = useUser(pubkey);
-  const [reply, setReply] = useState<{ id: string; content: string }>(
-    undefined,
-  );
+  const [reply, setReply] = useState<Reply>(undefined);
+  const [menuState, setMenuState] = useState<MenuState>({
+    visible: false,
+    anchor: { x: 0, y: 0 },
+    messageId: undefined,
+    messageContent: undefined,
+    otherPubkey: pubkey,
+    pending: false,
+    side: undefined,
+  });
 
   const messages = useMemo(
     () =>
@@ -57,7 +77,7 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           prevMessage={messages?.[index + 1]}
           replyMessage={replyMessage}
           side={side}
-          setReply={setReply}
+          onMenu={setMenuState}
         />
       );
     },
@@ -83,6 +103,13 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         pubkey={pubkey}
         replyId={reply?.id}
         onCloseReply={() => setReply(undefined)}
+      />
+      <MenuMessageBox
+        {...menuState}
+        onReply={setReply}
+        onDismiss={() =>
+          setMenuState((oldState) => ({ ...oldState, visible: false }))
+        }
       />
     </>
   );
