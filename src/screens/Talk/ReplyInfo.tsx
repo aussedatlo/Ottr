@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { Animated, StyleSheet } from 'react-native';
 import { Avatar, IconButton, Text, useTheme } from 'react-native-paper';
 import { Theme } from '../../providers/ThemeProvider';
 
@@ -12,10 +12,53 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
-  if (!replyContent) return <></>;
+  const anim = useRef(new Animated.Value(0));
+
+  useEffect(() => {
+    if (!replyContent) {
+      Animated.timing(anim.current, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: false,
+      }).start();
+      return;
+    }
+
+    Animated.timing(anim.current, {
+      toValue: 100,
+      duration: 150,
+      useNativeDriver: false,
+    }).start();
+  }, [replyContent]);
 
   return (
-    <View style={styles.root}>
+    <Animated.View
+      style={[
+        styles.root,
+        {
+          transform: [
+            {
+              scale: anim.current.interpolate({
+                inputRange: [0, 100],
+                outputRange: [0.8, 1],
+              }),
+            },
+          ],
+          opacity: anim.current.interpolate({
+            inputRange: [0, 100],
+            outputRange: [0, 1],
+          }),
+          height: anim.current.interpolate({
+            inputRange: [0, 100],
+            outputRange: [0, 50],
+          }),
+          marginTop: anim.current.interpolate({
+            inputRange: [0, 100],
+            outputRange: [0, 10],
+          }),
+        },
+      ]}
+    >
       <Avatar.Icon icon="reply-outline" size={20} style={styles.icon} />
       <Text style={styles.text} numberOfLines={1}>
         {replyContent}
@@ -26,7 +69,7 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
         onPress={onCloseReply}
         style={styles.close}
       />
-    </View>
+    </Animated.View>
   );
 };
 
@@ -35,11 +78,12 @@ const createStyles = ({ colors }: Theme) => {
     root: {
       alignItems: 'center',
       flexDirection: 'row',
-      margin: 10,
-      marginBottom: 0,
+      marginLeft: 10,
+      marginRight: 10,
       borderRadius: 20,
       backgroundColor: colors.secondaryContainer,
-      padding: 10,
+      paddingLeft: 10,
+      paddingRight: 10,
     },
     icon: {
       marginRight: 10,
