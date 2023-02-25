@@ -15,7 +15,6 @@ const HeaderRight = () => {
   const { connectedRelays } = useNostr();
   const { relays } = useUserContext();
   const theme = useTheme<Theme>();
-  const styles = useMemo(() => createStyles(theme), [theme]);
   const { colors } = theme;
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -32,7 +31,7 @@ const HeaderRight = () => {
 
   const relaysUrl = useMemo(
     () => relays.sort((a) => (!connectedRelaysUrl.includes(a) ? 1 : -1)),
-    [connectedRelaysUrl],
+    [connectedRelaysUrl, relays],
   );
 
   return (
@@ -87,16 +86,14 @@ const HeaderRight = () => {
   );
 };
 
-const createStyles = ({ colors }: Theme) => {
-  return StyleSheet.create({
-    relays: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { flex: 1, flexShrink: 1 },
-    chip: { margin: 5 },
-  });
-};
+const styles = StyleSheet.create({
+  relays: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: { flex: 1, flexShrink: 1 },
+  chip: { margin: 5 },
+});
 
 export default HeaderRight;

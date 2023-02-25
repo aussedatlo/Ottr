@@ -65,7 +65,6 @@ export const addReaction = async (
       db,
       `UPDATE Messages SET reaction='${reaction}' WHERE id='${messageId}' AND NOT EXISTS (SELECT * FROM Messages WHERE id='${messageId}' AND reaction='${reaction}');`,
     );
-    console.log(results);
     return results;
   } catch (e) {
     console.error(e);
@@ -83,7 +82,6 @@ export const addOtherReaction = async (
       db,
       `UPDATE Messages SET other_reaction='${reaction}' WHERE id='${messageId}' AND NOT EXISTS (SELECT * FROM Messages WHERE id='${messageId}' AND other_reaction='${reaction}');`,
     );
-    console.log(results);
     return results;
   } catch (e) {
     console.error(e);

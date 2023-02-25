@@ -1,19 +1,36 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { useDatabaseContext } from '../../context/DatabaseContext';
 import { useUserContext } from '../../context/UserContext';
 import { useUser } from '../../hooks/useUsers';
 import { RootStackParamList } from '../../navigation';
-import { Theme } from '../../providers/ThemeProvider';
 import { Message } from '../../types/message';
 import HeaderRight from './HeaderRight';
 import InputSend from './InputSend';
 import ListItem from './ListItem';
+import MenuMessageBox from './Menu';
 import ReplyInfo from './ReplyInfo';
 
 export type Side = 'left' | 'right';
+
+export type Reply = { id: string; content: string };
+
+export type MenuState = {
+  visible: boolean;
+  anchor: { x: number; y: number };
+  messageId: string;
+  messageContent: string;
+  otherPubkey: string;
+  pending: boolean;
+  side: Side;
+};
 
 type TalkScreenProps = NativeStackScreenProps<RootStackParamList, 'Talk'>;
 
@@ -21,11 +38,16 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
   const pubkey = route.params.pubkey;
   const { pubkey: userPubkey } = useUserContext();
   const { allMessages } = useDatabaseContext();
-  const { colors } = useTheme<Theme>();
-  const user = useUser(pubkey);
-  const [reply, setReply] = useState<{ id: string; content: string }>(
-    undefined,
-  );
+  const [reply, setReply] = useState<Reply>(undefined);
+  const [menuState, setMenuState] = useState<MenuState>({
+    visible: false,
+    anchor: { x: 0, y: 0 },
+    messageId: undefined,
+    messageContent: undefined,
+    otherPubkey: pubkey,
+    pending: false,
+    side: undefined,
+  });
 
   const messages = useMemo(
     () =>
@@ -35,33 +57,37 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
     [allMessages, pubkey],
   );
 
+  const user = useUser(pubkey);
+
+  const messagesLengthRef = useRef<number>(messages?.length || 0);
+
   useEffect(() => {
     navigation.setOptions({
       title: user?.name ? user.name : pubkey.slice(0, 8),
       headerRight: () => <HeaderRight user={user} />,
     });
-  }, [colors, navigation, user, pubkey]);
+  }, [navigation, user, pubkey]);
 
   const renderItem = useCallback(
     ({ item, index }: { item: Message; index: number }) => {
-      const messageReplyId = item.tags.find((tag) => tag[0] === 'e')?.[1];
-      const replyMessage = messages.find((m) => m.id === messageReplyId);
-      const side = item.pubkey === userPubkey ? 'right' : 'left';
+      const replyMessageId = item.tags.find((tag) => tag[0] === 'e')?.[1];
+      const replyMessage = messages.find((m) => m.id === replyMessageId);
 
       return (
         <ListItem
           message={item}
-          user={user}
-          userPubkey={pubkey}
+          otherPubkey={pubkey}
+          otherPicture={user?.picture}
+          userPubkey={userPubkey}
           nextMessage={messages?.[index - 1]}
           prevMessage={messages?.[index + 1]}
           replyMessage={replyMessage}
-          side={side}
-          setReply={setReply}
+          onMenu={setMenuState}
+          animate={index < messages?.length - messagesLengthRef.current}
         />
       );
     },
-    [messages, user, userPubkey, pubkey],
+    [messages, userPubkey, pubkey, user?.picture],
   );
 
   return (
@@ -72,6 +98,9 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
           renderItem={renderItem}
           style={styles.scaleYInverted}
           keyboardShouldPersistTaps="handled"
+          initialNumToRender={15}
+          keyExtractor={(message) => message.id}
+          maxToRenderPerBatch={5}
         />
       </View>
 
@@ -83,6 +112,13 @@ const TalkScreen = ({ route, navigation }: TalkScreenProps) => {
         pubkey={pubkey}
         replyId={reply?.id}
         onCloseReply={() => setReply(undefined)}
+      />
+      <MenuMessageBox
+        {...menuState}
+        onReply={setReply}
+        onDismiss={() =>
+          setMenuState((oldState) => ({ ...oldState, visible: false }))
+        }
       />
     </>
   );
