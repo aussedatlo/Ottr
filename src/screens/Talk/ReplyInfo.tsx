@@ -19,7 +19,7 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
       Animated.timing(anim.current, {
         toValue: 0,
         duration: 150,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }).start();
       return;
     }
@@ -27,9 +27,11 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
     Animated.timing(anim.current, {
       toValue: 100,
       duration: 150,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
   }, [replyContent]);
+
+  if (!replyContent) return <></>;
 
   return (
     <Animated.View
@@ -38,7 +40,13 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
         {
           transform: [
             {
-              scale: anim.current.interpolate({
+              scaleY: anim.current.interpolate({
+                inputRange: [0, 100],
+                outputRange: [0, 1],
+              }),
+            },
+            {
+              scaleX: anim.current.interpolate({
                 inputRange: [0, 100],
                 outputRange: [0.8, 1],
               }),
@@ -47,14 +55,6 @@ const ReplyInfo = ({ replyContent, onCloseReply }: ReplyInfoProps) => {
           opacity: anim.current.interpolate({
             inputRange: [0, 100],
             outputRange: [0, 1],
-          }),
-          height: anim.current.interpolate({
-            inputRange: [0, 100],
-            outputRange: [0, 50],
-          }),
-          marginTop: anim.current.interpolate({
-            inputRange: [0, 100],
-            outputRange: [0, 10],
           }),
         },
       ]}
@@ -78,8 +78,8 @@ const createStyles = ({ colors }: Theme) => {
     root: {
       alignItems: 'center',
       flexDirection: 'row',
-      marginLeft: 10,
-      marginRight: 10,
+      margin: 10,
+      marginBottom: 0,
       borderRadius: 20,
       backgroundColor: colors.secondaryContainer,
       paddingLeft: 10,
