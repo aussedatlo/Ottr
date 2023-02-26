@@ -37,6 +37,7 @@ const createStyles = ({ colors }: Theme) => {
     date: {
       alignSelf: 'center',
       marginTop: 5,
+      marginBottom: 20,
       color: colors.onSurfaceDisabled,
     },
   });
