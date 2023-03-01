@@ -4,11 +4,13 @@ import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Theme } from '../providers/ThemeProvider';
 import KeyScreen from '../screens/Key';
+import NotificationsScreen from '../screens/Notifications';
 import ProfileScreen from '../screens/Profile';
 import RelaysScreen from '../screens/Relays';
 import SettingsScreen from '../screens/Settings';
 
 export type SettingsStackParamList = {
+  Notifications: undefined;
   Settings: undefined;
   Profile: undefined;
   Key: undefined;
@@ -41,6 +43,7 @@ const SettingsNavigator = () => {
           }}
         />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Key" component={KeyScreen} />
         <Stack.Screen name="Relays" component={RelaysScreen} />
       </Stack.Navigator>

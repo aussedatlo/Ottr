@@ -49,7 +49,7 @@ const RelayUpdater = (): null => {
                 console.log(`reconnected: ${relay.url}`);
                 clearRelayTimer(relay.url);
               })
-              .catch(() => console.error(`unable to reconnect: ${relay.url}`));
+              .catch(() => console.info(`unable to reconnect: ${relay.url}`));
           },
           ONE_SECOND_MS + TEN_SECONDS_MS * nbTry,
         );

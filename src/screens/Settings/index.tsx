@@ -36,6 +36,11 @@ const SettingsScreen = ({ navigation }: SelectContactScreenProps) => {
         onPress={() => navigation.navigate('Key')}
       />
       <ButtonSettings
+        icon="bell-outline"
+        title="Notifications"
+        onPress={() => navigation.navigate('Notifications')}
+      />
+      <ButtonSettings
         icon="information-outline"
         title="About"
         onPress={() => {
