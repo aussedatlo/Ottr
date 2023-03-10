@@ -1,5 +1,4 @@
 import { setStringAsync } from 'expo-clipboard';
-import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, signEvent } from 'nostr-tools';
 import React, { memo, useCallback, useMemo } from 'react';
 import { StyleSheet, ToastAndroid } from 'react-native';
@@ -10,6 +9,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import { MenuState, Reply } from '.';
+import { useNostrContext } from '../../context/NostrContext';
 import { useUserContext } from '../../context/UserContext';
 import { Theme } from '../../providers/ThemeProvider';
 import { Reaction } from '../../types/reaction';
@@ -31,8 +31,8 @@ const Menu = ({
 }: MenuBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { pubkey, key } = useUserContext();
-  const { publish } = useNostr();
+  const { pubkey, key, relays } = useUserContext();
+  const { pool } = useNostrContext();
 
   const onNonImplemented = () => {
     ToastAndroid.show('Not implemented', ToastAndroid.SHORT);
@@ -57,14 +57,16 @@ const Menu = ({
         kind: Kind.Reaction,
         tags: tags,
         pubkey: pubkey,
-        created_at: dateToUnix(),
+        created_at: Math.floor(Date.now() / 1000),
+        id: '',
+        sig: '',
       };
       event.id = getEventHash(event);
       event.sig = signEvent(event, key);
 
-      publish(event);
+      pool.publish(relays, event);
     },
-    [key, pubkey, publish, messageId, otherPubkey, onDismiss],
+    [key, pubkey, pool, messageId, otherPubkey, onDismiss],
   );
 
   const onReplyMenu = useCallback(() => {

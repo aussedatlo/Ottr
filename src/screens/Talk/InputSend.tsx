@@ -1,9 +1,9 @@
-import { dateToUnix, useNostr } from 'nostr-react';
 import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
 import Input from '../../components/Input';
+import { useNostrContext } from '../../context/NostrContext';
 import { useUserContext } from '../../context/UserContext';
 import { useMessages } from '../../hooks/useMessages';
 import { useUsers } from '../../hooks/useUsers';
@@ -18,11 +18,11 @@ type InputSendProps = {
 const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
   const [text, setText] = useState('');
   const { addUser, updateUserLastEventAt } = useUsers();
-  const { key, pubkey: userPubkey } = useUserContext();
-  const { publish } = useNostr();
+  const { key, pubkey: userPubkey, relays } = useUserContext();
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { addMessage } = useMessages();
+  const { pool } = useNostrContext();
 
   const onSend = useCallback(async () => {
     // TODO: verify pubkey
@@ -30,7 +30,7 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
     setText('');
 
     const message = await nip04.encrypt(key, pubkey, text);
-    const created_at = dateToUnix();
+    const created_at = Math.floor(Date.now() / 1000);
 
     const event: Event = {
       content: message,
@@ -38,6 +38,8 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
       tags: [['p', pubkey]],
       created_at: created_at,
       pubkey: userPubkey,
+      id: '',
+      sig: '',
     };
 
     if (replyId) {
@@ -58,12 +60,16 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
       lastEventAt: created_at,
     });
 
-    publish(event);
+    let pubs = pool?.publish(relays, event);
+    pubs.on('ok', () => {
+      console.log('detected');
+    });
+    // publish(event);
   }, [
     addUser,
     pubkey,
-    publish,
     key,
+    pool,
     userPubkey,
     text,
     addMessage,
