@@ -3,6 +3,7 @@ import { StyleSheet, ToastAndroid, View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import Input from '../../components/Input';
+import { useNostrContext } from '../../context/NostrContext';
 import { useUserContext } from '../../context/UserContext';
 import { Theme } from '../../providers/ThemeProvider';
 
@@ -10,6 +11,7 @@ const ProfileSection = () => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { pubkey, user, setUser } = useUserContext();
+  const { publish } = useNostrContext();
   const [name, setName] = useState<string>('');
   const [about, setAbout] = useState<string>('');
   const [picture, setPicture] = useState<string>('');

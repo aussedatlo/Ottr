@@ -1,5 +1,20 @@
-import { Event, Kind, nip04, SimplePool } from 'nostr-tools';
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import {
+  Event,
+  EventTemplate,
+  getEventHash,
+  Kind,
+  nip04,
+  Relay,
+  signEvent,
+  SimplePool,
+} from 'nostr-tools';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useMessages } from '../hooks/useMessages';
 import { useUsers } from '../hooks/useUsers';
 import { isReaction } from '../types/reaction';
@@ -9,6 +24,7 @@ import { useUserContext } from './UserContext';
 
 type NostrContextProps = {
   pool: SimplePool;
+  connectedRelays: Relay[];
 };
 
 const NostrContext = React.createContext<NostrContextProps | undefined>(
@@ -25,7 +41,42 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   const { updateMessage, addMessage, addReaction, addOtherReaction } =
     useMessages();
   const { addUser, updateUserLastEventAt, updateUser } = useUsers();
-  const pool = useRef(new SimplePool());
+  const [connectedRelays, setConnectedRelays] = useState<Relay[]>([]);
+
+  const onConnect = useCallback((relay: Relay) => {
+    console.log(`connected to relay ${relay.url}`);
+    setConnectedRelays((relays) => {
+      if (relays.find((r) => r.url === relay.url) !== undefined) return relays;
+      return [...relays, relay];
+    });
+  }, []);
+
+  const onDisconnect = useCallback(async (relay: Relay) => {
+    setConnectedRelays((relays) => {
+      console.log(`disconnected to relay ${relay.url}`);
+      if (relays.find((r) => r.url === relay.url) === undefined) return relays;
+      return relays.filter((r) => r.url !== relay.url);
+    });
+    setTimeout(async () => {
+      try {
+        await relay.connect();
+      } catch {
+        console.error(`unable to reconnect to relay ${relay.url}`);
+      }
+    }, 10000);
+  }, []);
+
+  const pool = useRef(
+    new SimplePool({
+      onConnect,
+      onDisconnect,
+    }),
+  );
+
+  useEffect(() => {
+    console.log('connectedRelays changed');
+    console.log(connectedRelays);
+  }, [connectedRelays]);
 
   const onOwnMessage = useCallback(
     async (event: Event) => {
@@ -126,20 +177,34 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   }, [relays, lastEvent]);
 
   return (
-    <NostrContext.Provider value={{ pool: pool.current }}>
+    <NostrContext.Provider value={{ pool: pool.current, connectedRelays }}>
       {children}
     </NostrContext.Provider>
   );
 };
 
-export function useNostrContext() {
+export const useNostrContext = () => {
   const context = useContext(NostrContext);
+  const { key, pubkey, relays } = useUserContext();
+
+  const publish = useCallback(
+    (template: EventTemplate) => {
+      const event: Event = { ...template, pubkey, id: '', sig: '' };
+      event.id = getEventHash(event);
+      event.sig = signEvent(event, key);
+
+      context.pool.publish(relays, event);
+    },
+    [context.pool, relays],
+  );
+
   if (context === undefined) {
     throw new Error(
       'useNostrContext must be used within a NostrContextProvider',
     );
   }
-  return context;
-}
+
+  return { ...context, publish };
+};
 
 export default NostrContextProvider;

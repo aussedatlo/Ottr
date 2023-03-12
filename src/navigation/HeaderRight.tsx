@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import { Relay } from 'nostr-tools';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Chip, IconButton, Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,23 +13,25 @@ import { Theme } from '../providers/ThemeProvider';
 
 const HeaderRight = () => {
   const { relays } = useUserContext();
-  const { pool } = useNostrContext();
+  const { connectedRelays } = useNostrContext();
   const theme = useTheme<Theme>();
   const { colors } = theme;
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState<boolean>(false);
 
-  const poolConnexions = pool._conn;
-
-  const connectedRelaysUrl = Object.keys(poolConnexions).reduce(
-    (prev: string[], curr: string) =>
-      poolConnexions[curr].status === 1 ? [...prev, curr] : prev,
-    [],
+  const connectedRelaysUrl: string[] = useMemo(
+    () =>
+      connectedRelays.reduce(
+        (prev: string[], curr: Relay) => [...prev, curr.url],
+        [],
+      ),
+    [connectedRelays],
   );
 
-  const relaysUrl = relays.sort((a) =>
-    !connectedRelaysUrl.includes(a) ? 1 : -1,
+  const relaysUrl = useMemo(
+    () => relays.sort((a) => (!connectedRelaysUrl.includes(a) ? 1 : -1)),
+    [connectedRelaysUrl],
   );
 
   return (
