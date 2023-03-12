@@ -66,12 +66,7 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
     }, 10000);
   }, []);
 
-  const pool = useRef(
-    new SimplePool({
-      onConnect,
-      onDisconnect,
-    }),
-  );
+  const pool = useRef(new SimplePool());
 
   useEffect(() => {
     console.log('connectedRelays changed');
@@ -158,7 +153,12 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   );
 
   useEffect(() => {
-    if (!relays || !lastEvent) return;
+    if (!relays || !lastEvent || !pool.current) return;
+
+    pool.current.on('connect', onConnect);
+    pool.current.on('disconnect', onDisconnect);
+
+    console.log(pool.current);
 
     const sub = pool.current.sub(relays, [
       {
@@ -174,7 +174,7 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
     ]);
 
     sub.on('event', onEvent);
-  }, [relays, lastEvent]);
+  }, [relays, lastEvent, pool]);
 
   return (
     <NostrContext.Provider value={{ pool: pool.current, connectedRelays }}>
