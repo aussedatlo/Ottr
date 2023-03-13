@@ -1,5 +1,5 @@
 import { setStringAsync } from 'expo-clipboard';
-import { Event, getEventHash, Kind, signEvent } from 'nostr-tools';
+import { Kind } from 'nostr-tools';
 import React, { memo, useCallback, useMemo } from 'react';
 import { StyleSheet, ToastAndroid } from 'react-native';
 import {
@@ -31,8 +31,8 @@ const Menu = ({
 }: MenuBoxProps) => {
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { pubkey, key, relays } = useUserContext();
-  const { pool } = useNostrContext();
+  const { pubkey, key } = useUserContext();
+  const { publish } = useNostrContext();
 
   const onNonImplemented = () => {
     ToastAndroid.show('Not implemented', ToastAndroid.SHORT);
@@ -52,21 +52,15 @@ const Menu = ({
         ['p', pubkey],
         ['p', otherPubkey],
       ];
-      const event: Event = {
+
+      publish({
         content: reaction,
         kind: Kind.Reaction,
         tags: tags,
-        pubkey: pubkey,
         created_at: Math.floor(Date.now() / 1000),
-        id: '',
-        sig: '',
-      };
-      event.id = getEventHash(event);
-      event.sig = signEvent(event, key);
-
-      pool.publish(relays, event);
+      });
     },
-    [key, pubkey, pool, messageId, otherPubkey, onDismiss],
+    [key, pubkey, messageId, otherPubkey, onDismiss, publish],
   );
 
   const onReplyMenu = useCallback(() => {
