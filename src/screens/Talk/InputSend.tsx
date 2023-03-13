@@ -1,4 +1,4 @@
-import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
+import { EventTemplate, Kind, nip04 } from 'nostr-tools';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
@@ -18,11 +18,11 @@ type InputSendProps = {
 const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
   const [text, setText] = useState('');
   const { addUser, updateUserLastEventAt } = useUsers();
-  const { key, pubkey: userPubkey, relays } = useUserContext();
+  const { key, pubkey: userPubkey } = useUserContext();
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { addMessage } = useMessages();
-  const { pool } = useNostrContext();
+  const { publish } = useNostrContext();
 
   const onSend = useCallback(async () => {
     // TODO: verify pubkey
@@ -32,26 +32,21 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
     const message = await nip04.encrypt(key, pubkey, text);
     const created_at = Math.floor(Date.now() / 1000);
 
-    const event: Event = {
+    const template: EventTemplate = {
       content: message,
       kind: Kind.EncryptedDirectMessage,
       tags: [['p', pubkey]],
       created_at: created_at,
-      pubkey: userPubkey,
-      id: '',
-      sig: '',
     };
 
     if (replyId) {
-      event.tags.push(['e', replyId]);
+      template.tags.push(['e', replyId]);
       onCloseReply();
     }
 
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, key);
+    const event = publish(template);
 
     await addMessage({ ...event, pending: true, seen: true, content: text });
-
     await addUser({
       pubkey: pubkey,
     });
@@ -59,22 +54,16 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
       pubkey: pubkey,
       lastEventAt: created_at,
     });
-
-    let pubs = pool?.publish(relays, event);
-    pubs.on('ok', () => {
-      console.log('detected');
-    });
-    // publish(event);
   }, [
-    addUser,
     pubkey,
+    replyId,
     key,
-    pool,
     userPubkey,
     text,
     addMessage,
-    replyId,
+    addUser,
     onCloseReply,
+    publish,
     updateUserLastEventAt,
   ]);
 
