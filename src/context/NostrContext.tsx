@@ -193,7 +193,7 @@ export const useNostrContext = () => {
       event.sig = signEvent(event, key);
 
       context.pool.publish(relays, event);
-      return event
+      return event;
     },
     [context.pool, relays],
   );
