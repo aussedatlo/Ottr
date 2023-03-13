@@ -15,6 +15,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { ToastAndroid } from 'react-native';
 import { useMessages } from '../hooks/useMessages';
 import { useUsers } from '../hooks/useUsers';
 import { isReaction } from '../types/reaction';
@@ -67,11 +68,6 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   }, []);
 
   const pool = useRef(new SimplePool());
-
-  useEffect(() => {
-    console.log('connectedRelays changed');
-    console.log(connectedRelays);
-  }, [connectedRelays]);
 
   const onOwnMessage = useCallback(
     async (event: Event) => {
@@ -147,6 +143,9 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
         case Kind.Metadata | 0:
           onNewMetadata(event);
           break;
+        case Kind.Metadata | 1:
+          ToastAndroid.show('metadatas updated', ToastAndroid.SHORT);
+          break;
       }
     },
     [onNewMessage, onNewMetadata, onOwnMessage, onReaction, pubkey],
@@ -188,12 +187,13 @@ export const useNostrContext = () => {
   const { key, pubkey, relays } = useUserContext();
 
   const publish = useCallback(
-    (template: EventTemplate) => {
+    (template: EventTemplate): Event => {
       const event: Event = { ...template, pubkey, id: '', sig: '' };
       event.id = getEventHash(event);
       event.sig = signEvent(event, key);
 
       context.pool.publish(relays, event);
+      return event
     },
     [context.pool, relays],
   );

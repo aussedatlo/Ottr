@@ -1,5 +1,6 @@
+import { Kind } from 'nostr-tools';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, ToastAndroid, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Text, useTheme } from 'react-native-paper';
 import Avatar from '../../components/Avatar';
 import Input from '../../components/Input';
@@ -23,13 +24,24 @@ const ProfileSection = () => {
   }, [user]);
 
   const onUpdateProfile = () => {
-    ToastAndroid.show('updated', ToastAndroid.SHORT);
     setUser({
       ...user,
       pubkey: pubkey,
       name: name,
       about: about,
       picture: picture,
+    });
+
+    publish({
+      content: JSON.stringify({
+        name: name,
+        about: about,
+        picture: picture,
+        pubkey: pubkey,
+      }),
+      kind: Kind.Metadata,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [],
     });
   };
 
