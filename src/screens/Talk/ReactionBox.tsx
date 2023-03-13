@@ -28,7 +28,7 @@ const ReactionBox = ({ reaction, otherReaction, side }: ReactionBoxProps) => {
         <Icon
           style={styles.reaction}
           name={getReactionIcon(reaction)}
-          size={16}
+          size={12}
         />
       ) : (
         <></>
@@ -37,7 +37,7 @@ const ReactionBox = ({ reaction, otherReaction, side }: ReactionBoxProps) => {
         <Icon
           style={styles.reaction}
           name={getReactionIcon(otherReaction)}
-          size={16}
+          size={12}
         />
       ) : (
         <></>
@@ -50,7 +50,7 @@ const createStyles = ({ colors }: Theme, reactions: number) => {
   return StyleSheet.create({
     root: {
       position: 'absolute',
-      bottom: -15,
+      bottom: -12,
       flexDirection: 'row',
       backgroundColor: colors.secondaryContainer,
       borderRadius: 20,
@@ -63,7 +63,7 @@ const createStyles = ({ colors }: Theme, reactions: number) => {
     right: { left: 0 - reactions * 22 },
     reaction: {
       color: colors.reaction,
-      padding: 5,
+      padding: 4,
     },
     other: {
       backgroundColor: colors.secondary,
