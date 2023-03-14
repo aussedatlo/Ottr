@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { getPublicKey } from 'nostr-tools';
 import React, { useContext, useEffect, useState } from 'react';
 import { DEFAULT_RELAYS_URL } from '../constant/relay';
+import { registerBackgroundFetchAsync } from '../services/background';
 import { ThemeMode } from '../types/themeMode';
 import { User } from '../types/user';
 import { getLocalStorage, setLocalStorage } from '../utils/storage';
@@ -79,6 +80,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         storageData.user ? storageData.user : initialUserContext.user,
       );
       setIsLoaded(true);
+      await registerBackgroundFetchAsync();
     };
 
     init();
