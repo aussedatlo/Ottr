@@ -6,7 +6,7 @@ import { DEFAULT_RELAYS_URL } from '../constant/relay';
 import { registerBackgroundFetchAsync } from '../services/background';
 import { ThemeMode } from '../types/themeMode';
 import { User } from '../types/user';
-import { getLocalStorage, setLocalStorage } from '../utils/storage';
+import { getUserLocalStorage, setUserLocalStorage } from '../utils/storage';
 
 type UserContextProps = {
   key?: string;
@@ -69,16 +69,10 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         setKey(key);
         setPubkey(() => getPublicKey(key));
       }
-      const storageData = await getLocalStorage('user', {});
-      setThemeMode(() =>
-        storageData.theme ? storageData.theme : initialUserContext.themeMode,
-      );
-      setRelays(() =>
-        storageData.relays ? storageData.relays : DEFAULT_RELAYS_URL,
-      );
-      setUser(() =>
-        storageData.user ? storageData.user : initialUserContext.user,
-      );
+      const { theme, profile, relays } = await getUserLocalStorage();
+      setThemeMode(() => (theme ? theme : initialUserContext.themeMode));
+      setRelays(() => (relays ? relays : DEFAULT_RELAYS_URL));
+      setUser(() => (profile ? profile : initialUserContext.user));
       setIsLoaded(true);
       await registerBackgroundFetchAsync();
     };
@@ -88,10 +82,10 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
   useEffect(() => {
     if (!isLoaded) return;
-    setLocalStorage('user', {
-      themeMode: themeMode,
+    setUserLocalStorage({
+      theme: themeMode,
       relays: relays,
-      user: user,
+      profile: user,
     });
   }, [themeMode, user, relays, isLoaded]);
 
