@@ -205,7 +205,7 @@ const createStyles = ({ colors }: Theme, side: Side) => {
     },
     check: {
       marginBottom: 3,
-      backgroundColor: colors.primaryContainer,
+      backgroundColor: colors.onPrimary,
     },
     hide: {
       marginBottom: 3,
