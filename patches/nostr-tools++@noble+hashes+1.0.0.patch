@@ -1,10 +1,10 @@
 diff --git a/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js b/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
-index 27c71f6..46c0aba 100644
+index 2ccb60e..b2c57bd 100644
 --- a/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
 +++ b/node_modules/nostr-tools/node_modules/@noble/hashes/utils.js
-@@ -176,14 +176,11 @@ function wrapConstructorWithOpts(hashCons) {
- }
- exports.wrapConstructorWithOpts = wrapConstructorWithOpts;
+@@ -182,14 +182,11 @@ exports.wrapConstructorWithOpts = wrapConstructorWithOpts;
+  * Secure PRNG
+  */
  function randomBytes(bytesLength = 32) {
 -    if (crypto_1.crypto.web) {
 -        return crypto_1.crypto.web.getRandomValues(new Uint8Array(bytesLength));
