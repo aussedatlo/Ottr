@@ -45,11 +45,18 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   const { addUser, updateUserLastEventAt, updateUser } = useUsers();
   const [connectedRelays, setConnectedRelays] = useState<Relay[]>([]);
   const { allUsers } = useDatabaseContext();
+  const [allUsersPubkey, setAllUsersPubkey] = useState<string[]>([]);
 
-  const allUsersPubkey = useMemo(
-    () => allUsers.reduce((prev, curr) => [...prev, curr.pubkey], []),
-    [allUsers],
-  );
+  const allUsersRef = useRef(allUsers);
+
+  useEffect(() => {
+    if (allUsersRef.current.length !== allUsers.length) {
+      allUsersRef.current = allUsers;
+      setAllUsersPubkey(
+        allUsers.reduce((prev, curr) => [...prev, curr.pubkey], []),
+      );
+    }
+  }, [allUsers]);
 
   const onConnect = useCallback((relay: Relay) => {
     console.log(`connected to relay ${relay.url}`);
