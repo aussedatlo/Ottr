@@ -1,9 +1,9 @@
-import { dateToUnix, useNostr } from 'nostr-react';
-import { Event, getEventHash, Kind, nip04, signEvent } from 'nostr-tools';
+import { EventTemplate, Kind, nip04 } from 'nostr-tools';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TextInput, useTheme } from 'react-native-paper';
 import Input from '../../components/Input';
+import { useNostrContext } from '../../context/NostrContext';
 import { useUserContext } from '../../context/UserContext';
 import { useMessages } from '../../hooks/useMessages';
 import { useUsers } from '../../hooks/useUsers';
@@ -19,10 +19,10 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
   const [text, setText] = useState('');
   const { addUser, updateUserLastEventAt } = useUsers();
   const { key, pubkey: userPubkey } = useUserContext();
-  const { publish } = useNostr();
   const theme = useTheme<Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { addMessage } = useMessages();
+  const { publish } = useNostrContext();
 
   const onSend = useCallback(async () => {
     // TODO: verify pubkey
@@ -30,26 +30,23 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
     setText('');
 
     const message = await nip04.encrypt(key, pubkey, text);
-    const created_at = dateToUnix();
+    const created_at = Math.floor(Date.now() / 1000);
 
-    const event: Event = {
+    const template: EventTemplate = {
       content: message,
       kind: Kind.EncryptedDirectMessage,
       tags: [['p', pubkey]],
       created_at: created_at,
-      pubkey: userPubkey,
     };
 
     if (replyId) {
-      event.tags.push(['e', replyId]);
+      template.tags.push(['e', replyId]);
       onCloseReply();
     }
 
-    event.id = getEventHash(event);
-    event.sig = signEvent(event, key);
+    const event = publish(template);
 
     await addMessage({ ...event, pending: true, seen: true, content: text });
-
     await addUser({
       pubkey: pubkey,
     });
@@ -57,18 +54,16 @@ const InputSend = ({ pubkey, replyId, onCloseReply }: InputSendProps) => {
       pubkey: pubkey,
       lastEventAt: created_at,
     });
-
-    publish(event);
   }, [
-    addUser,
     pubkey,
-    publish,
+    replyId,
     key,
     userPubkey,
     text,
     addMessage,
-    replyId,
+    addUser,
     onCloseReply,
+    publish,
     updateUserLastEventAt,
   ]);
 

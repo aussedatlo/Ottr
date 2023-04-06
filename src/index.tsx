@@ -3,9 +3,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PolyfillCrypto from 'react-native-webview-crypto';
 import DatabaseContextProvider from './context/DatabaseContext';
+import NostrContextProvider from './context/NostrContext';
 import UserContextProvider from './context/UserContext';
 import Navigation from './navigation';
-import NostrProvider from './providers/NostrProvider';
 import ThemeProvider from './providers/ThemeProvider';
 
 export default function App() {
@@ -14,13 +14,13 @@ export default function App() {
       <PolyfillCrypto />
       <UserContextProvider>
         <DatabaseContextProvider>
-          <NostrProvider>
+          <NostrContextProvider>
             <ThemeProvider>
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Navigation />
               </GestureHandlerRootView>
             </ThemeProvider>
-          </NostrProvider>
+          </NostrContextProvider>
         </DatabaseContextProvider>
       </UserContextProvider>
     </SafeAreaProvider>
