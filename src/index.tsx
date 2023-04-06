@@ -7,6 +7,7 @@ import NostrContextProvider from './context/NostrContext';
 import UserContextProvider from './context/UserContext';
 import Navigation from './navigation';
 import ThemeProvider from './providers/ThemeProvider';
+import { BackgroudService } from './services/background';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <ThemeProvider>
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Navigation />
+                <BackgroudService />
               </GestureHandlerRootView>
             </ThemeProvider>
           </NostrContextProvider>
