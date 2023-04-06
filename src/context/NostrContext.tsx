@@ -12,6 +12,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -43,6 +44,12 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
     useMessages();
   const { addUser, updateUserLastEventAt, updateUser } = useUsers();
   const [connectedRelays, setConnectedRelays] = useState<Relay[]>([]);
+  const { allUsers } = useDatabaseContext();
+
+  const allUsersPubkey = useMemo(
+    () => allUsers.reduce((prev, curr) => [...prev, curr.pubkey], []),
+    [allUsers],
+  );
 
   const onConnect = useCallback((relay: Relay) => {
     console.log(`connected to relay ${relay.url}`);
@@ -152,12 +159,15 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
   );
 
   useEffect(() => {
-    if (!relays || !lastEvent || !pool.current) return;
+    if (!pubkey || !relays || !lastEvent || !pool.current) return;
+
+    pool.current.close(relays);
+    pool.current = new SimplePool();
 
     pool.current.on('connect', onConnect);
     pool.current.on('disconnect', onDisconnect);
 
-    console.log(pool.current);
+    setConnectedRelays([]);
 
     const sub = pool.current.sub(relays, [
       {
@@ -170,10 +180,17 @@ const NostrContextProvider = ({ children }: NostrContextProviderProps) => {
         kinds: [Kind.EncryptedDirectMessage, Kind.Reaction],
         since: lastEvent + 1,
       },
+      {
+        authors: [...allUsersPubkey],
+        kinds: [Kind.Metadata],
+        since: 0,
+      },
     ]);
 
     sub.on('event', onEvent);
-  }, [relays, lastEvent, pool]);
+
+    console.log(pool.current);
+  }, [allUsersPubkey, pubkey, relays, lastEvent, pool]);
 
   return (
     <NostrContext.Provider value={{ pool: pool.current, connectedRelays }}>
