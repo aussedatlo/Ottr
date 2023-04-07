@@ -67,7 +67,7 @@
     "prettier:write": "prettier --write ./src",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "name": "ottr"
 }
