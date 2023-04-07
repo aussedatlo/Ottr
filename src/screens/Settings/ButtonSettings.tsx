@@ -32,7 +32,7 @@ const ButtonSettings = ({ title, icon, onPress }: ButtonSettingsProps) => {
             icon="chevron-right"
             size={40}
             style={styles.icon}
-            color={colors.primary}
+            color={colors.onPrimaryContainer}
           />
         </View>
       </TouchableNativeFeedback>
@@ -49,7 +49,7 @@ const createStyles = ({ colors }: Theme) => {
     },
     title: { flex: 1 },
     icon: {
-      margin: 10,
+      margin: 5,
       backgroundColor: colors.transparent,
     },
   });

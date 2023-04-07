@@ -45,7 +45,7 @@ const darkTheme: Theme = {
     primaryContainer: '#2f3136',
     secondaryContainer: '#40444b',
     tertiaryContainer: '#5E646E',
-    primary: '#593c84',
+    primary: '#8563B9',
     onPrimary: '#f3f3f3',
     secondary: '#ffe893',
     onSecondary: '#202225',
