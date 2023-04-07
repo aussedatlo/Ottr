@@ -21,6 +21,7 @@ const Input = (
       activeUnderlineColor={colors.transparent}
       placeholderTextColor={colors.onSurfaceDisabled}
       selectionColor={colors.primaryContainer}
+      dense
       {...props}
     />
   );

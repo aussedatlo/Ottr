@@ -104,10 +104,11 @@ const createStyles = ({ colors }: Theme) => {
       marginBottom: 5,
     },
     input: {
-      borderRadius: 20,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderRadius: 10,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
       backgroundColor: colors.secondaryContainer,
+      fontSize: 14,
     },
     picture: {
       width: 60,
