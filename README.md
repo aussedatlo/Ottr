@@ -14,3 +14,23 @@ Android messenger app based on Nostr protocol.
 - [x] Reply to a message
 - [x] Update your profile metadatas
 - [x] Likes and dislikes
+
+## Build dependency
+
+- Android Studio
+- JDK
+- Expo
+
+## Setup
+
+```shell
+yarn install
+
+# run the app with expo go
+npx expo
+
+# run the app directly on android device
+npx react-native start
+# then, on other terminal
+npx react-native run-android
+```
